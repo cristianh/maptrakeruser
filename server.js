@@ -11,7 +11,7 @@ const { setTimeout } = require('timers');
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
-      const whitelist = ["https://amigaapp-f2f93-default-rtdb.firebaseio.com", "http://localhost:8001", "http://localhost:8000"];
+      const whitelist = ["https://amigaapp-f2f93-default-rtdb.firebaseio.com","https://socket-maptracker.onrender.com/ ","http://localhost:8001", "http://localhost:8000"];
       if (whitelist.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
