@@ -10,18 +10,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
     onSelectRuta = (e) => {
         console.log("SELECCINADO:", e.target.value.replace(" ", "_"))
-        //GUARDAMOS LA RUTA SELECCIONADA
+        //SAVE ROUTE SELECTED
         rutaSeleccionada = e.target.value.replace(" ", "_")
-        socket.emit('data_gps', { mensaje: 'hola server', sala: e.target.value.replace(" ", "_") });
+        console.log(rutaSeleccionada)
+        socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
+
     }
 
     //SEND MESSAGE CHAT
     onSendMessage = (e) => {
         e.preventDefault()
-        let messageUser = document.querySelector('#message_input').value
+        let messageUser = document.querySelector('#message_input')
         //IF MESSAGE NOT IS EMPY, SEND DATA
         if (messageUser != "") {
-            socket.emit('chat_send_message', { message: messageUser, route: rutaSeleccionada })
+            socket.emit('chat_send_message', { message: messageUser.value, route: rutaSeleccionada })
+            messageUser.value=""
         }
 
     }
@@ -48,10 +51,13 @@ window.addEventListener('DOMContentLoaded', () => {
         mensajeelement.appendChild(element)
     })
 
+    /**
+     * Cargamos la lsita de todos los usuarios en el sistema.
+     */
     loadUserChat = () => {
 
         //LOAD SALAS RUTAS DISPONIBLES.
-        const mensaje = document.querySelector('.users')
+        const mensaje = document.querySelector('.chat_users')
         //CLEAN CONTENT USERS
         mensaje.innerHTML = ""
 
@@ -86,27 +92,20 @@ window.addEventListener('DOMContentLoaded', () => {
         mensaje.appendChild(text)
     })
 
-    socket.on('chat_user_conect', (message) => {
-        /*  console.log("Mensaje del servidor", message)
-         const mensaje = document.querySelector('#messages')
- 
-         let text = document.createElement("div")
-         const newtext = document.createTextNode(message);
-         text.appendChild(newtext)
-         let element = document.createElement("div")
-         element.classList.add("message")
-         element.appendChild(text)
-         mensaje.appendChild(text) */
-    })
-
-
 
     //END SOCKET CODE
 
     const appDiv = document.getElementById('app');
     appDiv.style.display = "none"
 
-
+    //Añadimos markets
+    let geojson = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+    let map;
+    let from;
+    let to;
     let marker;
     /*  appDiv.innerHTML = `<h1>Obtener Geolocalización</h1>`; */
 
@@ -156,7 +155,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
         mapboxgl.accessToken = 'pk.eyJ1IjoiY3J1c3RvMjAyMiIsImEiOiJjbDg3c3lmaTExNmg4M3BubGhyMThvMmhsIn0.AhcG868gRKbP-zDiccuMdA';
-        const map = new mapboxgl.Map({
+        map = new mapboxgl.Map({
             container: 'map', // container ID
             style: 'mapbox://styles/mapbox/streets-v11', // style URL
             center: [lng, lat], // starting position [lng, lat]
@@ -170,14 +169,35 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
         map.on('load', async () => {
-            //simulateMarkets()
+
 
             let opcionesRuta = []
-            //Añadimos markets
-            let geojson = {
-                "type": "FeatureCollection",
-                "features": []
-            };
+
+
+            
+
+            //Personalizamor en point marker del usuario    
+            const margkeruser = document.createElement('div');
+
+            margkeruser.style.width = "50px"
+            margkeruser.style.height = "50px"
+            margkeruser.style.backgroundImage = "url('../../assets/user_profile.svg')"
+            margkeruser.style.backgroundSize = "cover"
+            margkeruser.style.borderRadius = "50%"
+            margkeruser.style.cursor = "pointer"
+            margkeruser.style.backgroundColor = "white"
+            margkeruser.style.borderRadius = "100%"
+            margkeruser.className = 'marker';
+
+                              
+            //Posicion actual usuario.
+            let marker = new mapboxgl.Marker(margkeruser)
+                .setLngLat([lng, lat])
+                .addTo(map);
+
+            //Tomamos el primer punto de referencia (cordenadas actuales del usuario)
+            from = turf.point([lng, lat]);
+
 
             let markets = []
 
@@ -238,47 +258,8 @@ window.addEventListener('DOMContentLoaded', () => {
                             });
                         })
                         .finally(() => {
-
-                            const el = document.createElement('div');
-
-                            el.style.width = "42px"
-                            el.style.height = "42px"
-                            el.style.backgroundImage = "url('../../assets/iconbus.svg')"
-                            el.style.backgroundSize = "cover"
-                            el.style.borderRadius = "50%"
-                            el.style.cursor = "pointer"
-
-                            el.className = 'marker';
-
-
-
-
-                            //AGEGANDO PUNTOS EN EL MAPA.
-                            geojson.features.forEach((marker, index) => {
-                                //POPUP
-
-                                var popupText = new mapboxgl.Popup({ offset: 25 })
-                                    .setLngLat([marker.geometry.coordinates.lat, marker.geometry.coordinates.lon])
-                                    .setHTML(`<div><h3>${geojson.features[index].properties.title}</h3><br>Dirección:<span>${geojson.features[index].properties.description}</span><br><span>Velocidad: ${geojson.features[index].properties.velocidad}</span></div>`)
-                                    .addTo(map);
-
-
-                                el.id = `popmarketbus_${index}`
-
-                                let pointmarcketr = new mapboxgl.Marker(el)
-                                    .setLngLat(marker.geometry.coordinates)
-                                    .addTo(map)
-                                    .setPopup(popupText);
-
-
-                            });
-
-
-
-
-
+                            loadPointMap()
                         })
-
 
                 })
 
@@ -293,7 +274,7 @@ window.addEventListener('DOMContentLoaded', () => {
         // Add zoom and rotation controls to the map.
         map.addControl(new mapboxgl.NavigationControl());
 
-        //createMarket(lat, lng,this.map)
+
         /* const marker = new mapboxgl.Marker()
         .setLngLat([lng, lat])
         .addTo(map); */
@@ -303,8 +284,8 @@ window.addEventListener('DOMContentLoaded', () => {
          * ESCUCHAMOS LA INFORMACION ENVIADA DESDE EL SERVIDOR
          */
         socket.on('chat_send_server_message', (msg) => {
-            console.log(msg)
-            const { Latitude, Longitude, Speed } = msg
+            console.log("recibiendo datos................", msg)
+            const { Latitude, Longitude, Speed } = msg.data
             const el = document.createElement('div');
 
             el.style.width = "42px"
@@ -316,9 +297,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
             el.className = 'marker';
 
+            to = turf.point([Longitude, Latitude]);
+            let options = { units: 'kilometers' };
+
+            let distance = turf.distance(from, to, options);
+
+            //addToMap
+            /* let addToMap = [from, to];
+            from.properties.distance = distance;
+            to.properties.distance = distance; */
+
+            //Habilitar si solo queremos mostrar la ruta segun la room.
+
             var popupText = new mapboxgl.Popup({ offset: 25 })
                 .setLngLat([Longitude, Latitude])
-                .setHTML(`<div><h3>DEMO</h3><br>Dirección:<span>Norte - Sur</span><br><span>Velocidad: ${Speed}</span></div>`)
+                .setHTML(`<div><h3>${msg.room.replace('_', ' ').toUpperCase()}</h3>Dirección:<span>Norte - Sur</span><br><span>Velocidad: ${Math.round(Speed * 3.6)} K/h </span><br><span>Distancia: ${Math.round(distance * 1000)} m</span></div>`)
                 .addTo(map);
 
 
@@ -335,20 +328,97 @@ window.addEventListener('DOMContentLoaded', () => {
                     .setPopup(popupText);
             }
 
+            /**
+             * ESTAS PARTE DEL CODIGO SE UTILIZARA PARA MOSTRAR TODAS LAS RUTAS EN EL MAPA.
+             * AUN FALTA AJUSTAR UN POCO LA LOGICA POR ESO ESTA COMENTADO
+             */
+            /*console.log("buscando point", geojson.features)
+            geojson.features.forEach((marker, index) => {
+
+                console.log(marker)
+
+                //BUSCAMOS SI YA ESTA GUARDADA LA RUTA                
+                if (geojson.features[index].properties.hasOwnProperty('title')) {
+                    console.log(geojson.features[index].properties.title.toLowerCase(),msg.room.replace('_', ' ').toLowerCase())
+                    if (geojson.features[index].properties.title.toLowerCase() !== msg.room.replace('_', ' ').toLowerCase()) {
+                        //ACA ACTUALIZAMOS EL LOS PUNTOS
+                        geojson.features.push(
+                            {
+                                type: 'Feature',
+                                geometry: {
+                                    coordinates: {
+                                        lat: Latitude,
+                                        lon: Longitude
+                                    }
+                                },
+                                properties: {
+                                    title: msg.room.replace('_', ' ').toUpperCase(),
+                                    description: 'Norte/Sur',
+                                    velocidad: Speed == undefined ? '0' : Math.round(Speed * 3.6),
+                                    distancia: Math.round(distance * 1000)
+                                }
+                            }
+                        ) 
+                        
+                    } else {
+                        //Coordenates                       
+                        marker.geometry.coordinates.lat=Latitude
+                        marker.geometry.coordinates.lon=Longitude
+
+                        //Descriptcion
+                        marker.properties.title = msg.room.replace('_', ' ').toUpperCase(),
+                        marker.properties.description ='Norte/Sur',
+                        marker.properties.velocidad = Speed == undefined ? '0' : Math.round(Speed * 3.6),
+                        marker.properties.distancia = Math.round(distance * 1000)
+
+                        
+                    } 
+                }
+            })
+
+
+            //Cargamos los puntos en el mapa
+            loadPointMap()*/
+
+
+        });
+    }
+
+    loadPointMap = () => {
+
+
+        const el = document.createElement('div');
+
+        el.style.width = "42px"
+        el.style.height = "42px"
+        el.style.backgroundImage = "url('../../assets/iconbus.svg')"
+        el.style.backgroundSize = "cover"
+        el.style.borderRadius = "50%"
+        el.style.cursor = "pointer"
+
+        el.className = 'marker';
+
+        //AGEGANDO PUNTOS EN EL MAPA.
+        geojson.features.forEach((marker, index) => {
+            //POPUP
+
+            var popupText = new mapboxgl.Popup({ offset: 25 })
+                .setLngLat([marker.geometry.coordinates.lat, marker.geometry.coordinates.lon])
+                .setHTML(`<div><h3>${geojson.features[index].properties.title}</h3><Dirección:<span>${geojson.features[index].properties.description}</span><br><span>Velocidad: ${geojson.features[index].properties.velocidad}</span><br><span>Distancia: ${geojson.features[index].properties.distancia == undefined ? 'N/A' : geojson.features[index].properties.distancia}</span></div>`)
+                .addTo(map);
+
+
+            el.id = `popmarketbus_${index}`
+
+            let pointmarcketr = new mapboxgl.Marker(el)
+                .setLngLat(marker.geometry.coordinates)
+                .addTo(map)
+                .setPopup(popupText);
         });
     }
 
 
 
-    const createMarket = (lat, lng, map) => {
-        // Create a new marker.
-        const marker = new mapboxgl.Marker()
-            .setLngLat([lat, lng])
-            .addTo(map);
-    }
 
-    async function simulateMarkets() {
-
-    }
 })
 
