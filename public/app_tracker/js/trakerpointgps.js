@@ -53,12 +53,13 @@ function main() {
 
     //TEST URL LOCAL
     //PARA EL DESPLIEGUE QUITAR 'localhost' 
-    let socket = io("https://socket-maptracker.onrender.com", {
-        withCredentials: true
-    })
-    /* let socket = io("https://socket-maptracker.onrender.com",{
+    /* let socket = io("https://socket-maptracker.onrender.com", {
         withCredentials: true
     }) */
+    //TEST URL PRODUCCION
+    let socket = io("https://socket-maptracker.onrender.com",{
+        withCredentials: true
+    })
 
 
 
