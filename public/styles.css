@@ -1,6 +1,12 @@
+*{
+    margin: 0px;
+    overflow-x:hidden;
+}
+
 #map {
     width: 100vw;
-    height: 100vh
+    height: 100vh;
+    
 }
 
 #app {
@@ -16,22 +22,25 @@
     flex-direction: column;
     place-items: center;
     flex: 1 1 0;
-    width: 300px;
+    width: 331px;
+    max-height: 330px;
     height: 330px;
     position: absolute;
     right: 0px;
-    bottom: 10px;
+    bottom: 0px;
     z-index: 9999;
     background-color: white;
-    border-radius: 12px;
+    border-top-right-radius: 12px;
+    border-top-left-radius: 12px;
     box-shadow: 2px 2px 4px silver;
-    border: 2px solid silver
+    border: 2px solid silver;
 }
 
 .contaniner_chat{
     display: grid;
     grid-template-columns: 1fr 3fr;
     height: 100%;
+    width:100%
 }
 
 .chat_title {
@@ -53,7 +62,7 @@
     height: 100%;
     width: 100%;
     background-color: #e3e3e3;
-    border-right: 2px solid silver;
+    border-right: 2px solid silver;    
 }
 
 .chat_messages-users {
@@ -63,6 +72,9 @@
     height: inherit;
     width: 100%;
     background-color: white;
+    max-height: 330px;
+    overflow-x: hidden;
+    border-left: 2px solid #918383;
 }
 
 .chat_users_form-message {
