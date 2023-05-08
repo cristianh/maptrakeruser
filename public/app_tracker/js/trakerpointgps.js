@@ -53,11 +53,11 @@ function main() {
 
     //TEST URL LOCAL
     //PARA EL DESPLIEGUE QUITAR 'localhost' 
-    /* let socket = io("https://socket-maptracker.onrender.com", {
+    /* let socket = io("http://localhost:8000", {
         withCredentials: true
     }) */
     //TEST URL PRODUCCION
-    let socket = io("https://socket-maptracker.onrender.com",{
+    let socket = io("https://socket-maptracker.onrender.com", {
         withCredentials: true
     })
 
@@ -89,15 +89,9 @@ function main() {
     /* WonderPush.subscribeToNotifications(); */
 
 
-    document.getElementById("getPosition").addEventListener("click", getPosition);
+    document.getElementById("stopPosition").addEventListener("click", stopWatch);
     document.getElementById("watchPosition").addEventListener("click", watchPosition);
-    /*  document.getElementById("networkInfo").addEventListener("click", networkInfo);
-     document.addEventListener("offline", onOffline, false);
-     document.addEventListener("online", onOnline, false);
-     document.addEventListener("stopwatchPosition", stopWatch, false);
-     document.getElementById("getAcceleration").addEventListener("click", getAcceleration);
-     document.getElementById("watchAcceleration").addEventListener(
-         "click", watchAcceleration); */
+
 
 
     fetch('https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas.json')
@@ -126,8 +120,9 @@ function main() {
         })
 
     document.getElementById('selectRutas').addEventListener('change', (event) => {
+        
         if (usersenddata) {
-            let temporizadorSimulador = setInterval(() => {
+            temporizadorSimulador = setInterval(() => {
                 window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: puntosSimulacion[simlutePintCoordenate] });
 
                 console.log("enviando datos....", puntosSimulacion[simlutePintCoordenate])
@@ -150,32 +145,11 @@ function onSelectRuta(e) {
     window.socket.emit('check_length_users_route_gps', { conect: 'user', room: nombreRutaDBRoom });
 }
 
-function getPosition() {
-
-    var options = {
-        enableHighAccuracy: true,
-        maximumAge: 3600000
-    }
-    watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
-
-    function onSuccess(position) {
-        alert('Latitude: ' + position.coords.latitude + '\n' +
-            'Longitude: ' + position.coords.longitude + '\n' +
-            'Altitude: ' + position.coords.altitude + '\n' +
-            'Accuracy: ' + position.coords.accuracy + '\n' +
-            'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '\n' +
-            'Heading: ' + position.coords.heading + '\n' +
-            'Speed: ' + position.coords.speed + '\n' +
-            'Timestamp: ' + position.timestamp + '\n');
-    };
-
-    function onError(error) {
-        alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
-    }
-}
 
 function stopWatch() {
     navigator.geolocation.clearWatch(watchID);
+    clearInterval(temporizadorSimulador);
+    document.getElementById('info').innerHTML = ""
 }
 
 

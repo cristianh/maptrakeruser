@@ -1,6 +1,7 @@
 window.addEventListener('DOMContentLoaded', () => {
 
 
+
     //SOCKET CODE
 
     let userChat = []
@@ -24,7 +25,7 @@ window.addEventListener('DOMContentLoaded', () => {
         //IF MESSAGE NOT IS EMPY, SEND DATA
         if (messageUser != "") {
             socket.emit('chat_send_message', { message: messageUser.value, route: rutaSeleccionada })
-            messageUser.value=""
+            messageUser.value = ""
         }
 
     }
@@ -174,7 +175,7 @@ window.addEventListener('DOMContentLoaded', () => {
             let opcionesRuta = []
 
 
-            
+
 
             //Personalizamor en point marker del usuario    
             const margkeruser = document.createElement('div');
@@ -189,7 +190,7 @@ window.addEventListener('DOMContentLoaded', () => {
             margkeruser.style.borderRadius = "100%"
             margkeruser.className = 'marker';
 
-                              
+
             //Posicion actual usuario.
             let marker = new mapboxgl.Marker(margkeruser)
                 .setLngLat([lng, lat])
@@ -301,6 +302,17 @@ window.addEventListener('DOMContentLoaded', () => {
             let options = { units: 'kilometers' };
 
             let distance = turf.distance(from, to, options);
+
+            //Notificamos que la ruta esta cerca.
+
+            if (distance <= 100) {
+                //NOTIFICATION TEST
+
+                let notifications = new NotificationsPushApp('RUTA AMIGAPP', `La ruta ${msg.room.replace('_', ' ').toUpperCase()} se encuentra cerca a tu ubicación.`)
+
+                //SHOW NOTIFICATION
+                notifications.showNotification()
+            }
 
             //addToMap
             /* let addToMap = [from, to];
