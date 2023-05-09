@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let from;
     let to;
     let marker;
-    /*  appDiv.innerHTML = `<h1>Obtener Geolocalización</h1>`; */
+
 
     const options = {
         enableHighAccuracy: true,
@@ -202,7 +202,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             let markets = []
 
-
+            //LOAD ALL ROUTE IN SELECT ITEM
             await fetch('https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas.json')
                 .then(response => response.json())
                 .then(json => {
@@ -223,7 +223,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 })
 
-            //CARGAMOS LOS PUNTOS
+            //LOAD DATA POINT IN DB (FIREBASE-EMULATE)
             try {
                 opcionesRuta.forEach(async (rutaNombre) => {
                     await fetch(`https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas/${rutaNombre}.json`)
@@ -240,22 +240,22 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-                                geojson.features.push(
-                                    {
-                                        type: 'Feature',
-                                        geometry: {
-                                            coordinates: {
-                                                lat: Latitude,
-                                                lon: Longitude
-                                            }
-                                        },
-                                        properties: {
-                                            title: 'Ruta 18',
-                                            description: 'Norte/Sur',
-                                            velocidad: Speed == undefined ? '0' : Speed
+                                geojson.features[rutaNombre] =
+                                {
+                                    type: 'Feature',
+                                    geometry: {
+                                        coordinates: {
+                                            lat: Latitude,
+                                            lon: Longitude
                                         }
+                                    },
+                                    properties: {
+                                        title: 'Ruta 18',
+                                        description: 'Norte/Sur',
+                                        velocidad: Speed == undefined ? '0' : Speed
                                     }
-                                )
+                                }
+
                             });
                         })
                         .finally(() => {
@@ -304,133 +304,86 @@ window.addEventListener('DOMContentLoaded', () => {
             let distance = turf.distance(from, to, options);
 
             //Notificamos que la ruta esta cerca.
-
+            //TODO:OJO deshabilitamos la notificacion cambiar.
             if (distance <= 100) {
                 //NOTIFICATION TEST
-
                 let notifications = new NotificationsPushApp('RUTA AMIGAPP', `La ruta ${msg.room.replace('_', ' ').toUpperCase()} se encuentra cerca a tu ubicación.`)
 
                 //SHOW NOTIFICATION
                 notifications.showNotification()
             }
 
-            //addToMap
-            /* let addToMap = [from, to];
-            from.properties.distance = distance;
-            to.properties.distance = distance; */
-
-            //Habilitar si solo queremos mostrar la ruta segun la room.
-
-            var popupText = new mapboxgl.Popup({ offset: 25 })
-                .setLngLat([Longitude, Latitude])
-                .setHTML(`<div><h3>${msg.room.replace('_', ' ').toUpperCase()}</h3>Dirección:<span>Norte - Sur</span><br><span>Velocidad: ${Math.round(Speed * 3.6)} K/h </span><br><span>Distancia: ${Math.round(distance * 1000)} m</span></div>`)
-                .addTo(map);
-
-
-            if (marker != null) {
-                marker.remove();
-                marker = new mapboxgl.Marker(el)
-                    .setLngLat([Longitude, Latitude])
-                    .addTo(map)
-                    .setPopup(popupText);
-            } else {
-                marker = new mapboxgl.Marker(el)
-                    .setLngLat([Longitude, Latitude])
-                    .addTo(map)
-                    .setPopup(popupText);
+            //SAVE DIFERENT POINT IN JSON MAP DATA.
+            geojson.features[msg.room.replace('_', ' ').toLowerCase()] =
+            {
+                type: 'Feature',
+                geometry: {
+                    coordinates: {
+                        lat: Latitude,
+                        lon: Longitude
+                    }
+                },
+                properties: {
+                    title: msg.room.replace('_', ' ').toUpperCase(),
+                    description: 'Norte/Sur',
+                    velocidad: Speed == undefined ? '0' : Math.round(Speed * 3.6),
+                    distancia: Math.round(distance * 1000)
+                }
             }
 
-            /**
-             * ESTAS PARTE DEL CODIGO SE UTILIZARA PARA MOSTRAR TODAS LAS RUTAS EN EL MAPA.
-             * AUN FALTA AJUSTAR UN POCO LA LOGICA POR ESO ESTA COMENTADO
-             */
-            /*console.log("buscando point", geojson.features)
-            geojson.features.forEach((marker, index) => {
-
-                console.log(marker)
-
-                //BUSCAMOS SI YA ESTA GUARDADA LA RUTA                
-                if (geojson.features[index].properties.hasOwnProperty('title')) {
-                    console.log(geojson.features[index].properties.title.toLowerCase(),msg.room.replace('_', ' ').toLowerCase())
-                    if (geojson.features[index].properties.title.toLowerCase() !== msg.room.replace('_', ' ').toLowerCase()) {
-                        //ACA ACTUALIZAMOS EL LOS PUNTOS
-                        geojson.features.push(
-                            {
-                                type: 'Feature',
-                                geometry: {
-                                    coordinates: {
-                                        lat: Latitude,
-                                        lon: Longitude
-                                    }
-                                },
-                                properties: {
-                                    title: msg.room.replace('_', ' ').toUpperCase(),
-                                    description: 'Norte/Sur',
-                                    velocidad: Speed == undefined ? '0' : Math.round(Speed * 3.6),
-                                    distancia: Math.round(distance * 1000)
-                                }
-                            }
-                        ) 
-                        
-                    } else {
-                        //Coordenates                       
-                        marker.geometry.coordinates.lat=Latitude
-                        marker.geometry.coordinates.lon=Longitude
-
-                        //Descriptcion
-                        marker.properties.title = msg.room.replace('_', ' ').toUpperCase(),
-                        marker.properties.description ='Norte/Sur',
-                        marker.properties.velocidad = Speed == undefined ? '0' : Math.round(Speed * 3.6),
-                        marker.properties.distancia = Math.round(distance * 1000)
-
-                        
-                    } 
-                }
-            })
-
-
-            //Cargamos los puntos en el mapa
-            loadPointMap()*/
-
-
+            loadPointMap()
         });
     }
 
+    let backPointMarkers = []
+
     loadPointMap = () => {
 
+        //IF EXIST MARKTS.
+        //DELETE ALL (MAP REPEINT DATA)
+        
+        if (backPointMarkers.length > 0) {
+            backPointMarkers.forEach(marker => {
+                marker.remove()
+            });
+        }
 
-        const el = document.createElement('div');
-
-        el.style.width = "42px"
-        el.style.height = "42px"
-        el.style.backgroundImage = "url('../../assets/iconbus.svg')"
-        el.style.backgroundSize = "cover"
-        el.style.borderRadius = "50%"
-        el.style.cursor = "pointer"
-
-        el.className = 'marker';
-
+        //GET ALL KEYS (ROURTES)
+        let keys = Object.keys(geojson.features)
         //AGEGANDO PUNTOS EN EL MAPA.
-        geojson.features.forEach((marker, index) => {
-            //POPUP
+        keys.forEach((key, index) => {
 
+            const el = document.createElement('div');
+
+            el.style.width = "42px"
+            el.style.height = "42px"
+            el.style.backgroundImage = "url('../../assets/iconbus.svg')"
+            el.style.backgroundSize = "cover"
+            el.style.borderRadius = "50%"
+            el.style.cursor = "pointer"
+            el.style.id = "routepointe"
+            el.className = 'marker';
+
+            //CREATE POPUP
             var popupText = new mapboxgl.Popup({ offset: 25 })
-                .setLngLat([marker.geometry.coordinates.lat, marker.geometry.coordinates.lon])
-                .setHTML(`<div><h3>${geojson.features[index].properties.title}</h3><Dirección:<span>${geojson.features[index].properties.description}</span><br><span>Velocidad: ${geojson.features[index].properties.velocidad}</span><br><span>Distancia: ${geojson.features[index].properties.distancia == undefined ? 'N/A' : geojson.features[index].properties.distancia}</span></div>`)
+                .setLngLat([geojson.features[key].geometry.coordinates.lon, geojson.features[key].geometry.coordinates.lat])
+                .setHTML(`<div><h3>${geojson.features[key].properties.title}</h3><Dirección:<span>${geojson.features[key].properties.description}</span><br><span>Velocidad: ${geojson.features[key].properties.velocidad}k/h </span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? 'N/A' : geojson.features[key].properties.distancia}m</span></div>`)
                 .addTo(map);
 
 
             el.id = `popmarketbus_${index}`
-
-            let pointmarcketr = new mapboxgl.Marker(el)
-                .setLngLat(marker.geometry.coordinates)
+            //ADD MERCKER TO MAP
+            pointmarcketr = new mapboxgl.Marker(el)
+                .setLngLat([geojson.features[key].geometry.coordinates.lon, geojson.features[key].geometry.coordinates.lat])
                 .addTo(map)
                 .setPopup(popupText);
-        });
+
+            //ADD MARKERS GENERATES TO ARRAY (SAVE ALL MARKTES)
+            backPointMarkers.push(pointmarcketr)
+
+
+        })
+
     }
-
-
-
-
 })
 

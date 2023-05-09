@@ -95,10 +95,10 @@ io.on('connection', (socket) => {
   //EVENTO PARA ENVIAR INFORMACION DE LAS RUTAS.
   socket.on(eventsSocketio.GET_USER_GPS_DATA, (data) => {
     //EVENTO PARA TODAS LAS PERSONAS CONECTADAS A LA SALA.
-    socket.broadcast.to(data.room).emit(eventsSocketio.SEND_USER_GPS_DATA, data)//solo a los de la sala
+    //socket.broadcast.to(data.room).emit(eventsSocketio.SEND_USER_GPS_DATA, data)//solo a los de la sala
 
     //SI VAMOS A ENVIAR LA INFORMACION A TODOS
-    //io.emit('chat_send_server_message', msg)
+    io.emit(eventsSocketio.SEND_USER_GPS_DATA, data)
   });
 
   //EVENTO PARA DETECTAR LOS USUARIOS CONECTADOS A LA MISMA SALA
