@@ -11,17 +11,13 @@ let usersenddata = false
 
 document.addEventListener('DOMContentLoaded', main, false);
 
-/* let temporizadorSimulador = setInterval(() => {
-    simlutePintCoordenate += 1
-}, 3000); */
+let temporizadorSimulador=null
 
 function main() {
 
     //NOS CONECTAMOS A LA FIREBASE PARA SIMULAR UNA RUTA
     let datosfirebase;
-    //TODO:CUANDO este funcionando en movil habilitamos esta linea.
-    //window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: _datos });
-    //console.log("enviando datos....")
+
 
 
 
@@ -91,6 +87,7 @@ function main() {
 
     document.getElementById("stopPosition").addEventListener("click", stopWatch);
     document.getElementById("watchPosition").addEventListener("click", watchPosition);
+    document.getElementById("simulacion_route").addEventListener("click", emulateRoute);
 
 
 
@@ -120,23 +117,27 @@ function main() {
         })
 
     document.getElementById('selectRutas').addEventListener('change', (event) => {
-        
         if (usersenddata) {
-            temporizadorSimulador = setInterval(() => {
-                window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: puntosSimulacion[simlutePintCoordenate] });
-
-                console.log("enviando datos....", puntosSimulacion[simlutePintCoordenate])
-
-                simlutePintCoordenate += 1
-            }, 2000);
+            sendDataGps()
         }
-
-
     });
 
 
 }
 
+function sendDataGps() {
+    temporizadorSimulador = setInterval(() => {
+        window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: puntosSimulacion[simlutePintCoordenate] });
+
+        console.log("enviando datos....", puntosSimulacion[simlutePintCoordenate])
+
+        simlutePintCoordenate += 1
+    }, 2000);
+}
+
+function emulateRoute(){
+    document.getElementById('select_route_simulacion').style.visibility='visible'
+}
 
 
 function onSelectRuta(e) {
@@ -150,12 +151,17 @@ function stopWatch() {
     navigator.geolocation.clearWatch(watchIDElement);
     clearInterval(temporizadorSimulador);
     document.getElementById('info').innerHTML = ""
+    document.getElementById("simulacion_route").classList.remove('disable')
+    document.getElementById("simulacion_route").addEventListener("click", emulateRoute);
 }
 
 
 
 function watchPosition() {
-    //document.getElementById('stopwatchPosition').classList.remove('disabled')
+    document.getElementById('select_route_simulacion').style.visibility='hidden'
+
+    document.getElementById("simulacion_route").classList.add('disable')
+    document.getElementById("simulacion_route").removeEventListener("click", emulateRoute);
     if (nombreRutaDBRoom === "") {
         alert("Seleccione la ruta por favor.")
     }
@@ -187,6 +193,10 @@ function watchPosition() {
                     'Heading': position.coords.heading,
                     'Speed': position.coords.speed
                 }
+
+                //TODO:CUANDO este funcionando en movil habilitamos esta linea.
+                window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: _datos });
+                console.log("enviando datos....")
             }
         }
 

@@ -78,7 +78,7 @@
         <hr>
         <div class="container">
             <div class="row">
-                <div class="col-12">
+                <div class="col-12" id="select_route_simulacion">
                     <label for="rutasSelect">Emular Ruta:</label>
                     <select name="rutasSelect" id="selectRutas">
                         <option value="Seleccione">Seleccione</option>
@@ -88,10 +88,13 @@
         </div>
         <div class="container">
             <div class="row">
-                <div class="col-6 p-3">
-                    <button class="btn btn-info text-light btn-sm" id="watchPosition">INICIAR RECORRIDO</button>
+                <div class="col-lg-4 col-md-4 col-sm-* p-3">
+                    <button class="btn btn-primary text-light btn-sm" id="watchPosition">INICIAR RECORRIDO</button>
                 </div>
-                <div class="col-6 p-3">
+                <div class="col-lg-4 col-md-4 col-sm-* p-3">
+                    <button class="btn btn-info text-light btn-sm" id="simulacion_route">SIMULAR RUTA</button>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-* p-3">
                     <button class="btn btn-danger text-light btn-sm" id="stopPosition">DETENER RECORRIDO</button>
 
                 </div>
