@@ -147,7 +147,7 @@ function onSelectRuta(e) {
 
 
 function stopWatch() {
-    navigator.geolocation.clearWatch(watchID);
+    navigator.geolocation.clearWatch(watchIDElement);
     clearInterval(temporizadorSimulador);
     document.getElementById('info').innerHTML = ""
 }
