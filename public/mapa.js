@@ -171,6 +171,28 @@ window.addEventListener('DOMContentLoaded', () => {
 
         map.on('load', async () => {
 
+            // location of the feature, with description HTML from its properties.
+            map.on('click', 'places', (e) => {
+                alert("click event", e)
+                /* // Copy coordinates array.
+                const coordinates = e.features[0].geometry.coordinates.slice();
+                const description = e.features[0].properties.description;
+                 
+                // Ensure that if the map is zoomed out such that multiple
+                // copies of the feature are visible, the popup appears
+                // over the copy being pointed to.
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+                 
+                new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map);
+                }); */
+
+            })
+
 
             let opcionesRuta = []
 
@@ -252,7 +274,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                     properties: {
                                         title: 'Ruta 18',
                                         description: 'Norte/Sur',
-                                        velocidad: Speed == undefined ? '0' : Speed
+                                        velocidad: Speed == undefined ? '0' : Math.round(Speed)
                                     }
                                 }
 
@@ -273,7 +295,17 @@ window.addEventListener('DOMContentLoaded', () => {
         })
 
         // Add zoom and rotation controls to the map.
-        map.addControl(new mapboxgl.NavigationControl());
+        map.addControl(new mapboxgl.NavigationControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true,
+            showUserHeading: true
+        }));
+
+        //Map scale
+        // Add a scale control to the map
+        //map.addControl(new mapboxgl.ScaleControl());
 
 
         /* const marker = new mapboxgl.Marker()
@@ -285,7 +317,7 @@ window.addEventListener('DOMContentLoaded', () => {
          * ESCUCHAMOS LA INFORMACION ENVIADA DESDE EL SERVIDOR
          */
         socket.on('chat_send_server_message', (msg) => {
-            console.log("recibiendo datos................", msg)
+            /* console.log("recibiendo datos................", msg) */
             const { Latitude, Longitude, Speed } = msg.data
             const el = document.createElement('div');
 
@@ -341,7 +373,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         //IF EXIST MARKTS.
         //DELETE ALL (MAP REPEINT DATA)
-        
+
         if (backPointMarkers.length > 0) {
             backPointMarkers.forEach(marker => {
                 marker.remove()
@@ -353,6 +385,7 @@ window.addEventListener('DOMContentLoaded', () => {
         //AGEGANDO PUNTOS EN EL MAPA.
         keys.forEach((key, index) => {
 
+            //PERSONALIZAMOS EL MARKER
             const el = document.createElement('div');
 
             el.style.width = "42px"
@@ -361,17 +394,21 @@ window.addEventListener('DOMContentLoaded', () => {
             el.style.backgroundSize = "cover"
             el.style.borderRadius = "50%"
             el.style.cursor = "pointer"
-            el.style.id = "routepointe"
+            el.id = `popmarketbus_${index}`
+
             el.className = 'marker';
 
             //CREATE POPUP
-            var popupText = new mapboxgl.Popup({ offset: 25 })
+            var popupText = new mapboxgl.Popup({ offset: 25 }, {
+                closeButton: true,
+                closeOnClick: false
+            })
                 .setLngLat([geojson.features[key].geometry.coordinates.lon, geojson.features[key].geometry.coordinates.lat])
                 .setHTML(`<div><h3>${geojson.features[key].properties.title}</h3><Dirección:<span>${geojson.features[key].properties.description}</span><br><span>Velocidad: ${geojson.features[key].properties.velocidad}k/h </span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? 'N/A' : geojson.features[key].properties.distancia}m</span></div>`)
-                .addTo(map);
+                /* .addTo(map); */
 
 
-            el.id = `popmarketbus_${index}`
+
             //ADD MERCKER TO MAP
             pointmarcketr = new mapboxgl.Marker(el)
                 .setLngLat([geojson.features[key].geometry.coordinates.lon, geojson.features[key].geometry.coordinates.lat])
@@ -383,7 +420,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
         })
-
     }
+
+
 })
 
