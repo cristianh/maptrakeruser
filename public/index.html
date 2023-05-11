@@ -15,6 +15,17 @@
 </head>
 
 <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="icon"></div>
+        <div class="nav_items" id="_items">
+            <div>Mapa</div>
+            <div>Perfil</div>
+            <div>Cerrar sesión</div>
+        </div>
+    </nav>
+
+    <!-- Mapa -->
     <div id="map">
 
     </div>
@@ -22,7 +33,7 @@
 
     </div>
 
-    <!-- CHAT -->
+    <!-- Chat -->
     <div class="chat">
 
         <div class="chat_title">
@@ -65,9 +76,11 @@
         <input type="text" list="countrydata" id="country" name="country" size="50" onchange="onSelectRuta(event)"
             autocomplete="off" placeholder="Selecciona una Ruta" />
     </div>
+
+    <!-- Footer -->
     <section class="footer footer_responsive">
-        Rutamigapp. {{fecha |  date:'yyyy'}} @copyrigth  todos los derechos reservados.
-     </section>
+        Rutamigapp. {{fecha | date:'yyyy'}} @copyrigth todos los derechos reservados.
+    </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js"
         integrity="sha512-eiqtDDb4GUVCSqOSOTz/s/eiU4B31GrdSb17aPAA4Lv/Cjc8o+hnDvuNkgXhSI5yHuDvYkuojMaQmrB5JB31XQ=="
