@@ -1,12 +1,12 @@
-*{
+* {
     margin: 0px;
-    overflow-x:hidden;
+    overflow-x: hidden;
 }
 
 #map {
     width: 100vw;
     height: 100vh;
-    
+
 }
 
 #app {
@@ -17,6 +17,7 @@
     left: 0
 }
 
+/* CHAT CSS */
 .chat {
     display: flex;
     flex-direction: column;
@@ -36,33 +37,51 @@
     border: 2px solid silver;
 }
 
-.contaniner_chat{
+.contaniner_chat {
     display: grid;
     grid-template-columns: 1fr 3fr;
     height: 100%;
-    width:100%
+    width: 100%;
+    flex-direction: row;
 }
 
 .chat_title {
     text-align: center;
+    color: white;
     width: 100%;
-    height: 21px;
-    background-color: silver;
+    text-align: center;
+    align-items: center;
+    background-color: rgba(242, 135, 5, 0.9);
     border-top-right-radius: 2px;
-    border-bottom: 3px solid #6e6e6e;
+    border-bottom: 3px solid rgba(169, 100, 17, 0.9);
     border-top-left-radius: 2px;
+    display: flex;
+    flex-direction: row;
+    overflow-y: hidden;
 }
 
+.logo_chat {
+    width: 35%;
+}
 
-.chat form {
-    display: flex;
+.principal_title_map {
+    width: 75%;
+}
+
+.principal_title_map{
+    font-size: larger;
+}
+
+.img_logo_chat {
+    object-fit: cover;
+    width: 7em;
 }
 
 .chat_users {
     height: 100%;
     width: 100%;
     background-color: #e3e3e3;
-    border-right: 2px solid silver;    
+    border-right: 2px solid silver;
 }
 
 .chat_messages-users {
@@ -93,6 +112,33 @@
     flex-direction: column;
     font-size: 16px;
     overflow-y: scroll
+}
+
+.footer{
+    background-color:  rgba(242, 135, 5, 0.9);
+    color: white;
+    width: 100%;
+    height: 2rem;
+    position:absolute;
+    bottom: 0vw;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;   
+    padding: 0.2em;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+a.mapboxgl-ctrl-logo {
+    width: 7.5em;
+    height: 2em;
+}
+
+@media screen and (max-width: 400px) {
+    .footer_responsive {
+        font-size: smaller;
+    }
 }
 
 /* #messages .message:nth-of-type(2n+1) {

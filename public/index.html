@@ -22,13 +22,19 @@
 
     </div>
 
+    <!-- CHAT -->
     <div class="chat">
+
         <div class="chat_title">
-            CHAT
+            <div class="logo_chat">
+                <img src="./assets/icon_amigapp.png" alt="logo_bus" class="img_logo_chat">
+            </div>
+            <div class="principal_title_map">
+                Chat Ruta Amigapp
+            </div>
         </div>
         <div class="contaniner_chat">
             <div class="chat_users">
-
             </div>
             <div class="chat_messages-users">
                 <div id="messages">
@@ -59,8 +65,13 @@
         <input type="text" list="countrydata" id="country" name="country" size="50" onchange="onSelectRuta(event)"
             autocomplete="off" placeholder="Selecciona una Ruta" />
     </div>
+    <section class="footer footer_responsive">
+        Rutamigapp. {{fecha |  date:'yyyy'}} @copyrigth  todos los derechos reservados.
+     </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js" integrity="sha512-eiqtDDb4GUVCSqOSOTz/s/eiU4B31GrdSb17aPAA4Lv/Cjc8o+hnDvuNkgXhSI5yHuDvYkuojMaQmrB5JB31XQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js"
+        integrity="sha512-eiqtDDb4GUVCSqOSOTz/s/eiU4B31GrdSb17aPAA4Lv/Cjc8o+hnDvuNkgXhSI5yHuDvYkuojMaQmrB5JB31XQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src='./mapa.js'></script>
     <script src='./notifications.js'></script>
     <!-- <script src='../node_modules/push.js/bin/push.min.js'></script> -->
@@ -70,7 +81,7 @@
         crossorigin="anonymous"></script>
 
     <!--Notificaciones -->
-   <!--  <script src="https://cdn.by.wonderpush.com/sdk/1.1/wonderpush-loader.min.js" async></script>
+    <!--  <script src="https://cdn.by.wonderpush.com/sdk/1.1/wonderpush-loader.min.js" async></script>
     <script>
         window.WonderPush = window.WonderPush || [];
         WonderPush.push(["init", {
