@@ -342,10 +342,10 @@ window.addEventListener('DOMContentLoaded', () => {
             //TODO:OJO deshabilitamos la notificacion cambiar.
             if (distance <= 100) {
                 //NOTIFICATION TEST
-                let notifications = new NotificationsPushApp('RUTA AMIGAPP', `La ruta ${msg.room.replace('_', ' ').toUpperCase()} se encuentra cerca a tu ubicación.`)
+                //let notifications = new NotificationsPushApp('RUTA AMIGAPP', `La ruta ${msg.room.replace('_', ' ').toUpperCase()} se encuentra cerca a tu ubicación.`)
 
                 //SHOW NOTIFICATION
-                notifications.showNotification()
+                //notifications.showNotification()
             }
 
             //SAVE DIFERENT POINT IN JSON MAP DATA.
