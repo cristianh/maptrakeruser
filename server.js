@@ -26,9 +26,17 @@ const io = new Server(server, {
 app.use(cors());
 // Servimos los archivos que se encuentran en el directorio public
 app.use(express.static(path.join(__dirname, './public')));
+/* app.use(express.static(path.join(__dirname, './public/app_traker'))); */
+
 app.get('/', (req, res) => {
   // Servimos los archivos que se encuentran en el directorio public
   res.sendFile(__dirname + '/index.html');
+});
+
+app.get('/usuario_gps', (req, res) => {
+  // Servimos los archivos que se encuentran en el directorio public
+  //res.sendFile(__dirname + 'app_traker/index.html');
+  res.sendFile(path.resolve(__dirname, './public/app_tracker', 'index.html'));
 });
 
 // ---------------- SOCKET.IO ----------------- //

@@ -9,15 +9,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
     var socket = io();
 
+    //LISTO EN FRONT
     onSelectRuta = (e) => {
-        console.log("SELECCINADO:", e.target.value.replace(" ", "_"))
-        //SAVE ROUTE SELECTED
-        rutaSeleccionada = e.target.value.replace(" ", "_")
-        console.log(rutaSeleccionada)
-        socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
-
+                console.log("SELECCINADO:", e.target.value.replace(" ", "_"))
+                //SAVE ROUTE SELECTED
+                rutaSeleccionada = e.target.value.replace(" ", "_")
+                console.log(rutaSeleccionada)
+                socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
     }
 
+    //YA PASADO
     //SEND MESSAGE CHAT
     onSendMessage = (e) => {
         e.preventDefault()
@@ -30,6 +31,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     }
 
+    //CREADO EVENTO ( FALTA LA IMPLEMENTACION DEL CHAT COMPONENT)
     socket.on('send_list_users', (users) => {
         console.log("Salas disponibles", users)
         userChat = users
@@ -37,6 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
         loadUserChat()
     })
 
+    //CREADO EVENTO ( FALTA LA IMPLEMENTACION DEL CHAT COMPONENT)
     //DETECTAMOS MENSAJE
     socket.on('message_chat', (message) => {
         //LOAD MESSAGE DIV.
@@ -399,13 +402,15 @@ window.addEventListener('DOMContentLoaded', () => {
             el.className = 'marker';
 
             //CREATE POPUP
+            //<br><span>Velocidad: ${geojson.features[key].properties.velocidad}k/h </span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? 'N/A' : geojson.features[key].properties.distancia}m</span>
+
             var popupText = new mapboxgl.Popup({ offset: 25 }, {
                 closeButton: true,
                 closeOnClick: false
             })
                 .setLngLat([geojson.features[key].geometry.coordinates.lon, geojson.features[key].geometry.coordinates.lat])
-                .setHTML(`<div><h3>${geojson.features[key].properties.title}</h3><Dirección:<span>${geojson.features[key].properties.description}</span><br><span>Velocidad: ${geojson.features[key].properties.velocidad}k/h </span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? 'N/A' : geojson.features[key].properties.distancia}m</span></div>`)
-                /* .addTo(map); */
+                .setHTML(`<div><h3>${geojson.features[key].properties.title}</h3><Dirección:<span>${geojson.features[key].properties.description}</span></div>`)
+                .addTo(map);
 
 
 
