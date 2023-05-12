@@ -22,7 +22,7 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="icon"></div>
-        <div class="nav_items" id="_items">
+        <div class="nav_items">
             <div>Mapa</div>
             <div>Perfil</div>
             <div>Cerrar sesión</div>
@@ -47,6 +47,8 @@
             </div>
             <div class="principal_title_chat">
                 Chat Ruta Amigapp
+                <button class="minimize_logo">
+                </button>
             </div>
         </div>
 
@@ -59,14 +61,15 @@
                 <div class="chat_users">
                 </div>
             </div>
+            <!-- Columna derecha -->
             <div class="chat_messages-users">
                 <div id="messages">
 
                 </div>
-                <div class="chat_form-message">
-                    <form onsubmit="onSendMessage(event)">
+                <div class="chat_form_message">
+                    <form onsubmit="onSendMessage(event)" class="form_chat_input">
                         <input type="text" class="input" id="message_input" name="message" placeholder="Mensaje">
-                        <input type="submit" value="Enviar">
+                        <input type="submit" class="principal_button" value="Enviar">
                     </form>
                 </div>
             </div>
@@ -115,10 +118,10 @@
     </script>
 
     <script>
-        if('serviceWorker' in navigator){
-            window.addEventListener("load",()=>{
-                navigator.serviceWorker.register('service-worker.js').then((reg)=>{
-                    console.log("Service worker registered",reg)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register('service-worker.js').then((reg) => {
+                    console.log("Service worker registered", reg)
                 })
             })
         }

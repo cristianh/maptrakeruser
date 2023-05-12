@@ -11,11 +11,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //LISTO EN FRONT
     onSelectRuta = (e) => {
-                console.log("SELECCINADO:", e.target.value.replace(" ", "_"))
-                //SAVE ROUTE SELECTED
-                rutaSeleccionada = e.target.value.replace(" ", "_")
-                console.log(rutaSeleccionada)
-                socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
+        console.log("SELECCINADO:", e.target.value.replace(" ", "_"))
+        //SAVE ROUTE SELECTED
+        rutaSeleccionada = e.target.value.replace(" ", "_")
+        console.log(rutaSeleccionada)
+        socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
     }
 
     //YA PASADO
@@ -68,15 +68,17 @@ window.addEventListener('DOMContentLoaded', () => {
         userChat.usersIds.forEach(user => {
             console.log(user)
             let divuser = document.createElement("div")
-
             const newtext = document.createTextNode("user" + user.toString().substring(0, 4));
             divuser.appendChild(newtext);
             let element = document.createElement("div")
             element.classList.add("message")
             element.appendChild(divuser)
             mensaje.appendChild(element)
-
         });
+        const userActiveChat = document.querySelectorAll('.chat_users > div')
+        console.log(userActiveChat)
+        userActiveChat[(userActiveChat.length) - 1].classList.add("userActive")
+
     }
 
 
