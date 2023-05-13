@@ -5,13 +5,14 @@ const path = require('path');
 const server = http.createServer(app);
 const cors = require('cors');
 
+
 //socket 
 const { Server } = require("socket.io");
 const { setTimeout } = require('timers');
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
-      const whitelist = ["https://amigaapp-f2f93-default-rtdb.firebaseio.com","https://socket-maptracker.onrender.com ","http://localhost:8001", "http://localhost:8000"];
+      const whitelist = ["https://amigaapp-f2f93-default-rtdb.firebaseio.com", "https://socket-maptracker.onrender.com ", "http://localhost:8001", "http://localhost:8000"];
       if (whitelist.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
@@ -49,15 +50,18 @@ let availableRooms = []
 let usersGPSdata = []
 
 const eventsSocketio = {
+  SERVER_JOIN_ROOM:'server_join_room',
   SERVER_MESSAGE: 'chat send server message',
   SERVER_SEND_LIST_USERS: 'send_list_users',
+  GET_LIST_ROOMS: 'send_list_rooms',
+  SERVER_SEND_LIST_ROOMS: 'send_list_enable_rooms',
   GET_CHAT_MESSAGE: 'chat_send_message',
   SEND_CHAT_MENSSAGE: 'message_chat',
   GET_USER_GPS_DATA: 'geo_posicion',
   SEND_USER_GPS_DATA: 'chat_send_server_message',
-  USER_CONECT_ROOM_SERVER: 'user_conect_room_serve',
   CHECK_LENGTH_USER_CONECT_ROOM_GPS: 'check_length_users_route_gps',
-  MESSAGE_PRIVATE_USER: 'route_message_user'
+  MESSAGE_PRIVATE_USER: 'route_message_user',
+  STOP_DATA_GPS_USER: 'stop_send_data_gps'
 }
 
 
@@ -67,37 +71,62 @@ io.on('connection', (socket) => {
   io.to(socket.id).emit(eventsSocketio.SERVER_MESSAGE, "Hola bienvenido al server");
 
   //DETECT USER DESCONECT
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+  socket.on('disconnect', (socket) => {
+    console.log('user disconnected', socket);
 
   });
 
 
-  socket.on('leave room', (room) => {
+  socket.on('leaveroom', (room) => {
     socket.leave(room);
-
+    console.log('leave room', room)
   });
 
   socket.on('disconnecting', (room) => {
-    console.log(`Usuario ${socket.id} está abandonando la sala`)
+    console.log(`Usuario ${socket.id} está abandonando la sala ${room}`)
+
     if (usersIds.length > 0) {
       usersIds = usersIds.filter((id) => {
         return id != socket.id
       })
-      console.log(usersIds);
+
     }
     //SEND NEW LIST USER connection
     socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: room, usersIds });
   });
 
+  socket.on(eventsSocketio.SERVER_JOIN_ROOM,(dataRoom)=>{
+    //SUSCRIBE TO ROOM USER FROM GPS PAGE.
+    socket.join(dataRoom.room);
+  })
+
+  io.of("/").adapter.on("leave-room", (room, id) => {
+    console.log(`socket ${id} has leave room ${room}`);
+    console.log(io.sockets.adapter.rooms)
+    console.log(availableRooms)
+    console.log(usersIds)
+    socket.broadcast.emit("route_exit_user_data", { id, room })
+
+    /* 
+    
+        //GET ROOM ENABLED
+        const usersInRoom = io.sockets.adapter.rooms;
+    
+        if (usersInRoom) {
+          roomsNames = Array.from(usersInRoom.keys());
+        }
+    
+        // send to all clients in room return list id users conects for room
+        io.emit(eventsSocketio.SERVER_SEND_LIST_ROOMS, { roomsNames}); */
+  });
+
   /**
-   * EVENT SEND MESSAGE USERS BY ROOMS
+   * EVENT SEND MESSAGE USERS CHAT BY ROOMS
    */
   socket.on(eventsSocketio.GET_CHAT_MESSAGE, (data) => {
     // to all clients in room
     io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, data.message);
   })
-
 
 
   //EVENTO PARA ENVIAR INFORMACION DE LAS RUTAS.
@@ -109,13 +138,10 @@ io.on('connection', (socket) => {
     io.emit(eventsSocketio.SEND_USER_GPS_DATA, data)
   });
 
-  //EVENTO PARA DETECTAR LOS USUARIOS CONECTADOS A LA MISMA SALA
+
+  //SEND LIST DATA USER CONECT FOR ROOM.
   socket.on(eventsSocketio.USER_CONECT_ROOM_SERVER, (data) => {
-    //SUSCRIBE TO ROOM USER FROM GPS PAGE.
-    socket.join(data.room);
-
-    //console.log(io.sockets.adapter.rooms)
-
+  
     //SEND USER CONNECT TO ROOM.
     const usersInRoom = io.sockets.adapter.rooms.get(data.room);
 
@@ -125,41 +151,93 @@ io.on('connection', (socket) => {
 
     }
 
-    // to all clients in room
+    // send to all clients in room return list id users conects for room
     io.in(data.room).emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: data.room, usersIds });
 
   })
 
+  //SEND LIST DATA ROMOOS ENABLED
+  socket.on(eventsSocketio.GET_LIST_ROOMS, (data) => {
+
+
+    //GET ROOM ENABLED
+    const usersInRoom = io.sockets.adapter.rooms;
+
+    if (usersInRoom) {
+      roomsNames = Array.from(usersInRoom.keys());
+    }
+
+    // send to all clients in room return list id users conects for room
+    io.emit(eventsSocketio.SERVER_SEND_LIST_ROOMS, { roomsNames });
+  })
+
+
   //EVENTO PARa validar  cantidad de usuarios transmitiendo
   socket.on(eventsSocketio.CHECK_LENGTH_USER_CONECT_ROOM_GPS, (roomData) => {
+    console.log(roomData.conect)
+    //SI ES USUARIO TRNAMITIENDO LA DATA. ("user-data-gps")
+    if (roomData.conect === "user-data-gps") {
+      //BUSCAMOS SI EL ID DEL USUARIO CONECTADO ESTA GUARDADO EN LA ROOM ESPECIFICA.
+      let validateroom = availableRooms.findIndex((room) => {
+        return room.id === roomData.room
+      });
 
+      //SI NO ESTA
+      if (validateroom == -1) {
+        //GUARDAMOS EL tipo de usuario el id y la sala a la que se conecto
+        availableRooms = [{ type: roomData.conect, id: roomData.room }, ...availableRooms]
+      }
 
-    socket.join(roomData.room);
+      //GUARDAMOS TODOS LOS IDS DE LOS USUARIO DENTRO DE LA ROOM
+      const usersInRoom = io.sockets.adapter.rooms.get(roomData.room);
 
-    let validateroom = availableRooms.findIndex((room) => {
-      return room.id === roomData.room
-    });
+      //CONVERTIMOS EL OBJETO DEVUELTO A UN ARRAY.
+      let usersIdroom = Array.from(usersInRoom)
 
-
-    if (validateroom == -1) {
-      availableRooms = [{ id: roomData.room }, ...availableRooms]
-
-    }
-
-    const usersInRoom = io.sockets.adapter.rooms.get(roomData.room);
-
-    let usersIdroom = Array.from(usersInRoom)
-
-    if (usersIdroom.length > 1) {
-      //notificamos solo al usuario conectado y enlazado a la misma ruta que ya estan monitoreando esa ruta.
-      io.to(usersIdroom.slice(1)).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { status: true, message: `La ${roomData.room.replace("_", " ")} ya esta monitoreada, sera conectado al servidor. pero no se enviara la informacion.` })
-      //DESCONECTAMOS AL USUARIO PARA LIBERAR RECURSOS
-      //socket.disconnect()
+      if (usersIdroom.length > 1) {
+        //notificamos a los demas usuario que se intentan conectar que ya existe un usuario envio la informacion.
+        // enviamos el mensaje a todos excepto quien esta de primero en la sala.
+        io.to(usersIdroom.slice(1)).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: true, message: `La ${roomData.room.replace("_", " ")} ya esta monitoreada, sera conectado al servidor. en un momento sera enviada su posicion.` })
+        //DESCONECTAMOS AL USUARIO PARA LIBERAR RECURSOS
+        //socket.disconnect()
+      } else {
+        io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: false, message: `` })
+      }
     } else {
-      io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { status: false, message: `` })
+    
+      //console.log(io.sockets.adapter.rooms)
+
+      //SEND USER CONNECT TO ROOM.
+      const usersInRoom = io.sockets.adapter.rooms.get(roomData.room);
+
+
+      if (usersInRoom) {
+        usersIds = Array.from(usersInRoom.keys());
+
+      }
+
+      // to all clients in room
+      io.in(roomData.room).emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: roomData.room, usersIds });
     }
+
+  })
+
+  //STOP SEND DATA USER
+  socket.on(eventsSocketio.STOP_DATA_GPS_USER, (roomData) => {
+
+    // Check if the room exists
+    const room = io.sockets.adapter.rooms.get(roomData.room);
+    console.log("....................room",room)
+    if (room) {
+      // Delete the room object from the adapter
+      io.sockets.adapter.rooms.delete(room);
+    }
+
+    console.log(io.sockets.adapter.rooms);
   })
 });
+
+
 
 // ------------------ END SOCKET.IO --------------------------------//
 

@@ -5,7 +5,7 @@ class NotificationsPushApp {
     icon = './assets/icons.png'
     time = 4000
     notification = null
-    
+
 
     constructor(title, body, icon, time) {
         this.title = title;
@@ -14,8 +14,9 @@ class NotificationsPushApp {
         this.time = time;
     }
 
+    
     checkPermission() {
-        Push.Permission.request(this.onGranted, this.onDenied); 
+        Push.Permission.request(this.onGranted, this.onDenied);
     }
 
     onGranted() {
@@ -30,19 +31,19 @@ class NotificationsPushApp {
 
     showNotification() {
         this.checkPermission()
-            if(Push.Permission.has()){
-                this.notification = Push.create(this.title, {
-                    tag:'Notification',
-                    body: this.body,
-                    icon: 'https://res.cloudinary.com/dl7oqoile/image/upload/v1683573913/logo_vhrm0a.png',
-                    timeout: this.time,
-                    requireInteraction:true,
-                    onClick: function () {
-                        window.focus();
-                        this.close();
-                    }
-                });
-            }
+        if (Push.Permission.has()) {
+            this.notification = Push.create(this.title, {
+                tag: 'Notification',
+                body: this.body,
+                icon: 'https://res.cloudinary.com/dl7oqoile/image/upload/v1683573913/logo_vhrm0a.png',
+                timeout: this.time,
+                requireInteraction: true,
+                onClick: function () {
+                    window.focus();
+                    this.close();
+                }
+            });
+        }
     }
 
     hiddenNotification() {
@@ -58,5 +59,7 @@ class NotificationsPushApp {
         //3. Method Close alla notifications
         //Push.clear();
     }
+
+   
 
 }

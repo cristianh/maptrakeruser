@@ -8,10 +8,11 @@ let simlutePintCoordenate = 0
 let puntosSimulacion;
 //variable para validar si el usuario actual puede enviar datos.
 let usersenddata = false
+let hasSendDataUser = false
 
 document.addEventListener('DOMContentLoaded', main, false);
 
-let temporizadorSimulador=null
+let temporizadorSimulador = null
 
 function main() {
 
@@ -49,21 +50,21 @@ function main() {
 
     //TEST URL LOCAL
     //PARA EL DESPLIEGUE QUITAR 'localhost' 
-    /* let socket = io("http://localhost:8000", {
-        withCredentials: true
-    }) */
-    //TEST URL PRODUCCION
-    let socket = io("https://socket-maptracker.onrender.com", {
+    let socket = io("http://localhost:8000", {
         withCredentials: true
     })
+    //TEST URL PRODUCCION
+    /* let socket = io("https://socket-maptracker.onrender.com", {
+        withCredentials: true
+    }) */
 
 
-
+    //PASAMOS EL OBJECT SOCKET AL OBJETO WINDOW PARA UTILIZARLO GLOBALMENTE.
     window.socket = socket
 
     //EVENT PARA ESPERAR RESPUESTA SI 2 USUARIO SE CONECTARON A LA MISMA RUTA
     window.socket.on("route_message_user", (data) => {
-        console.log(data)
+        console.log(".............................................", data)
 
         if (data.status) {
             document.getElementById('info').innerHTML = data.message
@@ -72,17 +73,13 @@ function main() {
         if (!data.status) {
             usersenddata = !data.status
         }
+
+        if (data.senddata) {
+            hasSendDataUser = data.senddata
+        }
     })
 
-    /* WonderPush.setLogging(true, function () {
-        console.log("Success");
-    }); */
-
-    /*  WonderPush.setLogging(true) */
-
-    //CONFIGURANDO LA NOTIFICACION PUSH.
-    // Prompt user for push subscription
-    /* WonderPush.subscribeToNotifications(); */
+ 
 
 
     document.getElementById("stopPosition").addEventListener("click", stopWatch);
@@ -117,48 +114,91 @@ function main() {
         })
 
     document.getElementById('selectRutas').addEventListener('change', (event) => {
-        if (usersenddata) {
-            sendDataGps()
-        }
+
+        sendDataGpsSimulate().then((data) => {
+            if (data) {
+                temporizadorSimulador = setInterval(() => {
+                    window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: puntosSimulacion[simlutePintCoordenate] });
+
+                    console.log("enviando datos....", puntosSimulacion[simlutePintCoordenate])
+
+                    simlutePintCoordenate += 1
+                }, 2000);
+            }
+        }).catch((error) => {
+            document.getElementById('info').innerHTML = error
+        })
+
     });
 
 
 }
 
-function sendDataGps() {
-    temporizadorSimulador = setInterval(() => {
-        window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: puntosSimulacion[simlutePintCoordenate] });
 
-        console.log("enviando datos....", puntosSimulacion[simlutePintCoordenate])
 
-        simlutePintCoordenate += 1
-    }, 2000);
+/**
+ * The function sends simulated GPS data to a server at a regular interval.
+ */
+function sendDataGpsSimulate() {
+
+    return new Promise((resolve, reject) => {
+        if (usersenddata) {
+            resolve(usersenddata)
+        } else {
+
+            reject("Emulador Esperando turno para enviar GPS data.....");
+        }
+    });
 }
 
-function emulateRoute(){
-    document.getElementById('select_route_simulacion').style.visibility='visible'
+/**
+ * The function sends GPS data to a server using a socket connection and displays the data on a
+ * webpage.
+ * @param positionData - an object containing the current position data, including latitude, longitude,
+ * altitude, accuracy, altitude accuracy, heading, speed, and timestamp.
+ */
+function sendDataGpsUseConect() {
+
+    return new Promise((resolve, reject) => {
+
+        if (usersenddata) {
+            resolve(usersenddata)
+        } else {
+
+            reject("Usuario Esperando turno para enviar GPS data.....");
+        }
+    });
+}
+
+function emulateRoute() {
+    document.getElementById('select_route_simulacion').style.visibility = 'visible'
 }
 
 
 function onSelectRuta(e) {
     console.log(e.target.value);
     nombreRutaDBRoom = e.target.value.replace(" ", "_")
-    window.socket.emit('check_length_users_route_gps', { conect: 'user', room: nombreRutaDBRoom });
+    
+    /* window.socket.emit('check_length_users_route_gps', { conect: 'user-data-gps', room: nombreRutaDBRoom }); */
+    
+    window.socket.emit('server_join_room', { conect: 'user-data-gps', room: nombreRutaDBRoom });
 }
 
 
 function stopWatch() {
     navigator.geolocation.clearWatch(watchIDElement);
     clearInterval(temporizadorSimulador);
+
     document.getElementById('info').innerHTML = ""
     document.getElementById("simulacion_route").classList.remove('disable')
     document.getElementById("simulacion_route").addEventListener("click", emulateRoute);
+    window.socket.emit('stop_send_data_gps', { room: nombreRutaDBRoom });
 }
 
 
 
 function watchPosition() {
-    document.getElementById('select_route_simulacion').style.visibility='hidden'
+    document.getElementById('select_route_simulacion').style.visibility = 'hidden'
 
     document.getElementById("simulacion_route").classList.add('disable')
     document.getElementById("simulacion_route").removeEventListener("click", emulateRoute);
@@ -174,30 +214,26 @@ function watchPosition() {
         watchIDElement = navigator.geolocation.watchPosition(onSuccess, onError, options);
 
         function onSuccess(position) {
+            sendDataGpsUseConect().then((data) => {
+                console.log("----------------------------", data)
+                if (data) {
+                    let _datos = {
+                        'Fecha': new Date().toLocaleString().replace(",", "-").replace(" ", ""),
+                        'Latitude': position.coords.latitude,
+                        'Longitude': position.coords.longitude,
+                        'Heading': position.coords.heading,
+                        'Speed': position.coords.speed
+                    }
 
-            if (usersenddata) {
-                document.getElementById('info').innerHTML =
-                    'Latitude: ' + position.coords.latitude + '\n' +
-                    'Longitude: ' + position.coords.longitude + '\n' +
-                    'Altitude: ' + position.coords.altitude + '\n' +
-                    'Accuracy: ' + position.coords.accuracy + '\n' +
-                    'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '\n' +
-                    'Heading: ' + position.coords.heading + '\n' +
-                    'Speed: ' + position.coords.speed + '\n' +
-                    'Timestamp: ' + position.timestamp + '\n';
+                    document.getElementById('info').innerHTML = JSON.stringify(_datos)
 
-                let _datos = {
-                    'Fecha': new Date().toLocaleString().replace(",", "-").replace(" ", ""),
-                    'Latitude': position.coords.latitude,
-                    'Longitude': position.coords.longitude,
-                    'Heading': position.coords.heading,
-                    'Speed': position.coords.speed
+                    window.socket.emit('geo_posicion', { hasSendDataUser, room: nombreRutaDBRoom, data: _datos });
+                    console.log("enviando datos....")
                 }
 
-                //TODO:CUANDO este funcionando en movil habilitamos esta linea.
-                window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: _datos });
-                console.log("enviando datos....")
-            }
+            }).catch((error) => {
+                document.getElementById('info').innerHTML = error
+            });
         }
 
         function onError(error) {
@@ -227,44 +263,3 @@ function onOffline() {
 function onOnline() {
     alert('You are now online!');
 }
-
-function getAcceleration() {
-    navigator.accelerometer.getCurrentAcceleration(
-        accelerometerSuccess, accelerometerError);
-
-    function accelerometerSuccess(acceleration) {
-        alert('Acceleration X: ' + acceleration.x + '\n' +
-            'Acceleration Y: ' + acceleration.y + '\n' +
-            'Acceleration Z: ' + acceleration.z + '\n' +
-            'Timestamp: ' + acceleration.timestamp + '\n');
-    };
-
-    function accelerometerError() {
-        alert('onError!');
-    };
-}
-
-function watchAcceleration() {
-    var accelerometerOptions = {
-        frequency: 3000
-    }
-    var watchID = navigator.accelerometer.watchAcceleration(
-        accelerometerSuccess, accelerometerError, accelerometerOptions);
-
-    function accelerometerSuccess(acceleration) {
-        alert('Acceleration X: ' + acceleration.x + '\n' +
-            'Acceleration Y: ' + acceleration.y + '\n' +
-            'Acceleration Z: ' + acceleration.z + '\n' +
-            'Timestamp: ' + acceleration.timestamp + '\n');
-
-        setTimeout(function () {
-            navigator.accelerometer.clearWatch(watchID);
-        }, 10000);
-    };
-
-    function accelerometerError() {
-        alert('onError!');
-    };
-
-}
-
