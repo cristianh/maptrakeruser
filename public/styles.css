@@ -1,3 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap');
+
+h1 {
+    font-family: 'Exo', sans-serif;
+}
+
+h2 {
+    font-family: 'Dancing Script', cursive;
+}
+
+p,
+label, span {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 1em;
+}
+
 * {
     margin: 0px;
     overflow-x: hidden;
@@ -82,7 +101,7 @@
     height: 330px;
     position: absolute;
     right: 0px;
-    bottom: 0px;
+    bottom: 40px;
     z-index: 9999;
     background-color: rgb(255, 255, 255);
     border-top-right-radius: 12px;
@@ -96,39 +115,39 @@
     text-align: center;
     color: rgb(255, 255, 255);
     width: 100%;
-    text-align: center;
-    align-items: center;
-    background-color: rgba(242, 135, 5, 0.9);
-    border-top-right-radius: 2px;
-    border-bottom: 3px solid rgba(169, 100, 17, 0.9);
-    border-top-left-radius: 2px;
+    height: 2em;
     display: flex;
     flex-direction: row;
-    overflow-y: hidden;
-}
-
-.logo_chat {
-    width: 37%;
+    justify-content: space-around;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    background-color: rgba(242, 135, 5, 0.9);
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
+    padding: 7px 4px;
+    border-bottom: 3px solid rgba(169, 100, 17, 0.9);
 }
 
 .principal_title_chat {
-    width: 75%;
-    font-size: larger;
+    font-family: 'Montserrat', sans-serif;
+    font-size: medium;
 }
 
 .img_logo_chat {
     object-fit: cover;
-    width: 7em;
+    width: 8em;
 }
 
-.minimize_logo {
-    margin-left: 0.5em;
-    width: 5%;
-    height: 5%;
-    background-image: "./assets/minimize_icon.png";
+.icon_minimize {
+    width: 1.5em;
+    height: 1.5em;
+    background-image: url("./assets/minimize_icon.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+    background-color: transparent;
+    border: none;
 }
 
 /* Chat content */
@@ -138,6 +157,9 @@
     height: 100%;
     width: 100%;
     flex-direction: row;
+    font-family: 'Montserrat', sans-serif;
+    font-size: small;
+    font-weight: 700;
 }
 
 .chat_columna_izquierda {
@@ -250,7 +272,7 @@
     justify-content: center;
     align-items: center;
     padding: 0.2em;
-    font-weight: 600;
+    font-weight: 800;
     font-size: 0.9em;
 }
 

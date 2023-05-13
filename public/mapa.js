@@ -85,7 +85,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     //Evento para los usuarios conectados.
-    socket.on('chat send server message', (message) => {
+    socket.once('chat send server message', (message) => {
         console.log("Mensaje del servidor", message)
         const mensaje = document.querySelector('#messages')
 
@@ -430,5 +430,9 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
 
-})
+    var year = new Date().getFullYear();
+    
+    document.getElementById("year_date").innerHTML = `Rutamigapp. ${year}  @copyrigth todos los derechos reservados.` ;
+}) 
+
 

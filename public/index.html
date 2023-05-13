@@ -23,59 +23,61 @@
     <nav class="navbar">
         <div class="icon"></div>
         <div class="nav_items">
-            <div>Mapa</div>
-            <div>Perfil</div>
-            <div>Cerrar sesión</div>
+            <span>Mapa</span>
+            <span>Perfil</span>
+            <span>Cerrar sesión</span>
         </div>
     </nav>
 
     <!-- Mapa -->
     <div id="map">
+        <!-- Chat -->
+        <div class="chat">
 
+            <!-- Chat nav -->
+            <div class="chat_title">
+                <div>
+                    <img src="./assets/icon_amigapp.png" alt="logo_bus" class="img_logo_chat">
+                </div>
+                <div class="principal_title_chat">
+                   <span>Chat Ruta Amigapp</span> 
+                </div>
+                <div>
+                    <button class="icon_minimize">
+                    </button>
+                </div>
+            </div>
+
+            <div class="contaniner_chat">
+
+                <!-- Columna izquierda -->
+                <div class="chat_columna_izquierda">
+                    <div class="title_user_connect">Usuarios conectados
+                    </div>
+                    <div class="chat_users">
+                    </div>
+                </div>
+                <!-- Columna derecha -->
+                <div class="chat_messages-users">
+                    <div id="messages">
+
+                    </div>
+                    <div class="chat_form_message">
+                        <form onsubmit="onSendMessage(event)" class="form_chat_input">
+                            <input type="text" class="input" id="message_input" name="message" placeholder="Mensaje">
+                            <input type="submit" class="principal_button" value="Enviar">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div id="app">
 
     </div>
 
-    <!-- Chat -->
-    <div class="chat">
 
-        <!-- Chat nav -->
-        <div class="chat_title">
-            <div class="logo_chat">
-                <img src="./assets/icon_amigapp.png" alt="logo_bus" class="img_logo_chat">
-            </div>
-            <div class="principal_title_chat">
-                Chat Ruta Amigapp
-                <button class="minimize_logo">
-                </button>
-            </div>
-        </div>
-
-        <div class="contaniner_chat">
-
-            <!-- Columna izquierda -->
-            <div class="chat_columna_izquierda">
-                <div class="title_user_connect">Usuarios conectados
-                </div>
-                <div class="chat_users">
-                </div>
-            </div>
-            <!-- Columna derecha -->
-            <div class="chat_messages-users">
-                <div id="messages">
-
-                </div>
-                <div class="chat_form_message">
-                    <form onsubmit="onSendMessage(event)" class="form_chat_input">
-                        <input type="text" class="input" id="message_input" name="message" placeholder="Mensaje">
-                        <input type="submit" class="principal_button" value="Enviar">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- Seleccion ruta -->
     <div style="position: absolute;top:4em">
         <datalist id="countrydata">
 
@@ -94,7 +96,7 @@
 
     <!-- Footer -->
     <section class="footer footer_responsive">
-        Rutamigapp. {{fecha | date:'yyyy'}} @copyrigth todos los derechos reservados.
+        <span id="year_date"> </span>
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js"

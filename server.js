@@ -64,7 +64,7 @@ const eventsSocketio = {
 io.on('connection', (socket) => {
   console.log('a user connected');
   //MENSAJE DE BIENVENIDA.(privado)
-  io.to(socket.id).emit(eventsSocketio.SERVER_MESSAGE, "Hola bienvenido al server");
+  io.to(socket.id).emit(eventsSocketio.SERVER_MESSAGE, "Hola bienvenido al chat de Ruta Amigapp");
 
   //DETECT USER DESCONECT
   socket.on('disconnect', () => {
