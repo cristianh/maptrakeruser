@@ -48,9 +48,10 @@ let usersIds = [];
 //RTUEN list user by room enabled
 let availableRooms = []
 let usersGPSdata = []
+let estructuraDBGPSDATA = []
 
 const eventsSocketio = {
-  SERVER_JOIN_ROOM:'server_join_room',
+  SERVER_JOIN_ROOM: 'server_join_room',
   SERVER_MESSAGE: 'chat send server message',
   SERVER_SEND_LIST_USERS: 'send_list_users',
   GET_LIST_ROOMS: 'send_list_rooms',
@@ -95,16 +96,35 @@ io.on('connection', (socket) => {
     socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: room, usersIds });
   });
 
-  socket.on(eventsSocketio.SERVER_JOIN_ROOM,(dataRoom)=>{
+  socket.on(eventsSocketio.SERVER_JOIN_ROOM, (dataRoom) => {
+
+    console.log(dataRoom)
+    console.log(socket.id)
+
     //SUSCRIBE TO ROOM USER FROM GPS PAGE.
     socket.join(dataRoom.room);
+
+    //GUARDAMOS EL ARREGLO COMO VAN LLEGANDO LOS USUARIOS.
+    /* estructuraDBGPSDATA[dataRoom.room].push() */
+
+    if (estructuraDBGPSDATA[dataRoom.room] === undefined) {
+      estructuraDBGPSDATA[dataRoom.room] = [{
+        idUser: socket.id, type: dataRoom.type
+      }];
+    } else {
+      estructuraDBGPSDATA[dataRoom.room].push({
+        idUser: socket.id, type: dataRoom.type
+      });
+    }
+
+
+
+    console.log("estructura actual", estructuraDBGPSDATA)
+
   })
 
   io.of("/").adapter.on("leave-room", (room, id) => {
     console.log(`socket ${id} has leave room ${room}`);
-    console.log(io.sockets.adapter.rooms)
-    console.log(availableRooms)
-    console.log(usersIds)
     socket.broadcast.emit("route_exit_user_data", { id, room })
 
     /* 
@@ -141,7 +161,7 @@ io.on('connection', (socket) => {
 
   //SEND LIST DATA USER CONECT FOR ROOM.
   socket.on(eventsSocketio.USER_CONECT_ROOM_SERVER, (data) => {
-  
+
     //SEND USER CONNECT TO ROOM.
     const usersInRoom = io.sockets.adapter.rooms.get(data.room);
 
@@ -174,7 +194,7 @@ io.on('connection', (socket) => {
 
   //EVENTO PARa validar  cantidad de usuarios transmitiendo
   socket.on(eventsSocketio.CHECK_LENGTH_USER_CONECT_ROOM_GPS, (roomData) => {
-    console.log(roomData.conect)
+
     //SI ES USUARIO TRNAMITIENDO LA DATA. ("user-data-gps")
     if (roomData.conect === "user-data-gps") {
       //BUSCAMOS SI EL ID DEL USUARIO CONECTADO ESTA GUARDADO EN LA ROOM ESPECIFICA.
@@ -204,8 +224,6 @@ io.on('connection', (socket) => {
         io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: false, message: `` })
       }
     } else {
-    
-      //console.log(io.sockets.adapter.rooms)
 
       //SEND USER CONNECT TO ROOM.
       const usersInRoom = io.sockets.adapter.rooms.get(roomData.room);
@@ -227,13 +245,11 @@ io.on('connection', (socket) => {
 
     // Check if the room exists
     const room = io.sockets.adapter.rooms.get(roomData.room);
-    console.log("....................room",room)
     if (room) {
       // Delete the room object from the adapter
       io.sockets.adapter.rooms.delete(room);
     }
 
-    console.log(io.sockets.adapter.rooms);
   })
 });
 

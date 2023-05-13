@@ -46,8 +46,9 @@ window.addEventListener('DOMContentLoaded', () => {
         //SAVE ROUTE SELECTED
         rutaSeleccionada = e.target.value.replace(" ", "_")
         console.log(rutaSeleccionada)
-        socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
-        socket.emit('check_length_users_route_gps', { conect: 'user-data-desktop', room: rutaSeleccionada });
+        socket.emit('server_join_room', { room: rutaSeleccionada, type: 'user-map-view' })
+        //socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
+        //socket.emit('check_length_users_route_gps', { conect: 'user-data-desktop', room: rutaSeleccionada });
     }
 
     //YA PASADO
@@ -115,7 +116,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     //Evento para los usuarios conectados.
-    socket.on('chat send server message', (message) => {
+    socket.once('chat send server message', (message) => {
         console.log("Mensaje del servidor", message)
         const mensaje = document.querySelector('#messages')
 
@@ -128,11 +129,9 @@ window.addEventListener('DOMContentLoaded', () => {
         mensaje.appendChild(text)
     })
 
-       //EVENT DETEC USER LEAVE ROOM TRANSMITION DATA GPS
-       socket.on("route_exit_user_data", (data) => {
+    //EVENT DETEC USER LEAVE ROOM TRANSMITION DATA GPS
+    socket.on("route_exit_user_data", (data) => {
         console.log("route_exit_user_data", data)
-       
-
     })
 
 

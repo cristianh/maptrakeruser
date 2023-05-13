@@ -180,8 +180,9 @@ function onSelectRuta(e) {
     nombreRutaDBRoom = e.target.value.replace(" ", "_")
     
     /* window.socket.emit('check_length_users_route_gps', { conect: 'user-data-gps', room: nombreRutaDBRoom }); */
+    //socket.emit('server_join_room', { room: rutaSeleccionada, type: 'user-map-view' })
+    window.socket.emit('server_join_room', { room: nombreRutaDBRoom, type: 'user-data-gps' })
     
-    window.socket.emit('server_join_room', { conect: 'user-data-gps', room: nombreRutaDBRoom });
 }
 
 
