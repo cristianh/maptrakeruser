@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', () => {
         rutaSeleccionada = e.target.value.replace(" ", "_")
         console.log(rutaSeleccionada)
         socket.emit('server_join_room', { room: rutaSeleccionada, type: 'user-map-view' })
-        //socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
+        socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
         //socket.emit('check_length_users_route_gps', { conect: 'user-data-desktop', room: rutaSeleccionada });
     }
 
@@ -66,7 +66,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //CREADO EVENTO ( FALTA LA IMPLEMENTACION DEL CHAT COMPONENT)
     socket.on('send_list_users', (users) => {
-        console.log("Salas disponibles", users)
+        
+        console.log(".....................Salas disponibles", users)
         userChat = users
         console.log("users in chat", userChat)
         loadUserChat()

@@ -79,6 +79,12 @@ function main() {
         }
     })
 
+    //EVENT PARA ESPERAR RESPUESTA SI 2 USUARIO SE CONECTARON A LA MISMA RUTA
+    window.socket.on("route_message_user", (data) => {
+        console.log(".............................................", data)
+        document.getElementById('info').innerHTML = data.message
+    })
+
  
 
 
@@ -126,7 +132,7 @@ function main() {
                 }, 2000);
             }
         }).catch((error) => {
-            document.getElementById('info').innerHTML = error
+            //document.getElementById('info').innerHTML = error
         })
 
     });
@@ -233,7 +239,7 @@ function watchPosition() {
                 }
 
             }).catch((error) => {
-                document.getElementById('info').innerHTML = error
+                //document.getElementById('info').innerHTML = error
             });
         }
 

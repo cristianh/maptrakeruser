@@ -117,9 +117,36 @@ io.on('connection', (socket) => {
       });
     }
 
+    //BUSCAMOS EL ID PARA SABER
+    
+    if (estructuraDBGPSDATA[dataRoom.room].length > 1) {
+      let findId = estructuraDBGPSDATA[dataRoom.room].findIndex((users) => {
+        return users.type === 'user-data-gps'
+      })
+      console.log(findId)
+      if(findId>-1){
+        io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: true, message: `La ${dataRoom.room.replace("_", " ")} ya esta monitoreada, sera conectado al servidor. en un momento sera enviada su posicion.` })
+      }
+    }
 
+
+    
 
     console.log("estructura actual", estructuraDBGPSDATA)
+
+    //SEND USER CONNECT TO ROOM.
+    const usersInRoom = io.sockets.adapter.rooms.get(dataRoom.room);
+
+
+    if (usersInRoom) {
+      usersIds = Array.from(usersInRoom.keys());
+
+    }
+
+    // send to all clients in room return list id users conects for room
+    io.in(dataRoom.room).emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: dataRoom.room, usersIds });
+
+
 
   })
 
