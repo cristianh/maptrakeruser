@@ -96,9 +96,8 @@ label, span {
     flex-direction: column;
     place-items: center;
     flex: 1 1 0;
-    width: 331px;
-    max-height: 330px;
-    height: 330px;
+    width: 25rem;
+    height: 30rem;
     position: absolute;
     right: 0px;
     bottom: 40px;
@@ -106,7 +105,7 @@ label, span {
     background-color: rgb(255, 255, 255);
     border-top-right-radius: 12px;
     border-top-left-radius: 12px;
-    box-shadow: 3px 3px 5px rgb(43, 42, 42);
+    box-shadow: -10px 0px 10px -5px rgba(0, 0, 0, 0.5);
 
 }
 
@@ -115,17 +114,17 @@ label, span {
     text-align: center;
     color: rgb(255, 255, 255);
     width: 100%;
-    height: 2em;
+    height: 2.8em;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     flex-direction: row;
     align-items: center;
     align-content: center;
+    vertical-align: middle;
     background-color: rgba(242, 135, 5, 0.9);
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
-    padding: 7px 4px;
     border-bottom: 3px solid rgba(169, 100, 17, 0.9);
 }
 
@@ -135,19 +134,24 @@ label, span {
 }
 
 .img_logo_chat {
-    object-fit: cover;
+    background-image: url("./assets/icon_amigapp.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
     width: 8em;
+    height: 8em;
 }
 
 .icon_minimize {
-    width: 1.5em;
-    height: 1.5em;
     background-image: url("./assets/minimize_icon.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
     background-color: transparent;
     border: none;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
 }
 
 /* Chat content */
@@ -167,24 +171,25 @@ label, span {
     flex-direction: column;
     width: 100%;
     height: 100%;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
     background-color: rgba(5, 69, 58, 0.822);
+    padding: 0.8em;
 }
 
 .title_user_connect {
-    width: 100%;
-    height: 15%;
+    width: 82%;
+    height: 10%;
     color: rgb(255, 255, 255);
     font-weight: 600;
     text-align: center;
     align-items: center;
     justify-content: center;
+    padding-bottom: 0.5em;
 }
 
 .chat_users {
-    height: 78%;
-    width: 80%;
+    height: 82%;;
+    width: 75%;
     border-radius: 4px;
     background-color: rgb(255, 255, 255);
     color: rgba(5, 69, 58, 0.923);
@@ -195,60 +200,75 @@ label, span {
 .userActive {
     background-color: rgba(5, 69, 58, 0.923);
     color: rgb(255, 255, 255);
+    border-radius: 4px;
 }
 
 /* Columna derecha */
 .chat_messages-users {
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    height: inherit;
-    width: 100%;
+    justify-content: flex-start;
+    width: auto;
+    height: auto;
     background-color: rgb(255, 255, 255);
     /* white */
-    max-height: 330px;
-    overflow-x: hidden;
     border-left: 2px solid rgba(5, 69, 58, 0.923);
+    padding: 0.8em;
+}
+
+.container_messages {
+    height: 100%;
+    width: auto;
+}
+
+.welcome_message {
+    width: auto;
+    height: 3.8em;
+    background-color: rgba(206, 209, 209, 0.685);
+    border-radius: 4px;
+    padding: 0.3em;
+    color: rgba(47, 79, 73);
 }
 
 .chat_form_message {
+    width: auto;
+    height: 2.2em;
+    display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     text-align: center;
-    width: 100%;
-    height: 1.6em;
     padding: 0.2em;
+    justify-content: space-around;
+    position: relative;
+    bottom: 0;
 }
 
 .form_chat_input {
-    height: 100%;
-    width: 100%;
-    display: flex;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
     align-items: center;
-    justify-content: space-between;
+    place-items: stretch;
+    gap: 0.5em;
 }
 
 #message_input {
-    flex: 1;
     border: 2px solid rgba(5, 69, 58, 0.923);
     border-radius: 4px;
-    width: 150px;
 }
 
 .principal_button {
-    width: 70px;
     background-color: rgb(255, 255, 255);
     border: 0.2em solid rgb(38, 115, 101);
     border-radius: 5px;
     padding: 0.2em 1em;
     color: rgb(38, 115, 101);
-    font-weight: 500;
     transition: .3s;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin: 0px 10px;
     font-family: 'Exo', sans-serif;
     font-weight: bold;
 }
@@ -287,11 +307,34 @@ a.mapboxgl-ctrl-logo {
     }
 }
 
-/* #messages .message:nth-of-type(2n+1) {
-    background-color: #f2f2f2;
-    text-align: right;
-} */
+/* Messages distribution */
+
 #messages .message:nth-child(odd) {
-    background-color: #c8cbcd;
-    border-bottom: 1px solid silver;
+    width: 80%;
+    height: fit-content;
+    margin-top: 0.5em;
+    background-color: #f3f7f9;
+    border-radius: 4px;
+    border-left: 7px solid rgb(38, 115, 101);
+    border-bottom: 1px solid rgb(175, 173, 173);
+    float: right;
+    text-align: right;
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+    vertical-align: middle;
+    white-space:initial;
+}
+
+#messages .message:nth-child(even) {
+    width: 80%;
+    height: fit-content;
+    margin: 0.4em;
+    background-color: #f3f7f9;
+    border-bottom: 1px solid rgb(175, 173, 173);
+    border-radius: 4px;
+    border-right: 7px solid  rgba(242, 135, 5);
+    float: left;
+    text-align: left;
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+    vertical-align: middle;
+    white-space:initial
 }

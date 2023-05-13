@@ -87,7 +87,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //Evento para los usuarios conectados.
     socket.once('chat send server message', (message) => {
         console.log("Mensaje del servidor", message)
-        const mensaje = document.querySelector('#messages')
+        const mensaje = document.querySelector('#welcome_message')
 
         let text = document.createElement("div")
         const newtext = document.createTextNode(message);

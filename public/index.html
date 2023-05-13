@@ -37,10 +37,11 @@
             <!-- Chat nav -->
             <div class="chat_title">
                 <div>
-                    <img src="./assets/icon_amigapp.png" alt="logo_bus" class="img_logo_chat">
+                    <div class="img_logo_chat">
+                    </div>
                 </div>
                 <div class="principal_title_chat">
-                   <span>Chat Ruta Amigapp</span> 
+                    <span>Chat Ruta Amigapp</span>
                 </div>
                 <div>
                     <button class="icon_minimize">
@@ -57,10 +58,13 @@
                     <div class="chat_users">
                     </div>
                 </div>
+
                 <!-- Columna derecha -->
                 <div class="chat_messages-users">
-                    <div id="messages">
-
+                    <div id="messages" class="container_messages">
+                        <div class="welcome_message">
+                            <span id="welcome_message"></span>
+                        </div>
                     </div>
                     <div class="chat_form_message">
                         <form onsubmit="onSendMessage(event)" class="form_chat_input">
