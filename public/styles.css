@@ -23,6 +23,163 @@ label, span {
     overflow-y: hidden;
 }
 
+/* modals */
+.container_modal2{
+    
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.411);
+  z-index: 1000;
+
+}
+.modal2{
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+  height: 1000px;
+  height: auto;
+  background-color: #e88915;
+  text-align: center;
+  
+}
+.title{
+  width: 400px;
+  text-align: center;
+  padding: 10px;
+  color: white;
+}
+.content{
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #eceff1;
+  margin-bottom: 20px;
+
+
+}
+.info_error{
+  width: 250px;
+  margin-block: 30px;
+  color: #868789;
+  font-size: 20px;
+
+}
+
+.icon_container{
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+
+}
+.icon_container img{
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+
+}
+
+.button2{
+  width: fit-content;
+}
+.button2 input{
+  color: white;
+  width: 120px;
+  height: 40px;
+  font-size: 12px;
+  padding: 10px;
+  overflow: hidden;
+  background-color: #e88915;
+  margin-block: 10px  30px;
+} 
+
+/* ----modals--- */
+
+.container_modal{
+  
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.411);
+  z-index: 1000;
+
+}
+.modal{
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+  height: 1000px;
+  height: auto;
+  background-color: #267265;
+  text-align: center;
+  
+}
+.title{
+  width: 400px;
+  text-align: center;
+  padding: 10px;
+  color: white;
+}
+.content{
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #eceff1;
+  margin-bottom: 20px;
+
+
+}
+.info_error{
+  width: 250px;
+  margin-block: 30px;
+  color: #868789;
+  font-size: 20px;
+
+}
+
+.icon_container{
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+
+}
+.icon_container img{
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+
+}
+
+.button{
+  width: fit-content;
+}
+.button input{
+  color: white;
+  width: 120px;
+  height: 40px;
+  font-size: 12px;
+  padding: 10px;
+  overflow: hidden;
+  background-color: #267265 ;
+  margin-block: 10px  30px;
+} 
+
 #map {
     width: 100vw;
     height: 100vh;

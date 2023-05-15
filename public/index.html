@@ -11,7 +11,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />
+    <!-- styles -->
     <link href='./styles.css' rel='stylesheet' />
+    <!-- animate.css  -->
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
     <!-- Turf.js-->
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
@@ -106,6 +112,74 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js"
         integrity="sha512-eiqtDDb4GUVCSqOSOTz/s/eiU4B31GrdSb17aPAA4Lv/Cjc8o+hnDvuNkgXhSI5yHuDvYkuojMaQmrB5JB31XQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- modals -->
+    <div class="container_modal">
+        <div class="modal animate__animated animate__fadeInDown">
+            <div class="title"><h2>GPS Inactivo</h2></div>
+            
+            <div class="content">
+             
+                <div class="info_error">
+                    <p id="errortxt">El GPS esta inactivo, para ver su ruta active el GPS en su navegador
+                    </p>
+                </div>
+                <div class="icon_container">
+                    <img src="./assets/antena.png" alt="">
+                </div>
+                <div class="button"><input type="button" id="continue" value="CONTINUAR"></div>
+
+                
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="container_modal">
+        <div class="modal">
+            <div class="title"><h2>GPS Activo</h2></div>
+            
+            <div class="content">
+             
+                <div class="info_error">
+                    <p>El GPS ha sido activado, ahora puedes ver el recorrido de tu ruta
+                    </p>
+                </div>
+                <div class="icon_container">
+                    <img src="./assets/antena.png" alt="">
+                </div>
+                <div class="button"><input type="button" id="continue" value="CONTINUAR"></div>
+
+                
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="container_modal2">
+        <div class="modal2">
+            <div class="title"><h2>Sesion Finalizada</h2></div>
+            
+            <div class="content">
+             
+                <div class="info_error">
+                    <p>Su sesión ha expirado por inactividad, vuelve a iniciar sesión</p>
+                    </p>
+                </div>
+                <div class="icon_container">
+                    <img src="./assets/senal-de-advertencia.png" alt="">
+                </div>
+                <div class="button2"><input type="button" id="continue" value="CONTINUAR"></div>
+
+                
+            </div>
+
+        </div>
+
+    </div>  
+
+
     <script src='./mapa.js'></script>
     <script src='./notifications.js'></script>
     <!-- <script src='../node_modules/push.js/bin/push.min.js'></script> -->
