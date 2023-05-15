@@ -1,6 +1,7 @@
 window.addEventListener('DOMContentLoaded', () => {
 
 
+    loadYearFooter()
 
     //SOCKET CODE
 
@@ -51,6 +52,7 @@ window.addEventListener('DOMContentLoaded', () => {
         divuser.appendChild(newtext);
         let element = document.createElement("div")
         element.classList.add("message")
+        element.classList.add("animate__bounceIn")
         element.appendChild(divuser)
         mensajeelement.appendChild(element)
     })
@@ -129,10 +131,20 @@ window.addEventListener('DOMContentLoaded', () => {
             appDiv.innerHTML += `<p>Longitud: ${pos.coords.longitude}</p>`;
             loadMap(parseFloat(pos.coords.latitude), parseFloat(pos.coords.longitude))
             socket.emit('chat message', { 'lat': pos.coords.latitude, 'log': pos.coords.longitude });
+            // HABILITAMOS EL MENSAJE GPS ACTIVO
+            if(!localStorage.getItem('modal_info')){
+                document.querySelector('#modal_gps_activo').style.display = "block"
+                localStorage.setItem('modal_info',true)
+            }
+            
+
         }, (error) => {
             switch (error.code) {
                 case error.PERMISSION_DENIED:
                     console.log("User denied the request for Geolocation.")
+                    // HABILITAMOS EL MENSAJE GPS INACTIVO
+                    document.querySelector('#modal_gps_inactivo').style.display = "block"
+                    localStorage.removeItem('modal_info')
                     break;
                 case error.POSITION_UNAVAILABLE:
                     console.log("Location information is unavailable.")
@@ -430,9 +442,21 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    var year = new Date().getFullYear();
     
-    document.getElementById("year_date").innerHTML = `Rutamigapp. ${year}  @copyrigth todos los derechos reservados.` ;
-}) 
+
+
+})
+
+function hiddenWindowGpsEnabled () {
+    // HABILITAMOS EL MENSAJE GPS ACTIVO
+    document.querySelector('#modal_gps_activo').style.display = "none"
+    localStorage.setItem('modal_info',false)
+}
+
+function loadYearFooter () {
+    var year = new Date().getFullYear();
+
+    document.getElementById("year_date").innerHTML = `Rutamigapp. ${year}  @copyrigth todos los derechos reservados.`;
+}
 
 
