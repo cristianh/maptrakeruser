@@ -4,7 +4,7 @@
 }
 
 /* modals */
-/* .container_modal2{
+.container_modal2{
     
   width: 100%;
   height: 100%;
@@ -79,11 +79,11 @@
   overflow: hidden;
   background-color: #e88915;
   margin-block: 10px  30px;
-} */
+} 
 
 /* ----modals--- */
 
-/* .container_modal{
+.container_modal{
   
   width: 100%;
   height: 100%;
@@ -158,7 +158,7 @@
   overflow: hidden;
   background-color: #267265 ;
   margin-block: 10px  30px;
-}  */ 
+} 
 
 #map {
     width: 100vw;
