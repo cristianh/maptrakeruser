@@ -85,15 +85,47 @@ io.on('connection', (socket) => {
 
   socket.on('disconnecting', (room) => {
     console.log(`Usuario ${socket.id} está abandonando la sala ${room}`)
+    let roomleave;
+    Object.keys(estructuraDBGPSDATA).forEach((data, key) => {
+      console.log("probando.", key)
+      const filterids = estructuraDBGPSDATA[data].filter((item) => item.idUser !== socket.id)
+      console.log("............", filterids)
+      estructuraDBGPSDATA[data] = filterids
+      roomleave = data
+    })
+
+
+
+    console.log(estructuraDBGPSDATA)
+
+    /* if (room.includes('Ruta')) {
+      estructuraDBGPSDATA[room].filter((users) => {
+        return users.idUser !== id
+      })
+
+      console.log(estructuraDBGPSDATA[room])
+    }
+ */
 
     if (usersIds.length > 0) {
       usersIds = usersIds.filter((id) => {
         return id != socket.id
       })
-
     }
+
+
+    console.log(estructuraDBGPSDATA[roomleave])
+
+    if (roomleave !== undefined || roomleave !== null) {
+      if (estructuraDBGPSDATA[roomleave].type === 'user-data-gps') {
+        io.to(estructuraDBGPSDATA[roomleave].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: true, message: `Ya puedes enviar tu posicion.` })
+      }
+    }
+
+
     //SEND NEW LIST USER connection
     socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: room, usersIds });
+
   });
 
   socket.on(eventsSocketio.SERVER_JOIN_ROOM, (dataRoom) => {
@@ -118,19 +150,19 @@ io.on('connection', (socket) => {
     }
 
     //BUSCAMOS EL ID PARA SABER
-    
+
     if (estructuraDBGPSDATA[dataRoom.room].length > 1) {
       let findId = estructuraDBGPSDATA[dataRoom.room].findIndex((users) => {
         return users.type === 'user-data-gps'
       })
       console.log(findId)
-      if(findId>-1){
+      if (findId > -1) {
         io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: true, message: `La ${dataRoom.room.replace("_", " ")} ya esta monitoreada, sera conectado al servidor. en un momento sera enviada su posicion.` })
       }
     }
 
 
-    
+
 
     console.log("estructura actual", estructuraDBGPSDATA)
 
@@ -152,6 +184,12 @@ io.on('connection', (socket) => {
 
   io.of("/").adapter.on("leave-room", (room, id) => {
     console.log(`socket ${id} has leave room ${room}`);
+
+
+
+
+
+
     socket.broadcast.emit("route_exit_user_data", { id, room })
 
     /* 
