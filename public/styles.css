@@ -1,6 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap');
+
+h1 {
+    font-family: 'Exo', sans-serif;
+}
+
+h2 {
+    font-family: 'Dancing Script', cursive;
+}
+
+p,
+label, span {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 1em;
+}
+
 * {
     margin: 0px;
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 #map {
@@ -17,7 +37,7 @@
 /* Navbar */
 .navbar {
     background-color: rgba(242, 135, 5, 0.9);
-    color: white;
+    color: rgb(255, 255, 255);
     width: 100%;
     height: 3rem;
     display: flex;
@@ -36,6 +56,8 @@
     display: grid;
     grid-template-columns: repeat(4, auto);
     place-items: center;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .icon {
@@ -46,9 +68,10 @@
     background-position: center;
     background-size: contain;
 }
+
 .nav_items a {
     margin: 1rem;
-    color: white;
+    color: rgb(255, 255, 255);
     position: relative;
     text-decoration: none;
 }
@@ -73,48 +96,62 @@
     flex-direction: column;
     place-items: center;
     flex: 1 1 0;
-    width: 331px;
-    max-height: 330px;
-    height: 330px;
+    width: 25rem;
+    height: 30rem;
     position: absolute;
     right: 0px;
-    bottom: 0px;
+    bottom: 40px;
     z-index: 9999;
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     border-top-right-radius: 12px;
     border-top-left-radius: 12px;
-    box-shadow: 2px 2px 4px silver;
-    border: 2px solid silver;
+    box-shadow: -10px 0px 10px -5px rgba(0, 0, 0, 0.5);
+
 }
 
 /* Chat nav */
 .chat_title {
     text-align: center;
-    color: white;
+    color: rgb(255, 255, 255);
     width: 100%;
-    text-align: center;
-    align-items: center;
-    background-color: rgba(242, 135, 5, 0.9);
-    border-top-right-radius: 2px;
-    border-bottom: 3px solid rgba(169, 100, 17, 0.9);
-    border-top-left-radius: 2px;
+    height: 2.8em;
     display: flex;
     flex-direction: row;
-    overflow-y: hidden;
-}
-
-.logo_chat {
-    width: 35%;
+    justify-content: space-around;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    vertical-align: middle;
+    background-color: rgba(242, 135, 5, 0.9);
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
+    border-bottom: 3px solid rgba(169, 100, 17, 0.9);
 }
 
 .principal_title_chat {
-    width: 75%;
-    font-size: larger;
+    font-family: 'Montserrat', sans-serif;
+    font-size: medium;
 }
 
 .img_logo_chat {
-    object-fit: cover;
-    width: 7em;
+    background-image: url("./assets/icon_amigapp.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 8em;
+    height: 8em;
+}
+
+.icon_minimize {
+    background-image: url("./assets/minimize_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-color: transparent;
+    border: none;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
 }
 
 /* Chat content */
@@ -124,67 +161,128 @@
     height: 100%;
     width: 100%;
     flex-direction: row;
+    font-family: 'Montserrat', sans-serif;
+    font-size: small;
+    font-weight: 700;
 }
 
-.chat_columna_izquierda{
+.chat_columna_izquierda {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    background-color: rgba(5, 69, 58, 0.822);
+    padding: 0.8em;
 }
 
-.title_user_connect{
-    width: 100%;
-    height: 15%;
-    color: rgb(5, 69, 58);
+.title_user_connect {
+    width: 82%;
+    height: 10%;
+    color: rgb(255, 255, 255);
     font-weight: 600;
     text-align: center;
     align-items: center;
     justify-content: center;
+    padding-bottom: 0.5em;
 }
+
 .chat_users {
-    height: 80%;
-    width: 83%;
-    background-color: #e3e3e3;
-    border: 1px solid rgba(192, 192, 192, 0.757);
+    height: 82%;;
+    width: 75%;
+    border-radius: 4px;
+    background-color: rgb(255, 255, 255);
+    color: rgba(5, 69, 58, 0.923);
+    padding: 0.2em;
+    text-align: center;
+}
+
+.userActive {
+    background-color: rgba(5, 69, 58, 0.923);
+    color: rgb(255, 255, 255);
     border-radius: 4px;
 }
 
+/* Columna derecha */
 .chat_messages-users {
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    height: inherit;
-    width: 100%;
-    background-color: white;
-    max-height: 330px;
-    overflow-x: hidden;
-    border-left: 2px solid #918383;
+    justify-content: flex-start;
+    width: auto;
+    height: auto;
+    background-color: rgb(255, 255, 255);
+    /* white */
+    border-left: 2px solid rgba(5, 69, 58, 0.923);
+    padding: 0.8em;
 }
 
-.chat_users_form-message {
+.container_messages {
+    height: 100%;
+    width: auto;
+}
+
+.welcome_message {
+    width: auto;
+    height: 3.8em;
+    background-color: rgba(206, 209, 209, 0.685);
+    border-radius: 4px;
+    padding: 0.3em;
+    color: rgba(47, 79, 73);
+}
+
+.chat_form_message {
+    width: auto;
+    height: 2.2em;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center
+    align-items: center;
+    text-align: center;
+    padding: 0.2em;
+    justify-content: space-around;
+    position: relative;
+    bottom: 0;
 }
 
-.chat_users_messages-users input {
-    padding: 3px
+.form_chat_input {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-items: center;
+    place-items: stretch;
+    gap: 0.5em;
 }
 
-.chat_users_message {
+#message_input {
+    border: 2px solid rgba(5, 69, 58, 0.923);
+    border-radius: 4px;
+}
+
+.principal_button {
+    background-color: rgb(255, 255, 255);
+    border: 0.2em solid rgb(38, 115, 101);
+    border-radius: 5px;
+    padding: 0.2em 1em;
+    color: rgb(38, 115, 101);
+    transition: .3s;
     display: flex;
-    flex-direction: column;
-    font-size: 16px;
-    overflow-y: scroll
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Exo', sans-serif;
+    font-weight: bold;
+}
+
+.principal_button:hover {
+    background-color: rgb(38, 115, 101);
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+    transition: .3s;
 }
 
 .footer {
     background-color: rgba(242, 135, 5, 0.9);
-    color: white;
+    color: rgb(255, 255, 255);
     width: 100%;
     height: 2rem;
     position: absolute;
@@ -194,7 +292,7 @@
     justify-content: center;
     align-items: center;
     padding: 0.2em;
-    font-weight: 600;
+    font-weight: 800;
     font-size: 0.9em;
 }
 
@@ -209,11 +307,34 @@ a.mapboxgl-ctrl-logo {
     }
 }
 
-/* #messages .message:nth-of-type(2n+1) {
-    background-color: #f2f2f2;
-    text-align: right;
-} */
+/* Messages distribution */
+
 #messages .message:nth-child(odd) {
-    background-color: #c8cbcd;
-    border-bottom: 1px solid silver;
+    width: 80%;
+    height: fit-content;
+    margin-top: 0.5em;
+    background-color: #f3f7f9;
+    border-radius: 4px;
+    border-left: 7px solid rgb(38, 115, 101);
+    border-bottom: 1px solid rgb(175, 173, 173);
+    float: right;
+    text-align: right;
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+    vertical-align: middle;
+    white-space:initial;
+}
+
+#messages .message:nth-child(even) {
+    width: 80%;
+    height: fit-content;
+    margin: 0.4em;
+    background-color: #f3f7f9;
+    border-bottom: 1px solid rgb(175, 173, 173);
+    border-radius: 4px;
+    border-right: 7px solid  rgba(242, 135, 5);
+    float: left;
+    text-align: left;
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+    vertical-align: middle;
+    white-space:initial
 }
