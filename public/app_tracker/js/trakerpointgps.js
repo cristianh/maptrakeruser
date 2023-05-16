@@ -90,7 +90,7 @@ function main() {
     })
     window.socket.on("route_exit_user_data", (data) => {
         console.log(data)
-        hasSendDataUser = true
+        /* hasSendDataUser = true */
     })
 
 
@@ -199,7 +199,7 @@ function watchPosition() {
     else {
         //NOS CONECTAMOS AL LA SALA (ROOM)
         window.socket.emit('server_join_room', { room: nombreRutaDBRoom, type: 'user-data-gps' })
-        socket.emit('check_length_users_route_gps', { conect: 'user-data-gps', room: nombreRutaDBRoom });
+        /* socket.emit('check_length_users_route_gps', { conect: 'user-data-gps', room: nombreRutaDBRoom }); */
         console.log("----------------------------", hasSendDataUser)
         var options = {
             maximumAge: 3600000,
@@ -211,42 +211,41 @@ function watchPosition() {
         function onSuccess(position) {
             console.log("----------------------------", hasSendDataUser)
             console.log("----------------------------Envia", hasSendDataUser)
-            /* sendDataGpsUseConect().then((data) => { */
+            sendDataGpsUseConect().then((data) => {
 
-            /* if (data) { */
-            if (hasEmulateSendData) {
+                if (data) {
+                    if (hasEmulateSendData) {
 
-                temporizadorSimulador = setInterval(() => {
-                    window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: puntosSimulacion[simlutePintCoordenate] });
+                        temporizadorSimulador = setInterval(() => {
 
-                    console.log("enviando datos emulados....", puntosSimulacion[simlutePintCoordenate])
+                            window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: puntosSimulacion[simlutePintCoordenate] });
 
-                    simlutePintCoordenate += 1
-                }, 2000);
+                            console.log("enviando datos emulados....", puntosSimulacion[simlutePintCoordenate])
 
+                            simlutePintCoordenate += 1
+                        }, 3000);
 
-                document.getElementById('info').innerHTML = "Simulando recorrido ruta.................."
+                        document.getElementById('info').innerHTML = "Simulando recorrido ruta.................." + JSON.stringify(puntosSimulacion[simlutePintCoordenate])
 
-            } else {
-                let _datos = {
-                    'Fecha': new Date().toLocaleString().replace(",", "-").replace(" ", ""),
-                    'Latitude': position.coords.latitude,
-                    'Longitude': position.coords.longitude,
-                    'Heading': position.coords.heading,
-                    'Speed': position.coords.speed
+                    } else {
+                        let _datos = {
+                            'Fecha': new Date().toLocaleString().replace(",", "-").replace(" ", ""),
+                            'Latitude': position.coords.latitude,
+                            'Longitude': position.coords.longitude,
+                            'Heading': position.coords.heading,
+                            'Speed': position.coords.speed
+                        }
+
+                        document.getElementById('info').innerHTML = JSON.stringify(_datos)
+
+                        window.socket.emit('geo_posicion', { hasSendDataUser, room: nombreRutaDBRoom, data: _datos });
+                        console.log("enviando datos usuario....")
+                    }
                 }
 
-                document.getElementById('info').innerHTML = JSON.stringify(_datos)
-
-                window.socket.emit('geo_posicion', { hasSendDataUser, room: nombreRutaDBRoom, data: _datos });
-                console.log("enviando datos usuario....")
-            }
-
-            //}
-
-            /* }).catch((error) => {
+            }).catch((error) => {
                 document.getElementById('info').innerHTML = error
-            }); */
+            });
         }
 
         function onError(error) {

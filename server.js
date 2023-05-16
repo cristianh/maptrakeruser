@@ -72,103 +72,101 @@ io.on('connection', (socket) => {
   //MENSAJE DE BIENVENIDA.(privado)
   io.to(socket.id).emit(eventsSocketio.SERVER_MESSAGE, "Hola bienvenido al server");
 
-  //DETECT USER DESCONECT
-  socket.on('disconnect', (socket) => {
-    console.log('user disconnected', socket);
-
-  });
-
 
   socket.on('leaveroom', (room) => {
     socket.leave(room);
     console.log('leave room', room)
   });
 
-  socket.on('disconnecting', (room) => {
-    try {
-      console.log(`Usuario ${socket.id} está abandonando la sala ${socket}`)
 
-      Object.keys(DBGPSDATA).forEach((data, key) => {
-        const filterids = DBGPSDATA[data].filter((item) => item.idUser !== socket.id)
-        DBGPSDATA[data] = filterids
-        roomleave = data
-        return false
-      })
-
-
-      if (usersIds.length > 0) {
-        usersIds = usersIds.filter((id) => {
-          return id != socket.id
-        })
-      }
-
-
-
-      if (roomleave !== null) {
-        let findNextData = DBGPSDATA[roomleave].filter((users) => {
-
-          return users.type === 'user-data-gps'
-        })
-        console.log("findNextData", findNextData[0])
-
-        io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
-
-      }
-
-      //SEND NEW LIST USER connection
-      socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: room, usersIds });
-    } catch (error) {
-      console.log(error.message)
-    }
-
-
-  });
 
   socket.on(eventsSocketio.SERVER_JOIN_ROOM, (dataRoom) => {
 
-    try {
-      //SUSCRIBE TO ROOM USER FROM GPS PAGE.
-      socket.join(dataRoom.room);
+    /* try { */
+    //SUSCRIBE TO ROOM USER FROM GPS PAGE.
+    socket.join(dataRoom.room);
 
 
-      //GUARDAMOS EL ARREGLO COMO VAN LLEGANDO LOS USUARIOS.
+    //GUARDAMOS EL ARREGLO COMO VAN LLEGANDO LOS USUARIOS.
 
-      if (DBGPSDATA[dataRoom.room] === undefined) {
-        DBGPSDATA[dataRoom.room] = [{
-          idUser: socket.id, type: dataRoom.type
-        }];
-      } else {
-        DBGPSDATA[dataRoom.room].push({
-          idUser: socket.id, type: dataRoom.type
-        });
-      }
-
-
-      let find = DBGPSDATA[dataRoom.room].filter((users) => {
-        return users.type === dataRoom.type
-      })
-
-      if (find.length > 1) {
-        io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: false, message: `La ${dataRoom.room.replace("_", " ")} ya esta monitoreada, sera conectado al servidor. en un momento sera enviada su posicion.` })
-      }
-
-
-
-      //SEN UPDATE  USER CONNECT TO ROOM.
-      const usersInRoom = io.sockets.adapter.rooms.get(dataRoom.room);
-
-
-      if (usersInRoom) {
-        usersIds = Array.from(usersInRoom.keys());
-
-      }
-
-      // send to all clients in room return list id users conects for room
-      io.in(dataRoom.room).emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: dataRoom.room, usersIds });
-
-    } catch (error) {
-      console.log(error)
+    if (DBGPSDATA[dataRoom.room] === undefined) {
+      DBGPSDATA[dataRoom.room] = [{
+        idUser: socket.id, type: dataRoom.type
+      }];
+    } else {
+      DBGPSDATA[dataRoom.room].push({
+        idUser: socket.id, type: dataRoom.type
+      });
     }
+
+
+    let find = DBGPSDATA[dataRoom.room].filter((users) => {
+      return users.type === dataRoom.type
+    })
+
+    if (find.length > 1) {
+      io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: false, message: `La ${dataRoom.room.replace("_", " ")} ya esta monitoreada, sera conectado al servidor. en un momento sera enviada su posicion.` })
+    }
+
+
+
+    //SEN UPDATE  USER CONNECT TO ROOM.
+    const usersInRoom = io.sockets.adapter.rooms.get(dataRoom.room);
+
+
+    if (usersInRoom) {
+      usersIds = Array.from(usersInRoom.keys());
+
+    }
+
+    // send to all clients in room return list id users conects for room
+    io.in(dataRoom.room).emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: dataRoom.room, usersIds });
+
+    //DETECT USER DESCONECT
+
+    socket.on('disconnect', () => {
+      try {
+
+        // User leaves the room
+        socket.leave(dataRoom.room);
+
+        console.log(`Usuario ${socket.id} está abandonando la sala ${dataRoom.room}`)
+
+        Object.keys(DBGPSDATA).forEach((data, key) => {
+          const filterids = DBGPSDATA[data].filter((item) => item.idUser !== socket.id)
+          DBGPSDATA[data] = filterids
+          roomleave = data
+          return false
+        })
+
+
+        if (usersIds.length > 0) {
+          usersIds = usersIds.filter((id) => {
+            return id != socket.id
+          })
+        }
+
+        if (roomleave !== null) {
+          let findNextData = DBGPSDATA[dataRoom.room].filter((users) => {
+
+            return users.type === 'user-data-gps'
+          })
+          console.log("findNextData", findNextData[0])
+
+          io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
+
+        }
+
+        //SEND NEW LIST USER connection
+        socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: dataRoom.room, usersIds });
+      } catch (error) {
+        console.log(error.message)
+      }
+    });
+
+    /* } catch (error) {
+      console.log(error)
+    } */
 
 
 
@@ -250,7 +248,7 @@ io.on('connection', (socket) => {
 
 
   //EVENTO PARa validar  cantidad de usuarios transmitiendo
-  socket.on(eventsSocketio.CHECK_LENGTH_USER_CONECT_ROOM_GPS, (dataRoom) => {
+  /* socket.on(eventsSocketio.CHECK_LENGTH_USER_CONECT_ROOM_GPS, (dataRoom) => {
     console.log(DBGPSDATA[dataRoom.room])
     try {
 
@@ -259,7 +257,7 @@ io.on('connection', (socket) => {
     }
 
 
-  })
+  }) */
 
 
   //STOP SEND DATA USER
