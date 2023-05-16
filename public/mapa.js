@@ -8,15 +8,19 @@ window.addEventListener('DOMContentLoaded', () => {
     let userChat = []
     let rutaSeleccionada = ""
 
-    var socket = io();
+    let socket = io();
+
+    let notificado = false
+
+
 
     //LISTO EN FRONT
     onSelectRuta = (e) => {
-        console.log("SELECCINADO:", e.target.value.replace(" ", "_"))
+        
         //SAVE ROUTE SELECTED
         rutaSeleccionada = e.target.value.replace(" ", "_")
-        console.log(rutaSeleccionada)
-        socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
+        
+        socket.emit('server_join_room', { room: rutaSeleccionada, type: 'user-map-view' })
     }
 
     //YA PASADO
@@ -34,9 +38,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //CREADO EVENTO ( FALTA LA IMPLEMENTACION DEL CHAT COMPONENT)
     socket.on('send_list_users', (users) => {
-        console.log("Salas disponibles", users)
         userChat = users
-        console.log("users in chat", userChat)
         loadUserChat()
     })
 
@@ -44,8 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //DETECTAMOS MENSAJE
     socket.on('message_chat', (message) => {
         //LOAD MESSAGE DIV.
-        let mensajeelement = document.querySelector('#messages')
-        console.log(message)
+        let mensajeelement = document.querySelector('#messages')        
         let divuser = document.createElement("div")
 
         const newtext = document.createTextNode(message);
@@ -68,7 +69,7 @@ window.addEventListener('DOMContentLoaded', () => {
         mensaje.innerHTML = ""
 
         userChat.usersIds.forEach(user => {
-            console.log(user)
+            
             let divuser = document.createElement("div")
             const newtext = document.createTextNode("user" + user.toString().substring(0, 4));
             divuser.appendChild(newtext);
@@ -99,6 +100,14 @@ window.addEventListener('DOMContentLoaded', () => {
         element.appendChild(text)
         mensaje.appendChild(text)
     })
+
+    //EVENT DETEC USER LEAVE ROOM TRANSMITION DATA GPS
+    socket.on("route_exit_user_data", (data) => {
+        console.log("route_exit_user_data", data)
+        console.log(geojson)
+    })
+
+
 
 
     //END SOCKET CODE
@@ -257,7 +266,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 .catch(err => console.log(err))
                 .finally(() => {
 
-                    console.log(opcionesRuta)
+                    /* console.log(opcionesRuta) */
 
 
                 })
@@ -351,37 +360,73 @@ window.addEventListener('DOMContentLoaded', () => {
             let options = { units: 'kilometers' };
 
             let distance = turf.distance(from, to, options);
+            
 
-            //Notificamos que la ruta esta cerca.
+            //SI LA DISTANCIA CUMPLE LA CONDICION
             //TODO:OJO deshabilitamos la notificacion cambiar.
-            if (distance <= 100) {
-                //NOTIFICATION TEST
-                //let notifications = new NotificationsPushApp('RUTA AMIGAPP', `La ruta ${msg.room.replace('_', ' ').toUpperCase()} se encuentra cerca a tu ubicación.`)
-
-                //SHOW NOTIFICATION
-                //notifications.showNotification()
+            if (Math.round(distance * 1000) > 300 && Math.round(distance * 1000) < 350) {
+               notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
             }
 
             //SAVE DIFERENT POINT IN JSON MAP DATA.
-            geojson.features[msg.room.replace('_', ' ').toLowerCase()] =
-            {
-                type: 'Feature',
-                geometry: {
-                    coordinates: {
-                        lat: Latitude,
-                        lon: Longitude
+            if (msg.room.replace('_', ' ').toLowerCase() !== "") {
+                geojson.features[msg.room.replace('_', ' ').toLowerCase()] =
+                {
+                    type: 'Feature',
+                    geometry: {
+                        coordinates: {
+                            lat: Latitude,
+                            lon: Longitude
+                        }
+                    },
+                    properties: {
+                        title: msg.room.replace('_', ' ').toUpperCase(),
+                        description: 'Norte/Sur',
+                        velocidad: Speed == undefined ? '0' : Math.round(Speed * 3.6),
+                        distancia: Math.round(distance * 1000)
                     }
-                },
-                properties: {
-                    title: msg.room.replace('_', ' ').toUpperCase(),
-                    description: 'Norte/Sur',
-                    velocidad: Speed == undefined ? '0' : Math.round(Speed * 3.6),
-                    distancia: Math.round(distance * 1000)
                 }
+                loadPointMap()
+            } else {
+                loadPointMap()
             }
 
-            loadPointMap()
+
+
         });
+
+
+
+        notifiyUserProximityRoute = (routename) => {
+            //Notificamos que la ruta esta cerca.
+
+
+            //NOTIFICATION TEST
+            let notifications = new NotificationsPushApp('RUTA AMIGAPP', `La ruta ${routename} se encuentra cerca a tu ubicación.`)
+
+            //SHOW NOTIFICATION
+            notifications.showNotification()
+
+            notificado = true
+            //SHOW NOTIFICATION ONLY ROOM ROUTE
+            //socket.emit('message_notify_route', { message: 'Probando Mensaje', room: msg.room.replace('_', ' ').toLowerCase() })
+
+            var urlencoded = new URLSearchParams();
+            urlencoded.append("targetSegmentIds", "@ALL");
+            urlencoded.append("notification", `{\"alert\":{\"text\":\"La ruta ${routename} se encuentra cerca a tu posicion\"}}`);
+
+            var requestOptions = {
+                method: 'POST',
+                body: urlencoded,
+                redirect: 'follow'
+            };
+
+            fetch("https://management-api.wonderpush.com/v1/deliveries?accessToken=NDkyMjZjYmE2YTJhNzA5NDA4ZjhiZTIwMWQ3YWI2MTgwNTkwYTQ5NzE3NWU1N2UyNDNjNGZhNTQwZDE4ZDVmNw", requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+
+        }
     }
 
     let backPointMarkers = []
@@ -411,7 +456,7 @@ window.addEventListener('DOMContentLoaded', () => {
             el.style.backgroundSize = "cover"
             el.style.borderRadius = "50%"
             el.style.cursor = "pointer"
-            el.id = `popmarketbus_${index}`
+            el.id = `popmarketbus_${geojson.features[key].properties.title}`
 
             el.className = 'marker';
 
@@ -423,7 +468,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 closeOnClick: false
             })
                 .setLngLat([geojson.features[key].geometry.coordinates.lon, geojson.features[key].geometry.coordinates.lat])
-                .setHTML(`<div><h3>${geojson.features[key].properties.title}</h3><Dirección:<span>${geojson.features[key].properties.description}</span></div>`)
+                .setHTML(`<div><h3>${geojson.features[key].properties.title}</h3><Dirección:<span>${geojson.features[key].properties.description}</span><br><span>Velocidad: ${geojson.features[key].properties.velocidad}k/h </span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? 'N/A' : geojson.features[key].properties.distancia}m</span></div>`)
                 .addTo(map);
 
 
