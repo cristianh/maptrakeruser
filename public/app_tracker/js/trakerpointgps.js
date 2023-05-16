@@ -7,8 +7,8 @@ let watchID;
 let simlutePintCoordenate = 0
 let puntosSimulacion;
 //variable para validar si el usuario actual puede enviar datos.
-let usersenddata = false
-let hasSendDataUser = false
+let hasSendDataUser = true
+let hasEmulateSendData = false
 
 document.addEventListener('DOMContentLoaded', main, false);
 
@@ -70,27 +70,35 @@ function main() {
             document.getElementById('info').innerHTML = data.message
         }
 
-        if (!data.status) {
-            usersenddata = !data.status
-        }
-
         if (data.senddata) {
             hasSendDataUser = data.senddata
         }
+
+        console.log("hasSendDataUser", hasSendDataUser)
+
+
+
+
+
     })
 
     //EVENT PARA ESPERAR RESPUESTA SI 2 USUARIO SE CONECTARON A LA MISMA RUTA
     window.socket.on("route_message_user", (data) => {
+        hasSendDataUser = data.senddata
         console.log(".............................................", data)
         document.getElementById('info').innerHTML = data.message
     })
+    window.socket.on("route_exit_user_data", (data) => {
+        console.log(data)
+        hasSendDataUser = true
+    })
 
- 
 
 
-    document.getElementById("stopPosition").addEventListener("click", stopWatch);
-    document.getElementById("watchPosition").addEventListener("click", watchPosition);
-    document.getElementById("simulacion_route").addEventListener("click", emulateRoute);
+
+    document.getElementById("stopPosition").addEventListener("click", stopWatch, false);
+    document.getElementById("watchPosition").addEventListener("click", watchPosition, false);
+    document.getElementById("simulacion_route").addEventListener("click", emulateRoute, false);
 
 
 
@@ -107,7 +115,7 @@ function main() {
         })
         .catch(err => console.log(err))
         .finally(() => {
-            let selectRutas = document.getElementById('selectRutas');
+            let selectRutas = document.getElementById('selectRutas_emulate');
             console.log(opcionesRuta)
             opcionesRuta.forEach(opcion => {
                 console.log("opcion", opcion)
@@ -119,42 +127,12 @@ function main() {
 
         })
 
-    document.getElementById('selectRutas').addEventListener('change', (event) => {
-
-        sendDataGpsSimulate().then((data) => {
-            if (data) {
-                temporizadorSimulador = setInterval(() => {
-                    window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: puntosSimulacion[simlutePintCoordenate] });
-
-                    console.log("enviando datos....", puntosSimulacion[simlutePintCoordenate])
-
-                    simlutePintCoordenate += 1
-                }, 2000);
-            }
-        }).catch((error) => {
-            //document.getElementById('info').innerHTML = error
-        })
-
+    document.getElementById('selectRutas_emulate').addEventListener('change', (event) => {
+        console.log(event.target.value);
+        hasEmulateSendData = true
     });
 
 
-}
-
-
-
-/**
- * The function sends simulated GPS data to a server at a regular interval.
- */
-function sendDataGpsSimulate() {
-
-    return new Promise((resolve, reject) => {
-        if (usersenddata) {
-            resolve(usersenddata)
-        } else {
-
-            reject("Emulador Esperando turno para enviar GPS data.....");
-        }
-    });
 }
 
 /**
@@ -165,37 +143,43 @@ function sendDataGpsSimulate() {
  */
 function sendDataGpsUseConect() {
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
 
-        if (usersenddata) {
-            resolve(usersenddata)
-        } else {
-
-            reject("Usuario Esperando turno para enviar GPS data.....");
+        if (hasSendDataUser) {
+            resolve(hasSendDataUser)
         }
     });
 }
 
+/**
+ * The function makes a select element visible on the webpage.
+ */
 function emulateRoute() {
     document.getElementById('select_route_simulacion').style.visibility = 'visible'
 }
 
 
+/**
+ * The function logs the selected value from a dropdown menu and replaces any spaces with underscores
+ * in a variable.
+ * @param e - The parameter "e" is an event object that is passed as an argument to the function
+ * "onSelectRuta". It contains information about the event that triggered the function, such as the
+ * target element that was selected and its value.
+ */
 function onSelectRuta(e) {
     console.log(e.target.value);
     nombreRutaDBRoom = e.target.value.replace(" ", "_")
-    
-    /* window.socket.emit('check_length_users_route_gps', { conect: 'user-data-gps', room: nombreRutaDBRoom }); */
-    //socket.emit('server_join_room', { room: rutaSeleccionada, type: 'user-map-view' })
-    window.socket.emit('server_join_room', { room: nombreRutaDBRoom, type: 'user-data-gps' })
-    
 }
 
 
+/**
+ * This function stops a GPS tracking simulation and clears related variables and events.
+ */
 function stopWatch() {
     navigator.geolocation.clearWatch(watchIDElement);
     clearInterval(temporizadorSimulador);
-
+    hasSendDataUser = false
+    hasEmulateSendData = false
     document.getElementById('info').innerHTML = ""
     document.getElementById("simulacion_route").classList.remove('disable')
     document.getElementById("simulacion_route").addEventListener("click", emulateRoute);
@@ -213,6 +197,10 @@ function watchPosition() {
         alert("Seleccione la ruta por favor.")
     }
     else {
+        //NOS CONECTAMOS AL LA SALA (ROOM)
+        window.socket.emit('server_join_room', { room: nombreRutaDBRoom, type: 'user-data-gps' })
+        socket.emit('check_length_users_route_gps', { conect: 'user-data-gps', room: nombreRutaDBRoom });
+        console.log("----------------------------", hasSendDataUser)
         var options = {
             maximumAge: 3600000,
             timeout: 1000,
@@ -221,26 +209,44 @@ function watchPosition() {
         watchIDElement = navigator.geolocation.watchPosition(onSuccess, onError, options);
 
         function onSuccess(position) {
-            sendDataGpsUseConect().then((data) => {
-                console.log("----------------------------", data)
-                if (data) {
-                    let _datos = {
-                        'Fecha': new Date().toLocaleString().replace(",", "-").replace(" ", ""),
-                        'Latitude': position.coords.latitude,
-                        'Longitude': position.coords.longitude,
-                        'Heading': position.coords.heading,
-                        'Speed': position.coords.speed
-                    }
+            console.log("----------------------------", hasSendDataUser)
+            console.log("----------------------------Envia", hasSendDataUser)
+            /* sendDataGpsUseConect().then((data) => { */
 
-                    document.getElementById('info').innerHTML = JSON.stringify(_datos)
+            /* if (data) { */
+            if (hasEmulateSendData) {
 
-                    window.socket.emit('geo_posicion', { hasSendDataUser, room: nombreRutaDBRoom, data: _datos });
-                    console.log("enviando datos....")
+                temporizadorSimulador = setInterval(() => {
+                    window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: puntosSimulacion[simlutePintCoordenate] });
+
+                    console.log("enviando datos emulados....", puntosSimulacion[simlutePintCoordenate])
+
+                    simlutePintCoordenate += 1
+                }, 2000);
+
+
+                document.getElementById('info').innerHTML = "Simulando recorrido ruta.................."
+
+            } else {
+                let _datos = {
+                    'Fecha': new Date().toLocaleString().replace(",", "-").replace(" ", ""),
+                    'Latitude': position.coords.latitude,
+                    'Longitude': position.coords.longitude,
+                    'Heading': position.coords.heading,
+                    'Speed': position.coords.speed
                 }
 
-            }).catch((error) => {
-                //document.getElementById('info').innerHTML = error
-            });
+                document.getElementById('info').innerHTML = JSON.stringify(_datos)
+
+                window.socket.emit('geo_posicion', { hasSendDataUser, room: nombreRutaDBRoom, data: _datos });
+                console.log("enviando datos usuario....")
+            }
+
+            //}
+
+            /* }).catch((error) => {
+                document.getElementById('info').innerHTML = error
+            }); */
         }
 
         function onError(error) {

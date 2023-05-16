@@ -11,44 +11,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let notificado = false
 
-    //GET LIST ROOM ENABLED SERVER
-    //socket.emit('send_list_rooms')
-
-    /* socket.on('send_list_enable_rooms', (roomsList) => {
-        console.log("roomsListData", roomsList)
-        let rooms = roomsList.roomsNames.filter((data) => {
-
-            if (data.includes('Ruta') || data.includes('ruta')) {
-                return data
-            }
-        })
-
-        console.log("roomsList", rooms)
-
-        let datalist = document.getElementById('countrydata')
-
-        rooms.forEach((roomname) => {
-            let option = document.createElement("option")
-            option.value = roomname.replace("_", " ");
-            option.text = roomname.replace("_", " ");
-            datalist.appendChild(option);
-
-        })
-
-
-    }) */
-
 
 
     //LISTO EN FRONT
     onSelectRuta = (e) => {
-        console.log("SELECCINADO:", e.target.value.replace(" ", "_"))
+        
         //SAVE ROUTE SELECTED
         rutaSeleccionada = e.target.value.replace(" ", "_")
-        console.log(rutaSeleccionada)
+        
         socket.emit('server_join_room', { room: rutaSeleccionada, type: 'user-map-view' })
-        socket.emit('user_conect_room_serve', { room: rutaSeleccionada })
-        //socket.emit('check_length_users_route_gps', { conect: 'user-data-desktop', room: rutaSeleccionada });
     }
 
     //YA PASADO
@@ -66,10 +37,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //CREADO EVENTO ( FALTA LA IMPLEMENTACION DEL CHAT COMPONENT)
     socket.on('send_list_users', (users) => {
-        
-        console.log(".....................Salas disponibles", users)
         userChat = users
-        console.log("users in chat", userChat)
         loadUserChat()
     })
 
@@ -77,8 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //DETECTAMOS MENSAJE
     socket.on('message_chat', (message) => {
         //LOAD MESSAGE DIV.
-        let mensajeelement = document.querySelector('#messages')
-        console.log(message)
+        let mensajeelement = document.querySelector('#messages')        
         let divuser = document.createElement("div")
 
         const newtext = document.createTextNode(message);
@@ -100,7 +67,7 @@ window.addEventListener('DOMContentLoaded', () => {
         mensaje.innerHTML = ""
 
         userChat.usersIds.forEach(user => {
-            console.log(user)
+            
             let divuser = document.createElement("div")
 
             const newtext = document.createTextNode("user" + user.toString().substring(0, 4));
@@ -118,7 +85,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //Evento para los usuarios conectados.
     socket.once('chat send server message', (message) => {
-        console.log("Mensaje del servidor", message)
+        
         const mensaje = document.querySelector('#messages')
 
         let text = document.createElement("div")
@@ -133,6 +100,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //EVENT DETEC USER LEAVE ROOM TRANSMITION DATA GPS
     socket.on("route_exit_user_data", (data) => {
         console.log("route_exit_user_data", data)
+        console.log(geojson)
     })
 
 
@@ -284,7 +252,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 .catch(err => console.log(err))
                 .finally(() => {
 
-                    console.log(opcionesRuta)
+                    /* console.log(opcionesRuta) */
 
 
                 })
@@ -378,12 +346,12 @@ window.addEventListener('DOMContentLoaded', () => {
             let options = { units: 'kilometers' };
 
             let distance = turf.distance(from, to, options);
-            console.log(Math.round(distance * 1000))
+            
 
             //SI LA DISTANCIA CUMPLE LA CONDICION
             //TODO:OJO deshabilitamos la notificacion cambiar.
             if (Math.round(distance * 1000) > 400 && Math.round(distance * 1000) < 500) {
-                notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
+               // notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
             }
 
             //SAVE DIFERENT POINT IN JSON MAP DATA.
