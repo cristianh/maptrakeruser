@@ -350,8 +350,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
             //SI LA DISTANCIA CUMPLE LA CONDICION
             //TODO:OJO deshabilitamos la notificacion cambiar.
-            if (Math.round(distance * 1000) > 400 && Math.round(distance * 1000) < 500) {
-               // notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
+            if (Math.round(distance * 1000) > 300 && Math.round(distance * 1000) < 350) {
+               notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
             }
 
             //SAVE DIFERENT POINT IN JSON MAP DATA.
