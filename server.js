@@ -10,6 +10,7 @@ const cors = require('cors');
 const { Server } = require("socket.io");
 const { setTimeout } = require('timers');
 const io = new Server(server, {
+  pingTimeout: 40000,
   cors: {
     origin: (origin, callback) => {
       const whitelist = ["https://amigaapp-f2f93-default-rtdb.firebaseio.com", "https://socket-maptracker.onrender.com ", "http://localhost:8001", "http://localhost:8000"];
