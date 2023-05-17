@@ -469,8 +469,8 @@ a.mapboxgl-ctrl-logo {
   z-index: 999;
   overflow: hidden;
   background-color: #f28705e6;
-  display: flex;
-  justify-content: space-between;
+  display:flex;
+  justify-content:space-between;
   align-items: center;
 }
 
@@ -506,10 +506,7 @@ a.mapboxgl-ctrl-logo {
 
 
 @media screen and (max-width: 600px) {
-  .topnav .menu span:not(:last-child) {
-    display: none;
-  }
-
+  .topnav .menu span:not(:last-child) {display: none;}
   .topnav .menu span.icon {
     float: right;
     display: block;
@@ -526,7 +523,6 @@ a.mapboxgl-ctrl-logo {
     right: 0;
     top: 0;
   }
-
   .topnav.responsive span {
     float: none;
     display: block;
