@@ -359,7 +359,9 @@ window.addEventListener('DOMContentLoaded', () => {
             },
             trackUserLocation: true,
             showUserHeading: true
-        }));
+        }),'top-left');
+
+        
 
         //Map scale
         // Add a scale control to the map

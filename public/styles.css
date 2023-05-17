@@ -458,6 +458,15 @@ a.mapboxgl-ctrl-logo {
   height: 2em;
 }
 
+.mapboxgl-ctrl {
+ 
+}
+
+.mapboxgl-ctrl-top-left {
+  top: 10%;
+  left: 0px;
+}
+
 
 /* Nav hamburguesa*/
 .topnav {
@@ -534,6 +543,7 @@ a.mapboxgl-ctrl-logo {
 @media screen and (max-width: 400px) {
   .footer_responsive {
     font-size: smaller;
+    padding: 0px !important;
   }
   .search_route input[type="text"] {
     border-radius: 5px;
