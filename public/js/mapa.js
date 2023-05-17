@@ -16,10 +16,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //LISTO EN FRONT
     onSelectRuta = (e) => {
-        
+
         //SAVE ROUTE SELECTED
         rutaSeleccionada = e.target.value.replace(" ", "_")
-        
+
         socket.emit('server_join_room', { room: rutaSeleccionada, type: 'user-map-view' })
     }
 
@@ -44,19 +44,34 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //CREADO EVENTO ( FALTA LA IMPLEMENTACION DEL CHAT COMPONENT)
     //DETECTAMOS MENSAJE
-    socket.on('message_chat', (message) => {
+    socket.on('message_chat', (data) => {
+        if (data.status == 'positive' || data.status == 'neutral') {
+            createDivChatElement(data.message, "message")
+        } else {
+            let info = 'El mensaje no puede ser visualizado,ya que no cumple con la politicas de lenguaje apropiado'
+            createDivChatElement(info,"message_dangerus")
+            
+        }
+
+    })
+
+    createDivChatElement = (message, classN) => {
         //LOAD MESSAGE DIV.
-        let mensajeelement = document.querySelector('#messages')        
+        let mensajeelement = document.querySelector('#messages')
+        let mesajesContainer = document.querySelector('.container_messages')
         let divuser = document.createElement("div")
 
         const newtext = document.createTextNode(message);
         divuser.appendChild(newtext);
         let element = document.createElement("div")
-        element.classList.add("message")
+        element.classList.add(classN)
         element.classList.add("animate__bounceIn")
         element.appendChild(divuser)
         mensajeelement.appendChild(element)
-    })
+
+        //Scroll rolling down
+        mesajesContainer.scrollTop = mesajesContainer.scrollHeight;
+    }
 
     /**
      * Cargamos la lsita de todos los usuarios en el sistema.
@@ -69,7 +84,7 @@ window.addEventListener('DOMContentLoaded', () => {
         mensaje.innerHTML = ""
 
         userChat.usersIds.forEach(user => {
-            
+
             let divuser = document.createElement("div")
             const newtext = document.createTextNode("user" + user.toString().substring(0, 4));
             divuser.appendChild(newtext);
@@ -141,11 +156,11 @@ window.addEventListener('DOMContentLoaded', () => {
             loadMap(parseFloat(pos.coords.latitude), parseFloat(pos.coords.longitude))
             socket.emit('chat message', { 'lat': pos.coords.latitude, 'log': pos.coords.longitude });
             // HABILITAMOS EL MENSAJE GPS ACTIVO
-            if(!localStorage.getItem('modal_info')){
+            if (!localStorage.getItem('modal_info')) {
                 document.querySelector('#modal_gps_activo').style.display = "block"
-                localStorage.setItem('modal_info',true)
+                localStorage.setItem('modal_info', true)
             }
-            
+
 
         }, (error) => {
             switch (error.code) {
@@ -249,6 +264,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
             let markets = []
+            /* 
+            
+                        const allDbRoutesInfo = await fetch('https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas.json')
+                        const allDbRoutes = await fetch('https://amigaapp-f2f93-default-rtdb.firebaseio.com/rutas.json')
+            
+                        const [ruta, dbrutas] = await Promise.all([allDbRoutes, allDbRoutesInfo])
+                            .then((response) => {
+                                console.log(response)
+                                responses.forEach(response => {
+                                    console.log(response.status, response);
+                                })
+                            })
+                            .catch((error) => {
+                                console.log(error.message)
+                            })
+            
+                        console.log(ruta) */
 
             //LOAD ALL ROUTE IN SELECT ITEM
             await fetch('https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas.json')
@@ -266,7 +298,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 .catch(err => console.log(err))
                 .finally(() => {
 
-                    /* console.log(opcionesRuta) */
+                    console.log(opcionesRuta)
 
 
                 })
@@ -360,12 +392,12 @@ window.addEventListener('DOMContentLoaded', () => {
             let options = { units: 'kilometers' };
 
             let distance = turf.distance(from, to, options);
-            
+
 
             //SI LA DISTANCIA CUMPLE LA CONDICION
             //TODO:OJO deshabilitamos la notificacion cambiar.
             if (Math.round(distance * 1000) > 300 && Math.round(distance * 1000) < 350) {
-               notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
+                notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
             }
 
             //SAVE DIFERENT POINT IN JSON MAP DATA.
@@ -487,18 +519,18 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    
+
 
 
 })
 
-function hiddenWindowGpsEnabled () {
+function hiddenWindowGpsEnabled() {
     // HABILITAMOS EL MENSAJE GPS ACTIVO
     document.querySelector('#modal_gps_activo').style.display = "none"
-    localStorage.setItem('modal_info',false)
+    localStorage.setItem('modal_info', false)
 }
 
-function loadYearFooter () {
+function loadYearFooter() {
     var year = new Date().getFullYear();
 
     document.getElementById("year_date").innerHTML = `Rutamigapp. ${year}  @copyrigth todos los derechos reservados.`;

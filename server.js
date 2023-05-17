@@ -5,6 +5,14 @@ const path = require('path');
 const server = http.createServer(app);
 const cors = require('cors');
 
+// Importamos las librerías necesarias
+const { Configuration, OpenAIApi } = require("openai");
+require("dotenv").config();
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 
 //socket 
 const { Server } = require("socket.io");
@@ -52,7 +60,8 @@ let usersGPSdata = []
 let DBGPSDATA = []
 let roomleave = null
 
-const eventsSocketio = {
+//OBJECT EVENT READ ONLY
+const eventsSocketio = Object.freeze({
   SERVER_JOIN_ROOM: 'server_join_room',
   SERVER_MESSAGE: 'chat send server message',
   SERVER_SEND_LIST_USERS: 'send_list_users',
@@ -65,7 +74,7 @@ const eventsSocketio = {
   MESSAGE_PRIVATE_USER: 'route_message_user',
   CHECK_LENGTH_USER_CONECT_ROOM_GPS: 'check_length_users_route_gps',
   STOP_DATA_GPS_USER: 'stop_send_data_gps'
-}
+})
 
 
 io.on('connection', (socket) => {
@@ -183,9 +192,25 @@ io.on('connection', (socket) => {
   /**
    * EVENT SEND MESSAGE USERS CHAT BY ROOMS
    */
-  socket.on(eventsSocketio.GET_CHAT_MESSAGE, (data) => {
+  socket.on(eventsSocketio.GET_CHAT_MESSAGE, async (data) => {
+
+    const openai = new OpenAIApi(configuration);
+
+
+    const response = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: `Classify the sentiment in this comment:\n\n${data.message}\n\nSentiment:`,
+      temperature: 0,
+      max_tokens: 1,
+      top_p: 1.0,
+      frequency_penalty: 0.0,
+      presence_penalty: 0.0,
+    });
+
+    console.log(response.data.choices[0].text.trim().toLowerCase());
+
     // to all clients in room
-    io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, data.message);
+    io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: response.data.choices[0].text.trim().toLowerCase(), message: data.message });
   })
 
 
