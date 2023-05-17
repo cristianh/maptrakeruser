@@ -144,8 +144,7 @@ span {
   height: auto;
   background-color: #267265;
   text-align: center;
-  margin:7% auto
-
+  margin: 7% auto
 }
 
 .title {
@@ -215,30 +214,10 @@ span {
 }
 
 /* Navbar */
-.navbar {
-  background-color: rgba(242, 135, 5, 0.9);
-  color: rgb(255, 255, 255);
-  width: 100%;
-  height: 3rem;
-  display: flex;
-  position: absolute;
-  top: 0;
-  z-index: 999;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  align-content: center;
-}
 
 
-.nav_items {
-  display: grid;
-  grid-template-columns: repeat(4, auto);
-  place-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
+
+
 
 .icon {
   width: 7.5rem;
@@ -249,25 +228,9 @@ span {
   background-size: contain;
 }
 
-.nav_items a {
-  margin: 1rem;
-  color: rgb(255, 255, 255);
-  position: relative;
-  text-decoration: none;
-}
 
-.nav_items a::before {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 0.12rem;
-  background: rgba(169, 100, 17, 0.9);
-}
 
-.nav_items a:hover::before {
-  width: 100% !important;
-}
+
 
 
 /* CHAT CSS */
@@ -402,13 +365,16 @@ span {
   height: 100%;
   width: auto;
   overflow-y: scroll;
-  scrollbar-width: none; /* Propiedad no estándar para ocultar la barra de desplazamiento en navegadores Firefox */ 
+  scrollbar-width: none;
+  /* Propiedad no estándar para ocultar la barra de desplazamiento en navegadores Firefox */
 }
 
 /* Estilos personalizados de la barra de desplazamiento */
 .container_messages::-webkit-scrollbar {
-  width: 0; /* Ancho cero para hacer invisible la barra de desplazamiento en navegadores WebKit (como Chrome y Safari) */
-  background: transparent; /* Fondo transparente */
+  width: 0;
+  /* Ancho cero para hacer invisible la barra de desplazamiento en navegadores WebKit (como Chrome y Safari) */
+  background: transparent;
+  /* Fondo transparente */
 }
 
 
@@ -492,16 +458,98 @@ a.mapboxgl-ctrl-logo {
   height: 2em;
 }
 
+
+/* Nav hamburguesa*/
+.topnav {
+  color: rgb(255, 255, 255);
+  width: 100%;
+  height: 3rem;
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  overflow: hidden;
+  background-color: #f28705e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topnav .icon-bar {
+  display: none;
+}
+
+.topnav span {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Estilos para las barras del icono de hamburguesa */
+.menu .ham span {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 25px;
+  height: 3px;
+  background-color: white;
+}
+
+.search_route input[type="text"] {
+  border-radius: 5px;
+  width: auto;
+  max-width: 95%;
+}
+
+
+@media screen and (max-width: 600px) {
+  .topnav .menu span:not(:last-child) {
+    display: none;
+  }
+
+  .topnav .menu span.icon {
+    float: right;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .topnav.responsive {
+    position: relative;
+  }
+
+  .topnav.responsive .icon-bar {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .topnav.responsive span {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+}
+
+/* MEDIA QUERYS */
 @media screen and (max-width: 400px) {
   .footer_responsive {
     font-size: smaller;
+  }
+  .search_route input[type="text"] {
+    border-radius: 5px;
+    width: 95%;
+    max-width: 95%;
   }
 }
 
 /* Messages distribution */
 
 #messages .message:nth-child(odd) {
-  padding:4px;
+  padding: 4px;
   width: 80%;
   height: fit-content;
   margin-top: 0.5em;
@@ -517,7 +565,7 @@ a.mapboxgl-ctrl-logo {
 }
 
 #messages .message:nth-child(even) {
-  padding:4px;
+  padding: 4px;
   width: 80%;
   height: fit-content;
   margin: 0.4em;
@@ -533,7 +581,7 @@ a.mapboxgl-ctrl-logo {
 }
 
 .message_dangerus {
-  padding:4px;
+  padding: 4px;
   width: 80%;
   height: fit-content;
   margin: 0.4em;
