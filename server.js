@@ -194,23 +194,29 @@ io.on('connection', (socket) => {
    */
   socket.on(eventsSocketio.GET_CHAT_MESSAGE, async (data) => {
 
-    const openai = new OpenAIApi(configuration);
+    try {
+      const openai = new OpenAIApi(configuration);
 
 
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `Classify the sentiment in this comment:\n\n${data.message}\n\nSentiment:`,
-      temperature: 0,
-      max_tokens: 1,
-      top_p: 1.0,
-      frequency_penalty: 0.0,
-      presence_penalty: 0.0,
-    });
+      const response = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: `Classify the sentiment in this comment:\n\n${data.message}\n\nSentiment:`,
+        temperature: 0,
+        max_tokens: 1,
+        top_p: 1.0,
+        frequency_penalty: 0.0,
+        presence_penalty: 0.0,
+      });
 
-    console.log(response.data.choices[0].text.trim().toLowerCase());
+      console.log(response.data.choices[0].text.trim().toLowerCase());
 
-    // to all clients in room
-    io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: response.data.choices[0].text.trim().toLowerCase(), message: data.message });
+      // to all clients in room
+      io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: response.data.choices[0].text.trim().toLowerCase(), message: data.message });
+    } catch (error) {
+      console.log(error.message)
+    }
+
+
   })
 
 

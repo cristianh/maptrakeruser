@@ -56,7 +56,8 @@ function main() {
     }) */
     //TEST URL PRODUCCION
     let socket = io("https://socket-maptracker.onrender.com", {
-        withCredentials: true
+        withCredentials: true,
+        pingTimeout: 30000
     })
 
 
