@@ -194,7 +194,7 @@ io.on('connection', (socket) => {
    */
   socket.on(eventsSocketio.GET_CHAT_MESSAGE, async (data) => {
 
-    try {
+    /* try {
       const openai = new OpenAIApi(configuration);
 
 
@@ -214,7 +214,10 @@ io.on('connection', (socket) => {
       io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: response.data.choices[0].text.trim().toLowerCase(), message: data.message });
     } catch (error) {
       console.log(error.message)
-    }
+    } */
+
+    // to all clients in room
+    io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: "positive", message: data.message });
 
 
   })
