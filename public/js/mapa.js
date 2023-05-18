@@ -49,8 +49,8 @@ window.addEventListener('DOMContentLoaded', () => {
             createDivChatElement(data.message, "message")
         } else {
             let info = 'El mensaje no puede ser visualizado,ya que no cumple con la politicas de lenguaje apropiado'
-            createDivChatElement(info,"message_dangerus")
-            
+            createDivChatElement(info, "message_dangerus")
+
         }
 
     })
@@ -359,9 +359,9 @@ window.addEventListener('DOMContentLoaded', () => {
             },
             trackUserLocation: true,
             showUserHeading: true
-        }),'top-left');
+        }), 'top-left');
 
-        
+
 
         //Map scale
         // Add a scale control to the map
@@ -538,4 +538,15 @@ function loadYearFooter() {
     document.getElementById("year_date").innerHTML = `Rutamigapp. ${year}  @copyrigth todos los derechos reservados.`;
 }
 
+function chatView() {
+    let chatElement = document.querySelector('.chat')
+    console.log(chatElement.classList.contains('animatedChatIn'))
+    if(chatElement.classList.contains('animatedChatIn')){
+        chatElement.classList.toggle('animatedChatOut')
+    }else{
+        chatElement.classList.toggle('animatedChatIn')
+    }
+    
+    chatElement.style.animationFillMode = 'forwards'
+}
 
