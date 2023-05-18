@@ -18,104 +18,101 @@
     <!-- Turf.js-->
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
     <!--Font awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 </head>
 
 <body>
-    <!-- Navbar -->
-    <div class="topnav" id="myTopnav">
-        <div class="icon">
-            <!-- <span class="icon">HOME</span> -->
-        </div>
-        <div class="search_route">
-            <!-- Seleccion ruta -->
-            <div>
-                <datalist id="countrydata">
-                    <option>Ruta 4</option>
-                    <option>Ruta 5</option>
-                    <option>Ruta 6</option>
-                    <option>Ruta 31</option>
-                    <option>Ruta 36</option>
-                </datalist>
-                <label for="country">Rutas:</label>
-
-                <input type="text" list="countrydata" id="country" name="country" size="50"
-                    onchange="onSelectRuta(event)" autocomplete="off" placeholder="Selecciona una Ruta" />
+    <!-- Container app -->
+    <div class="container-app">
+        <!-- Navbar -->
+        <header class="topnav" id="myTopnav">
+            <div class="icon">
+                <!-- <span class="icon">HOME</span> -->
             </div>
-        </div>
-        <div class="menu">
-            <span>Mapa</span>
-            <span>Perfil</span>
-            <span>Cerrar sesión</span>
-            <span href="javascript:void(0);" class="icon-bar" onclick="myFunction()">
-                <i class="fa fa-1.4x fa-bars"></i>
-            </span>
-
-        </div>
-    </div>
-
-
-
-    <!-- Mapa -->
-    <div id="map">
-        <!-- Chat -->
-        <div class="chat" onclick="chatView()">
-
-            <!-- Chat nav -->
-            <div class="chat_title">
+            <div class="search_route">
+                <!-- Seleccion ruta -->
                 <div>
-                    <div class="img_logo_chat">
-                    </div>
-                </div>
-                <div class="principal_title_chat">
-                    <span>Chat Ruta Amigapp</span>
-                </div>
-                <div>
-                    <div class="icon_minimize" onclick="chatView()">
-                    </div>
+                    <datalist id="countrydata">
+                        <option>Ruta 4</option>
+                        <option>Ruta 5</option>
+                        <option>Ruta 6</option>
+                        <option>Ruta 31</option>
+                        <option>Ruta 36</option>
+                    </datalist>
+                    <label for="country">Rutas:</label>
+
+                    <input type="text" list="countrydata" id="country" name="country" size="50"
+                        onchange="onSelectRuta(event)" autocomplete="off" placeholder="Selecciona una Ruta" />
                 </div>
             </div>
+            <div class="menu">
+                <span>Mapa</span>
+                <span>Perfil</span>
+                <span>Cerrar sesión</span>
+                <span href="javascript:void(0);" class="icon-bar" onclick="myFunction()">
+                    <i class="fa fa-1.4x fa-bars"></i>
+                </span>
 
-            <div class="contaniner_chat">
+            </div>
+        </header>
+        <!-- Mapa -->
+        <div id="map">
+            <!-- Chat -->
+            <div class="chat">
 
-                <!-- Columna izquierda -->
-                <div class="chat_columna_izquierda">
-                    <div class="title_user_connect">Usuarios conectados
-                    </div>
-                    <div class="chat_users">
-                    </div>
-                </div>
-
-                <!-- Columna derecha -->
-                <div class="chat_messages-users">
-                    <div id="messages" class="container_messages">
-                        <div class="welcome_message">
-                            <span id="welcome_message"></span>
+                <!-- Chat nav -->
+                <div class="chat_title">
+                    <div>
+                        <div class="img_logo_chat">
                         </div>
                     </div>
-                    <div class="chat_form_message">
-                        <form onsubmit="onSendMessage(event)" class="form_chat_input">
-                            <input type="text" class="input" id="message_input" name="message" placeholder="Mensaje">
-                            <input type="submit" class="principal_button" value="Enviar">
-                        </form>
+                    <div class="principal_title_chat">
+                        <span>Chat Ruta Amigapp</span>
+                    </div>
+                    <div>
+                        <div class="icon_minimize" onclick="chatView()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contaniner_chat">
+
+                    <!-- Columna izquierda -->
+                    <div class="chat_columna_izquierda">
+                        <div class="title_user_connect">Usuarios conectados
+                        </div>
+                        <div class="chat_users">
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha -->
+                    <div class="chat_messages-users">
+                        <div id="messages" class="container_messages">
+                            <div class="welcome_message">
+                                <span id="welcome_message"></span>
+                            </div>
+                        </div>
+                        <div class="chat_form_message">
+                            <form onsubmit="onSendMessage(event)" class="form_chat_input">
+                                <input type="text" class="input" id="message_input" name="message"
+                                    placeholder="Mensaje">
+                                <input type="submit" class="principal_button" value="Enviar">
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Footer -->
+        <section class="footer footer_responsive">
+            <span id="year_date"> </span>
+        </section>
     </div>
-    <div id="app">
 
-    </div>
-
-
-
-
-    <!-- Footer -->
-    <section class="footer footer_responsive">
-        <span id="year_date"> </span>
-    </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js"
         integrity="sha512-eiqtDDb4GUVCSqOSOTz/s/eiU4B31GrdSb17aPAA4Lv/Cjc8o+hnDvuNkgXhSI5yHuDvYkuojMaQmrB5JB31XQ=="

@@ -63,6 +63,7 @@ let roomleave = null
 //OBJECT EVENT READ ONLY
 const eventsSocketio = Object.freeze({
   SERVER_JOIN_ROOM: 'server_join_room',
+  SERVER_LEAVE_ROOM: 'server_leave_room',
   SERVER_MESSAGE: 'chat send server message',
   SERVER_SEND_LIST_USERS: 'send_list_users',
   GET_LIST_ROOMS: 'send_list_rooms',
@@ -83,10 +84,6 @@ io.on('connection', (socket) => {
   io.to(socket.id).emit(eventsSocketio.SERVER_MESSAGE, "Bienvenido al chat de Ruta Amigapp, recuerda seguir nuestras políticas de uso.");
 
 
-  socket.on('leaveroom', (room) => {
-    socket.leave(room);
-    console.log('leave room', room)
-  });
 
 
 
@@ -96,6 +93,7 @@ io.on('connection', (socket) => {
     //SUSCRIBE TO ROOM USER FROM GPS PAGE.
     socket.join(dataRoom.room);
 
+    console.log(io.sockets.adapter.rooms);
 
     //GUARDAMOS EL ARREGLO COMO VAN LLEGANDO LOS USUARIOS.
 
@@ -132,13 +130,34 @@ io.on('connection', (socket) => {
     // send to all clients in room return list id users conects for room
     io.in(dataRoom.room).emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: dataRoom.room, usersIds });
 
+
+    socket.on(eventsSocketio.SERVER_LEAVE_ROOM, (room) => {
+
+      //UNSUSCRIBE TO ROOM USER FROM GPS PAGE.
+      socket.leave(room);
+
+
+      if (usersIds.length > 0) {
+        usersIds = usersIds.filter((id) => {
+          return id != socket.id
+        })
+      }
+
+      console.log('leave Room', room)
+      console.log(io.sockets.adapter.rooms)
+      console.log(DBGPSDATA)
+
+      //SEND NEW LIST USER connection
+      socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: room, usersIds });
+    })
+
     //DETECT USER DESCONECT
 
     socket.on('disconnect', () => {
       try {
 
-        // User leaves the room
-        socket.leave(dataRoom.room);
+
+        console.log(io.sockets.adapter.rooms)
 
         console.log(`Usuario ${socket.id} está abandonando la sala ${dataRoom.room}`)
 
@@ -167,8 +186,7 @@ io.on('connection', (socket) => {
 
         }
 
-        //SEND NEW LIST USER connection
-        socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: dataRoom.room, usersIds });
+
       } catch (error) {
         console.log(error.message)
       }
@@ -183,11 +201,18 @@ io.on('connection', (socket) => {
 
   })
 
-  io.of("/").adapter.on("leave-room", (room, id) => {
-    console.log(`socket ${id} has leave room ${room}`);
-    socket.broadcast.emit("route_exit_user_data", { id, room })
+  //io.of("/").adapter.on("leave-room", (room, id) => {
+  //console.log(`socket ${id} has leave room ${room}`);
+  //if (usersIds.length > 0) {
+  //usersIds = usersIds.filter((id) => {
+  //return id != socket.id
+  //})
+  //}
+  //SEND NEW LIST USER connection
+  //socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: room, usersIds });
+  //socket.broadcast.emit("route_exit_user_data", { id, room })
 
-  });
+  //});
 
   /**
    * EVENT SEND MESSAGE USERS CHAT BY ROOMS

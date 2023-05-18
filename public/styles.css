@@ -243,7 +243,7 @@ span {
   height: 30rem;
   position: absolute;
   right: 0px;
-  bottom: -25.5rem;
+  bottom: -415px;
   z-index: 9999;
   background-color: rgb(255, 255, 255);
   border-top-right-radius: 12px;
@@ -442,7 +442,7 @@ span {
 .footer {
   background-color: rgba(242, 135, 5, 1);
   color: rgb(255, 255, 255);
-  width: 100%;
+  width: 100vw;
   height: 2rem;
   position: absolute;
   bottom: 0vw;
@@ -450,10 +450,13 @@ span {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0.2em;
   font-weight: 800;
   font-size: 0.9em;
   z-index: 99999999;
+}
+
+#year_date{
+  padding:0.2em
 }
 
 a.mapboxgl-ctrl-logo {
@@ -461,13 +464,26 @@ a.mapboxgl-ctrl-logo {
   height: 2em;
 }
 
-.mapboxgl-ctrl {
- 
-}
+.mapboxgl-ctrl {}
 
 .mapboxgl-ctrl-top-left {
   top: 10%;
   left: 0px;
+}
+
+
+/* Container principa */
+.container-app {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: content-box;
+  margin: 0px;
+  padding: 0px;
+
 }
 
 
@@ -476,13 +492,11 @@ a.mapboxgl-ctrl-logo {
   color: rgb(255, 255, 255);
   width: 100%;
   height: 3rem;
-  position: absolute;
-  top: 0;
   z-index: 999;
   overflow: hidden;
   background-color: #f28705e6;
-  display:flex;
-  justify-content:space-between;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -570,7 +584,10 @@ a.mapboxgl-ctrl-logo {
 
 
 @media screen and (max-width: 600px) {
-  .topnav .menu span:not(:last-child) {display: none;}
+  .topnav .menu span:not(:last-child) {
+    display: none;
+  }
+
   .topnav .menu span.icon {
     float: right;
     display: block;
@@ -587,6 +604,7 @@ a.mapboxgl-ctrl-logo {
     right: 0;
     top: 0;
   }
+
   .topnav.responsive span {
     float: none;
     display: block;
@@ -600,10 +618,14 @@ a.mapboxgl-ctrl-logo {
     font-size: smaller;
     padding: 0px !important;
   }
+
   .search_route input[type="text"] {
     border-radius: 5px;
     width: 95%;
     max-width: 95%;
+  }
+  .chat {
+    width:99.5vw
   }
 }
 
@@ -612,22 +634,40 @@ a.mapboxgl-ctrl-logo {
 } */
 
 .animatedChatIn {
-  animation: chatAnimationIn 0.5s ease-in-out; /* Duración de 4 segundos y se repite infinitamente */
-  
+  animation: chatAnimationIn 0.5s ease-in-out;
+  /* Duración de 4 segundos y se repite infinitamente */
+
 }
 
 .animatedChatOut {
-  animation: chatAnimationOut 0.5s ease-in-out; /* Duración de 4 segundos y se repite infinitamente */
+  animation: chatAnimationOut 0.5s ease-in-out;
+  /* Duración de 4 segundos y se repite infinitamente */
 }
 
 
 @keyframes chatAnimationIn {
-  0% { transform: translateY(0rem);} /* Posición inicial */
-  100% { transform: translateY(-28rem);} /* Posición inicial */
-  
+  0% {
+    transform: translateY(0rem);
+  }
+
+  /* Posición inicial */
+  100% {
+    transform: translateY(-28rem);
+  }
+
+  /* Posición inicial */
+
 }
 
 @keyframes chatAnimationOut {
-  0% { transform: translateY(-28rem);} /* Posición inicial */
-  100% { transform: translateY(0rem);} /* Posición inicial */
+  0% {
+    transform: translateY(-28rem);
+  }
+
+  /* Posición inicial */
+  100% {
+    transform: translateY(0rem);
+  }
+
+  /* Posición inicial */
 }

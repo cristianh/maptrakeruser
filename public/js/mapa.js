@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         //SAVE ROUTE SELECTED
         rutaSeleccionada = e.target.value.replace(" ", "_")
-
+        socket.emit('server_leave_room', rutaSeleccionada);
         socket.emit('server_join_room', { room: rutaSeleccionada, type: 'user-map-view' })
     }
 
@@ -95,7 +95,12 @@ window.addEventListener('DOMContentLoaded', () => {
         });
         const userActiveChat = document.querySelectorAll('.chat_users > div')
         console.log(userActiveChat)
-        userActiveChat[(userActiveChat.length) - 1].classList.add("userActive")
+        if (userActiveChat.length == 1) {
+            userActiveChat[(userActiveChat.length) - 1].classList.add("userActive")
+        } else {
+            userActiveChat[(userActiveChat.length) - 2].classList.add("userActive")
+        }
+
 
     }
 
@@ -127,8 +132,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //END SOCKET CODE
 
-    const appDiv = document.getElementById('app');
-    appDiv.style.display = "none"
 
     //Añadimos markets
     let geojson = {
@@ -151,8 +154,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((pos) => {
-            appDiv.innerHTML += `<p>Latitud: ${pos.coords.latitude}</p>`;
-            appDiv.innerHTML += `<p>Longitud: ${pos.coords.longitude}</p>`;
             loadMap(parseFloat(pos.coords.latitude), parseFloat(pos.coords.longitude))
             socket.emit('chat message', { 'lat': pos.coords.latitude, 'log': pos.coords.longitude });
             // HABILITAMOS EL MENSAJE GPS ACTIVO
@@ -184,9 +185,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Usando watchPosition()
     let watchID = navigator.geolocation.watchPosition((pos) => {
-        appDiv.innerHTML += `<h2>WatchPosition( )</h2>`;
-        appDiv.innerHTML += `<p>Latitud: ${pos.coords.latitude}</p>`;
-        appDiv.innerHTML += `<p>Longitud: ${pos.coords.longitude}</p>`;
+        
 
 
     });
@@ -541,12 +540,12 @@ function loadYearFooter() {
 function chatView() {
     let chatElement = document.querySelector('.chat')
     console.log(chatElement.classList.contains('animatedChatIn'))
-    if(chatElement.classList.contains('animatedChatIn')){
+    if (chatElement.classList.contains('animatedChatIn')) {
         chatElement.classList.toggle('animatedChatOut')
-    }else{
+    } else {
         chatElement.classList.toggle('animatedChatIn')
     }
-    
+
     chatElement.style.animationFillMode = 'forwards'
 }
 
