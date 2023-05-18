@@ -205,6 +205,7 @@ span {
 #map {
   width: 100vw;
   height: 100vh;
+  position: relative;
 
 }
 
@@ -241,9 +242,9 @@ span {
   flex: 1 1 0;
   width: 25rem;
   height: 30rem;
-  position: relative;
-  left: 71vw;
-  bottom: -84vh;
+  position: absolute;
+  right: 0vw;
+  bottom: -445px;
   z-index: 9999;
   background-color: rgb(255, 255, 255);
   border-top-right-radius: 12px;
@@ -445,8 +446,6 @@ span {
   color: rgb(255, 255, 255);
   width: 100vw;
   height: 2rem;
-  position: absolute;
-  bottom: 0vw;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -456,8 +455,8 @@ span {
   z-index: 99999999;
 }
 
-#year_date{
-  padding:0.2em
+#year_date {
+  padding: 0.2em
 }
 
 a.mapboxgl-ctrl-logo {
@@ -625,8 +624,9 @@ a.mapboxgl-ctrl-logo {
     width: 95%;
     max-width: 95%;
   }
+
   .chat {
-    width:100vw;
+    width: 100vw;
     left: 0vw;
   }
 }
