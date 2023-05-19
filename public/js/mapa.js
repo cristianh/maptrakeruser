@@ -134,9 +134,47 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     //Añadimos markets
+    //Para ubicar los paraderos
     let geojson = {
         "type": "FeatureCollection",
-        "features": []
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-75.7018544, 4.512214]
+                },
+                "properties": {
+                    "title": "Ruta 18",
+                    "description": "Norte/Sur",
+                    "velocidad": 0
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-75.6684114, 4.5410448]
+                },
+                "properties": {
+                    "title": "Ruta 18",
+                    "description": "Norte/Sur",
+                    "velocidad": 0
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-75.6887522, 4.5211966]
+                },
+                "properties": {
+                    "title": "Ruta 18",
+                    "description": "Norte/Sur",
+                    "velocidad": "0"
+                }
+            }
+        ]
     }
     let map;
     let from;
@@ -206,38 +244,95 @@ window.addEventListener('DOMContentLoaded', () => {
         });
         map.on('style.load', () => {
             map.setFog({}); // Set the default atmosphere style
+
+            //Posicion radar.
+            /*  map.circle([lng, lat], 200, {
+                 color: 'red',
+                 opacity: 0.7,
+                 fillOpacity: 0.2
+             }).addTo(map); */
+
+
+            let popup = new mapboxgl.Popup({
+                closeButton: true, // Enable the close button
+                closeOnClick: false // Disable closing on clicks outside the popup
+            })
+
+
+            //Para test
+            //'https://amigaapp-f2f93-default-rtdb.firebaseio.com/test/-NVoSL4YYLDNDiIcvS_I.json'
+
+            map.loadImage(
+                'https://res.cloudinary.com/dl7oqoile/image/upload/v1684509887/iconbus_tt1j60.png',
+                (error, image) => {
+                    if (error) throw error;
+
+                    // Add the image to the map style.
+                    map.addImage('bus-route', image);
+
+                    map.addSource('routemap', {
+                        type: 'geojson',
+                        // Use a URL for the value for the `data` property.
+                        data: geojson
+
+                    });
+
+                    // Add a symbol layer
+                    map.addLayer({
+                        'id': 'routemap-layer',
+                        'type': 'symbol',
+                        'source': 'routemap',
+                        layout: {
+                            'icon-image': 'bus-route', // Nombre del icono personalizado externo
+                            'icon-size': 0.04 // Ajusta el tamaño del icono según sea necesario
+                        },
+                        minzoom: 4, // Set the minimum zoom level for the icons to be visible
+                        maxzoom: 21, // Set the maximum zoom level for the icons to be visible
+                        paint: {
+                            'text-halo-blur': 1 // Set the circle blur to 0 to remove the blur effect
+                        }
+                    });
+
+                    // When a click event occurs on a feature in the places layer, open a popup at the
+                    // location of the feature, with description HTML from its properties.
+                    map.on('mouseenter', 'routemap-layer', (e) => {
+                        // Copy coordinates array.
+                        const coordinates = e.features[0].geometry.coordinates.slice();
+                        const description = `<div><h3>${e.features[0].properties.title}</h3><Dirección:<span>${e.features[0].properties.description}</span><br><span>Velocidad: ${e.features[0].properties.velocidad}k/h </span><br><span>Distancia: ${e.features[0].properties.distancia == undefined ? 'N/A' : e.features[0].properties.distancia}m</span></div>`
+
+                        // Ensure that if the map is zoomed out such that multiple
+                        // copies of the feature are visible, the popup appears
+                        // over the copy being pointed to.
+                        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                        }
+
+
+                        popup.setLngLat(coordinates)
+                            .setHTML(description)
+                            .addTo(map);
+                    });
+
+                    // Change the cursor to a pointer when the mouse is over the places layer.
+                    map.on('mouseenter', 'routemap-layer', () => {
+                        map.getCanvas().style.cursor = 'pointer';
+                    });
+
+                    // Change it back to a pointer when it leaves.
+                    map.on('mouseleave', 'routemap-layer', () => {
+                        map.getCanvas().style.cursor = '';
+                        popup.remove()
+                    });
+                });
+
         });
+
+
 
 
         map.on('load', async () => {
 
-            // location of the feature, with description HTML from its properties.
-            map.on('click', 'places', (e) => {
-                alert("click event", e)
-                /* // Copy coordinates array.
-                const coordinates = e.features[0].geometry.coordinates.slice();
-                const description = e.features[0].properties.description;
-                 
-                // Ensure that if the map is zoomed out such that multiple
-                // copies of the feature are visible, the popup appears
-                // over the copy being pointed to.
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
-                 
-                new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(description)
-                .addTo(map);
-                }); */
-
-            })
-
-
             let opcionesRuta = []
-
-
-
 
             //Personalizamor en point marker del usuario    
             const margkeruser = document.createElement('div');
@@ -302,53 +397,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 })
 
-            //LOAD DATA POINT IN DB (FIREBASE-EMULATE)
-            try {
-                opcionesRuta.forEach(async (rutaNombre) => {
-                    await fetch(`https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas/${rutaNombre}.json`)
-                        .then((resp) => resp.json())
-                        .then((data) => {
-
-                            let dataPoints = Object.values(data)
 
 
 
-                            Array.of(dataPoints[0]).forEach((coordenadas) => {
 
-                                const { Latitude, Longitude, Speed } = coordenadas
-
-
-
-                                geojson.features[rutaNombre] =
-                                {
-                                    type: 'Feature',
-                                    geometry: {
-                                        coordinates: {
-                                            lat: Latitude,
-                                            lon: Longitude
-                                        }
-                                    },
-                                    properties: {
-                                        title: 'Ruta 18',
-                                        description: 'Norte/Sur',
-                                        velocidad: Speed == undefined ? '0' : Math.round(Speed)
-                                    }
-                                }
-
-                            });
-                        })
-                        .finally(() => {
-                            loadPointMap()
-                        })
-
-                })
-
-            } catch (err) {
-                // If the updateSource interval is defined, clear the interval to stop updating the source.
-                // if (updateSource) clearInterval(updateSource);
-                throw new Error("Error", err);
-
-            }
         })
 
         // Add zoom and rotation controls to the map.
@@ -364,8 +416,8 @@ window.addEventListener('DOMContentLoaded', () => {
             accessToken: mapboxgl.accessToken,
             language: 'es', // Specify the language as German.
             mapboxgl: mapboxgl
-            });
-            map.addControl(geocoder);
+        });
+        map.addControl(geocoder);
 
         // Add geolocate control to the map.
         map.addControl(
@@ -380,24 +432,13 @@ window.addEventListener('DOMContentLoaded', () => {
             })
         );
 
-        // Add the control to the map.
-        /* map.addControl(
-            new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
-            })
-        ); */
-
-
 
         //Map scale
         // Add a scale control to the map
         //map.addControl(new mapboxgl.ScaleControl());
 
 
-        /* const marker = new mapboxgl.Marker()
-        .setLngLat([lng, lat])
-        .addTo(map); */
+
 
 
         /**
@@ -406,17 +447,6 @@ window.addEventListener('DOMContentLoaded', () => {
         socket.on('chat_send_server_message', (msg) => {
             /* console.log("recibiendo datos................", msg) */
             const { Latitude, Longitude, Speed } = msg.data
-            const el = document.createElement('div');
-
-            el.style.width = "42px"
-            el.style.height = "42px"
-            el.style.backgroundImage = "url('../../assets/iconbus.svg')"
-            el.style.backgroundSize = "cover"
-            el.style.borderRadius = "50%"
-            el.style.cursor = "pointer"
-
-            el.className = 'marker';
-
             to = turf.point([Longitude, Latitude]);
             let options = { units: 'kilometers' };
 
@@ -429,30 +459,59 @@ window.addEventListener('DOMContentLoaded', () => {
                 notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
             }
 
-            //SAVE DIFERENT POINT IN JSON MAP DATA.
-            if (msg.room.replace('_', ' ').toLowerCase() !== "") {
-                geojson.features[msg.room.replace('_', ' ').toLowerCase()] =
-                {
-                    type: 'Feature',
-                    geometry: {
-                        coordinates: {
-                            lat: Latitude,
-                            lon: Longitude
+            let rutaUpdatePosition = geojson.features.findIndex((data) => {
+                return data.properties.id === msg.room.replace('_', ' ').toUpperCase()
+            })
+
+            console.log(rutaUpdatePosition)
+            console.log(geojson.features[rutaUpdatePosition])
+
+            if (rutaUpdatePosition == -1) {
+                geojson.features.push(
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [
+                                Longitude,
+                                Latitude
+                            ]
+                        },
+                        'properties': {
+                            'id': msg.room.replace('_', ' ').toUpperCase(),
+                            'title': msg.room.replace('_', ' ').toUpperCase(),
+                            'description': 'Norte/Sur',
+                            'velocidad': Speed == undefined ? '0' : Math.round(Speed * 3.6),
+                            'distancia': Math.round(distance * 1000)
                         }
-                    },
-                    properties: {
-                        title: msg.room.replace('_', ' ').toUpperCase(),
-                        description: 'Norte/Sur',
-                        velocidad: Speed == undefined ? '0' : Math.round(Speed * 3.6),
-                        distancia: Math.round(distance * 1000)
                     }
-                }
-                loadPointMap()
+                );
+
             } else {
-                loadPointMap()
+                geojson.features[rutaUpdatePosition] = (
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [
+                                Longitude,
+                                Latitude
+                            ]
+                        },
+                        'properties': {
+                            'id': msg.room.replace('_', ' ').toUpperCase(),
+                            'title': msg.room.replace('_', ' ').toUpperCase(),
+                            'description': 'Norte/Sur',
+                            'velocidad': Speed == undefined ? '0' : Math.round(Speed * 3.6),
+                            'distancia': Math.round(distance * 1000)
+                        }
+                    }
+                );
             }
 
 
+            //UPDATE DIFERENT POINT IN MAP DATA.
+            map.getSource('routemap').setData(geojson);
 
         });
 
@@ -491,65 +550,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     let backPointMarkers = []
-
-    loadPointMap = () => {
-
-        //IF EXIST MARKTS.
-        //DELETE ALL (MAP REPEINT DATA)
-
-        if (backPointMarkers.length > 0) {
-            backPointMarkers.forEach(marker => {
-                marker.remove()
-            });
-        }
-
-        //GET ALL KEYS (ROURTES)
-        let keys = Object.keys(geojson.features)
-        //AGEGANDO PUNTOS EN EL MAPA.
-        keys.forEach((key, index) => {
-
-            //PERSONALIZAMOS EL MARKER
-            const el = document.createElement('div');
-
-            el.style.width = "42px"
-            el.style.height = "42px"
-            el.style.backgroundImage = "url('../../assets/iconbus.svg')"
-            el.style.backgroundSize = "cover"
-            el.style.borderRadius = "50%"
-            el.style.cursor = "pointer"
-            el.id = `popmarketbus_${geojson.features[key].properties.title}`
-
-            el.className = 'marker';
-
-            //CREATE POPUP
-            //<br><span>Velocidad: ${geojson.features[key].properties.velocidad}k/h </span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? 'N/A' : geojson.features[key].properties.distancia}m</span>
-
-            var popupText = new mapboxgl.Popup({ offset: 25 }, {
-                closeButton: true,
-                closeOnClick: false
-            })
-                .setLngLat([geojson.features[key].geometry.coordinates.lon, geojson.features[key].geometry.coordinates.lat])
-                .setHTML(`<div><h3>${geojson.features[key].properties.title}</h3><Dirección:<span>${geojson.features[key].properties.description}</span><br><span>Velocidad: ${geojson.features[key].properties.velocidad}k/h </span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? 'N/A' : geojson.features[key].properties.distancia}m</span></div>`)
-                .addTo(map);
-
-
-
-            //ADD MERCKER TO MAP
-            pointmarcketr = new mapboxgl.Marker(el)
-                .setLngLat([geojson.features[key].geometry.coordinates.lon, geojson.features[key].geometry.coordinates.lat])
-                .addTo(map)
-                .setPopup(popupText);
-
-            //ADD MARKERS GENERATES TO ARRAY (SAVE ALL MARKTES)
-            backPointMarkers.push(pointmarcketr)
-
-
-        })
-    }
-
-
-
-
 
 })
 
