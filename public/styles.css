@@ -205,7 +205,7 @@ span {
 
 #map {
   width: 100vw;
-  height: 100vh;
+  height: auto;
   position: relative;
 
 }
@@ -467,20 +467,15 @@ a.mapboxgl-ctrl-logo {
 
 .mapboxgl-ctrl {}
 
-.mapboxgl-ctrl-top-left {
-  top: 10%;
-  left: 0px;
-}
 
 
 /* Container principa */
 .container-app {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  flex:1 1 1;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   width: 100vw;
   height: 100vh;
+  max-height: 100vh;
   overflow: hidden;
   margin: 0px;
   padding: 0px;
@@ -627,7 +622,7 @@ a.mapboxgl-ctrl-logo {
 
   .search_route input[type="text"] {
     border-radius: 5px;
-    width: 95%;
+    width: 50vw;
     max-width: 95%;
   }
 

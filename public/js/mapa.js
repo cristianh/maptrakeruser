@@ -185,7 +185,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Usando watchPosition()
     let watchID = navigator.geolocation.watchPosition((pos) => {
-        
+
 
 
     });
@@ -359,6 +359,34 @@ window.addEventListener('DOMContentLoaded', () => {
             trackUserLocation: true,
             showUserHeading: true
         }), 'top-left');
+
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            language: 'es', // Specify the language as German.
+            mapboxgl: mapboxgl
+            });
+            map.addControl(geocoder);
+
+        // Add geolocate control to the map.
+        map.addControl(
+            new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                // When active the map will receive updates to the device's location as it changes.
+                trackUserLocation: true,
+                // Draw an arrow next to the location dot to indicate which direction the device is heading.
+                showUserHeading: true
+            })
+        );
+
+        // Add the control to the map.
+        /* map.addControl(
+            new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl
+            })
+        ); */
 
 
 
