@@ -254,10 +254,10 @@ io.on('connection', (socket) => {
 
       console.log(data.room, socket.id)
       //EVENTO PARA TODAS LAS PERSONAS CONECTADAS A LA SALA.
-      socket.broadcast.to(data.room).emit(eventsSocketio.SEND_USER_GPS_DATA, data)//solo a los de la sala
+      //socket.broadcast.to(data.room).emit(eventsSocketio.SEND_USER_GPS_DATA, data)//solo a los de la sala
 
       //SI VAMOS A ENVIAR LA INFORMACION A TODOS
-      //io.emit(eventsSocketio.SEND_USER_GPS_DATA, data)
+      io.emit(eventsSocketio.SEND_USER_GPS_DATA, data)
     } catch (error) {
       console.log(error)
     }
