@@ -36,7 +36,8 @@ function main() {
 
             console.log(json)
             puntosSimulacion = Object.values(json)
-            console.log(puntosSimulacion)
+            puntosSimulacion.reverse()
+            /* console.log(puntosSimulacion) */
 
         })
         .catch(err => console.log(err))
