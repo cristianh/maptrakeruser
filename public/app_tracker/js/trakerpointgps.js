@@ -14,8 +14,13 @@ document.addEventListener('DOMContentLoaded', main, false);
 
 let temporizadorSimulador = null
 
+
+
 function main() {
 
+    loadYearFooter()
+
+    
     //NOS CONECTAMOS A LA FIREBASE PARA SIMULAR UNA RUTA
     let datosfirebase;
 
@@ -138,6 +143,13 @@ function main() {
 
 }
 
+function loadYearFooter() {
+    var year = new Date().getFullYear();
+
+    document.getElementById("year_date").innerHTML = `Rutamigapp. ${year}  @copyrigth todos los derechos reservados.`;
+}
+
+
 /**
  * The function sends GPS data to a server using a socket connection and displays the data on a
  * webpage.
@@ -158,7 +170,7 @@ function sendDataGpsUseConect() {
  * The function makes a select element visible on the webpage.
  */
 function emulateRoute() {
-    document.getElementById('select_route_simulacion').style.visibility = 'visible'
+    document.getElementById('select_route_simulacion').style.display = 'inline-grid'
 }
 
 
@@ -192,7 +204,7 @@ function stopWatch() {
 
 
 function watchPosition() {
-    document.getElementById('select_route_simulacion').style.visibility = 'hidden'
+    document.getElementById('select_route_simulacion').style.display = 'none'
 
     document.getElementById("simulacion_route").classList.add('disable')
     document.getElementById("simulacion_route").removeEventListener("click", emulateRoute);
@@ -212,8 +224,7 @@ function watchPosition() {
         watchIDElement = navigator.geolocation.watchPosition(onSuccess, onError, options);
 
         function onSuccess(position) {
-            console.log("----------------------------", hasSendDataUser)
-            console.log("----------------------------Envia", hasSendDataUser)
+           
             sendDataGpsUseConect().then((data) => {
 
                 if (data) {
@@ -228,7 +239,7 @@ function watchPosition() {
                             simlutePintCoordenate += 1
                         }, 3000);
 
-                        document.getElementById('info').innerHTML = "Simulando recorrido ruta.................." + JSON.stringify(puntosSimulacion[simlutePintCoordenate])
+                        document.getElementById('info').innerHTML = `<div>Simulando recorrido ruta...</div>`
 
                     } else {
                         let _datos = {
@@ -239,7 +250,8 @@ function watchPosition() {
                             'Speed': position.coords.speed
                         }
 
-                        document.getElementById('info').innerHTML = JSON.stringify(_datos)
+                        //document.getElementById('info').innerHTML = JSON.stringify(_datos)
+                        document.getElementById('info').innerHTML = `<div>Enviado información ruta...</div>`
 
                         window.socket.emit('geo_posicion', { hasSendDataUser, room: nombreRutaDBRoom, data: _datos });
                         console.log("enviando datos usuario....")
