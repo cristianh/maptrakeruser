@@ -7,11 +7,34 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let userChat = []
     let rutaSeleccionada = ""
-
     let socket = io();
-
     let notificado = false
+    let backPointMarkers = []
+    let posicionActualUsuario = []
 
+
+    //Añadimos markets
+    let geojson = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+    let map;
+    let from;
+    let to;
+    let marker;
+
+
+    const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+    };
+
+
+
+    const mapElement = document.getElementById('map');
+
+    mapElement.setAttribute('tabindex', '-1');
 
 
     //LISTO EN FRONT
@@ -94,7 +117,7 @@ window.addEventListener('DOMContentLoaded', () => {
             mensaje.appendChild(element)
         });
         const userActiveChat = document.querySelectorAll('.chat_users > div')
-        console.log(userActiveChat)
+
         if (userActiveChat.length == 1) {
             userActiveChat[(userActiveChat.length) - 1].classList.add("userActive")
         } else {
@@ -109,7 +132,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //Evento para los usuarios conectados.
     socket.once('chat send server message', (message) => {
-        console.log("Mensaje del servidor", message)
+
         const mensaje = document.querySelector('#welcome_message')
 
         let text = document.createElement("div")
@@ -123,8 +146,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //EVENT DETEC USER LEAVE ROOM TRANSMITION DATA GPS
     socket.on("route_exit_user_data", (data) => {
-        console.log("route_exit_user_data", data)
-        console.log(geojson)
+
     })
 
 
@@ -133,27 +155,9 @@ window.addEventListener('DOMContentLoaded', () => {
     //END SOCKET CODE
 
 
-    //Añadimos markets
-    let geojson = {
-        "type": "FeatureCollection",
-        "features": []
-    }
-    let map;
-    let from;
-    let to;
-    let marker;
-
-
-    const options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-    };
-
-
-
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((pos) => {
+
             loadMap(parseFloat(pos.coords.latitude), parseFloat(pos.coords.longitude))
             socket.emit('chat message', { 'lat': pos.coords.latitude, 'log': pos.coords.longitude });
             // HABILITAMOS EL MENSAJE GPS ACTIVO
@@ -194,7 +198,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const loadMap = (lat, lng) => {
 
-
+        posicionActualUsuario = [lng,lat]
         mapboxgl.accessToken = 'pk.eyJ1IjoiY3J1c3RvMjAyMiIsImEiOiJjbDg3c3lmaTExNmg4M3BubGhyMThvMmhsIn0.AhcG868gRKbP-zDiccuMdA';
         map = new mapboxgl.Map({
             container: 'map', // container ID
@@ -211,33 +215,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         map.on('load', async () => {
 
-            // location of the feature, with description HTML from its properties.
-            map.on('click', 'places', (e) => {
-                alert("click event", e)
-                /* // Copy coordinates array.
-                const coordinates = e.features[0].geometry.coordinates.slice();
-                const description = e.features[0].properties.description;
-                 
-                // Ensure that if the map is zoomed out such that multiple
-                // copies of the feature are visible, the popup appears
-                // over the copy being pointed to.
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
-                 
-                new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(description)
-                .addTo(map);
-                }); */
-
-            })
-
-
             let opcionesRuta = []
-
-
-
 
             //Personalizamor en point marker del usuario    
             const margkeruser = document.createElement('div');
@@ -351,6 +329,18 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         })
 
+        map.on('click', (e) => {
+            const { lng, lat } = e.lngLat;
+            // Fly the map to the location.
+            map.flyTo({
+                center: [lng, lat],
+                speed: 0.5
+            });
+            //calculateTravelTime([lng, lat],posicionActualUsuario)
+            console.log([lng, lat],posicionActualUsuario);
+            console.log(`Clicked position: Longitude: ${lng}, Latitude: ${lat}`);
+        });
+
         // Add zoom and rotation controls to the map.
         map.addControl(new mapboxgl.NavigationControl({
             positionOptions: {
@@ -364,8 +354,8 @@ window.addEventListener('DOMContentLoaded', () => {
             accessToken: mapboxgl.accessToken,
             language: 'es', // Specify the language as German.
             mapboxgl: mapboxgl
-            });
-            map.addControl(geocoder);
+        });
+        map.addControl(geocoder);
 
         // Add geolocate control to the map.
         map.addControl(
@@ -380,24 +370,6 @@ window.addEventListener('DOMContentLoaded', () => {
             })
         );
 
-        // Add the control to the map.
-        /* map.addControl(
-            new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
-            })
-        ); */
-
-
-
-        //Map scale
-        // Add a scale control to the map
-        //map.addControl(new mapboxgl.ScaleControl());
-
-
-        /* const marker = new mapboxgl.Marker()
-        .setLngLat([lng, lat])
-        .addTo(map); */
 
 
         /**
@@ -406,32 +378,23 @@ window.addEventListener('DOMContentLoaded', () => {
         socket.on('chat_send_server_message', (msg) => {
             /* console.log("recibiendo datos................", msg) */
             const { Latitude, Longitude, Speed } = msg.data
-            const el = document.createElement('div');
-
-            el.style.width = "42px"
-            el.style.height = "42px"
-            el.style.backgroundImage = "url('../../assets/iconbus.svg')"
-            el.style.backgroundSize = "cover"
-            el.style.borderRadius = "50%"
-            el.style.cursor = "pointer"
-
-            el.className = 'marker';
 
             to = turf.point([Longitude, Latitude]);
             let options = { units: 'kilometers' };
 
             let distance = turf.distance(from, to, options);
 
-
             //SI LA DISTANCIA CUMPLE LA CONDICION
             //TODO:OJO deshabilitamos la notificacion cambiar.
             if (Math.round(distance * 1000) > 300 && Math.round(distance * 1000) < 350) {
-                notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
+                notifiyUserProximityRoute(room.replace('_', ' ').toLowerCase())
             }
+
+            let rutaName = msg.room.replace('_', ' ').toLowerCase()
 
             //SAVE DIFERENT POINT IN JSON MAP DATA.
             if (msg.room.replace('_', ' ').toLowerCase() !== "") {
-                geojson.features[msg.room.replace('_', ' ').toLowerCase()] =
+                geojson.features[rutaName] =
                 {
                     type: 'Feature',
                     geometry: {
@@ -441,19 +404,17 @@ window.addEventListener('DOMContentLoaded', () => {
                         }
                     },
                     properties: {
-                        title: msg.room.replace('_', ' ').toUpperCase(),
+                        title: capitalizarTexto(rutaName),
                         description: 'Norte/Sur',
                         velocidad: Speed == undefined ? '0' : Math.round(Speed * 3.6),
                         distancia: Math.round(distance * 1000)
                     }
                 }
-                loadPointMap()
-            } else {
-                loadPointMap()
             }
-
-
-
+            if(Longitude!==undefined && Latitude!==undefined){
+                calculateTravelTime([Longitude, Latitude],posicionActualUsuario)
+            }
+            loadPointMap()
         });
 
 
@@ -490,7 +451,13 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    let backPointMarkers = []
+
+
+
+
+    capitalizarTexto = (texto) => {
+        return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
+    }
 
     loadPointMap = () => {
 
@@ -524,14 +491,20 @@ window.addEventListener('DOMContentLoaded', () => {
             //CREATE POPUP
             //<br><span>Velocidad: ${geojson.features[key].properties.velocidad}k/h </span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? 'N/A' : geojson.features[key].properties.distancia}m</span>
 
-            var popupText = new mapboxgl.Popup({ offset: 25 }, {
-                closeButton: true,
-                closeOnClick: false
+            let popupText = new mapboxgl.Popup({
+                offset: 25, closeButton: false,
+                closeOnClick: true
             })
                 .setLngLat([geojson.features[key].geometry.coordinates.lon, geojson.features[key].geometry.coordinates.lat])
                 .setHTML(`<div><h3>${geojson.features[key].properties.title}</h3><Dirección:<span>${geojson.features[key].properties.description}</span><br><span>Velocidad: ${geojson.features[key].properties.velocidad}k/h </span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? 'N/A' : geojson.features[key].properties.distancia}m</span></div>`)
                 .addTo(map);
 
+            // Evitar que el foco se capture automáticamente en el popup
+            popupText.on('open', function () {
+                setTimeout(function () {
+                    popupText._content.focus();
+                }, 0);
+            })
 
 
             //ADD MERCKER TO MAP
@@ -540,18 +513,29 @@ window.addEventListener('DOMContentLoaded', () => {
                 .addTo(map)
                 .setPopup(popupText);
 
+            // Agregar el atributo tabindex="-1" al elemento del marker para evitar el auto focus
+            pointmarcketr.getElement().setAttribute('tabindex', '-1');
+
+           
+
             //ADD MARKERS GENERATES TO ARRAY (SAVE ALL MARKTES)
             backPointMarkers.push(pointmarcketr)
 
-
         })
     }
-
-
-
-
-
 })
+
+function calculateTravelTime(origin, destination) {
+    fetch(`https://api.mapbox.com/directions/v5/mapbox/driving/${origin[0]},${origin[1]};${destination[0]},${destination[1]}?access_token=${mapboxgl.accessToken}`)
+        .then(response => response.json())
+        .then(data => {
+            const travelTime = data.routes[0].duration / 60; // Duración en minutos
+            console.log(`Tiempo de viaje estimado: ${travelTime} minutos`);
+        })
+        .catch(error => {
+            console.error('Error al calcular el tiempo de viaje:', error);
+        });
+}
 
 function hiddenWindowGpsEnabled() {
     // HABILITAMOS EL MENSAJE GPS ACTIVO
@@ -567,7 +551,7 @@ function loadYearFooter() {
 
 function chatView() {
     let chatElement = document.querySelector('.chat')
-    console.log(chatElement.classList.contains('animatedChatIn'))
+
     if (chatElement.classList.contains('animatedChatIn')) {
         chatElement.classList.toggle('animatedChatOut')
     } else {
