@@ -51,15 +51,15 @@ function main() {
 
     //TEST URL LOCAL
     //PARA EL DESPLIEGUE QUITAR 'localhost' 
-    let socket = io("http://localhost:8000", {
-        withCredentials: true,
-        pingTimeout: 30000
-    })
-    //TEST URL PRODUCCION - MIDIFICACION
-    /* let socket = io("https://socket-maptracker.onrender.com", {
+    /* let socket = io("http://localhost:8000", {
         withCredentials: true,
         pingTimeout: 30000
     }) */
+    //TEST URL PRODUCCION - MIDIFICACION
+    let socket = io("https://socket-maptracker.onrender.com", {
+        withCredentials: true,
+        pingTimeout: 30000
+    })
 
 
     //PASAMOS EL OBJECT SOCKET AL OBJETO WINDOW PARA UTILIZARLO GLOBALMENTE.
