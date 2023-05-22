@@ -4,225 +4,138 @@
 <head>
     <meta charset="utf-8">
     <title>Rutaamigapp-mapa</title>
-    <!-- Manifest.json -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="description" content="Ruta-amigapp movilizate entre amigos.">
-    <meta name="theme-color" content="#F29F05">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
-    <!-- styles -->
     <link href='./styles.css' rel='stylesheet' />
-    <!-- animate.css  -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
     <!-- Turf.js-->
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-    <!--Font awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 </head>
 
 <body>
-    <!-- Container app -->
-    <div class="container-app">
-        <!-- Navbar -->
-        <header class="topnav" id="myTopnav">
-            <div class="icon">
-                <!-- <span class="icon">HOME</span> -->
-            </div>
-            <div class="search_route">
-                <!-- Seleccion ruta -->
-                <div>
-                    <datalist id="countrydata">
-                        <option>Ruta 4</option>
-                        <option>Ruta 5</option>
-                        <option>Ruta 6</option>
-                        <option>Ruta 31</option>
-                        <option>Ruta 36</option>
-                    </datalist>
-                    <label for="country">Rutas:</label>
-
-                    <input type="text" list="countrydata" id="country" name="country" size="50"
-                        onchange="onSelectRuta(event)" autocomplete="off" placeholder="Selecciona una Ruta" />
-                </div>
-            </div>
-            <div class="menu">
-                <span>Mapa</span>
-                <span>Perfil</span>
-                <span>Cerrar sesión</span>
-                <span href="javascript:void(0);" class="icon-bar" onclick="myFunction()">
-                    <i class="fa fa-1.4x fa-bars"></i>
-                </span>
-
-            </div>
-        </header>
-        <!-- Mapa -->
-        <div id="map">
-            <!-- Chat -->
-            <div class="chat">
-
-                <!-- Chat nav -->
-                <div class="chat_title" onclick="chatView()">
-                    <div>
-                        <div class="img_logo_chat">
-                        </div>
-                    </div>
-                    <div class="principal_title_chat">
-                        <span>Chat Ruta Amigapp</span>
-                        
-                    </div>
-                    <div>
-                        <div class="icon_minimize" onclick="chatView()">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="contaniner_chat">
-
-                    <!-- Columna izquierda -->
-                    <div class="chat_columna_izquierda">
-                        <div class="title_user_connect">Usuarios conectados
-                        </div>
-                        <div class="chat_users">
-                        </div>
-                    </div>
-
-                    <!-- Columna derecha -->
-                    <div class="chat_messages-users">
-                        <div id="messages" class="container_messages">
-                            <div class="welcome_message">
-                                <span id="welcome_message"></span>
-                            </div>
-                        </div>
-                        <div class="chat_form_message">
-                            <form onsubmit="onSendMessage(event)" class="form_chat_input">
-                                <input type="text" class="input" id="message_input" name="message"
-                                    placeholder="Mensaje">
-                                <input type="submit" class="principal_button" value="Enviar">
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Footer -->
-        <section class="footer footer_responsive">
-            <span id="year_date"> </span>
-        </section>
-    </div>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js"
-        integrity="sha512-eiqtDDb4GUVCSqOSOTz/s/eiU4B31GrdSb17aPAA4Lv/Cjc8o+hnDvuNkgXhSI5yHuDvYkuojMaQmrB5JB31XQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- modals -->
-    <!-- GPS INACTIVO -->
-    <div class="container_modal" id="modal_gps_inactivo">
-        <div class="modal animate__animated animate__fadeInDown">
-            <div class="title">
-                <h2>GPS Inactivo</h2>
-            </div>
-
-            <div class="content">
-
-                <div class="info_error">
-                    <p id="errortxt">El GPS esta inactivo, para ver su ruta active el GPS en su navegador
-                    </p>
-                </div>
-                <div class="icon_container">
-                    <img src="./assets/antena.png" alt="">
-                </div>
-                <div class="button"><input type="button" id="continue" class="principal_button" value="RECARGAR"
-                        onClick="javascript:location.reload();"></div>
-
-
-            </div>
-
-        </div>
+    <div id="map">
 
     </div>
-    <!-- GPS ACTIVO -->
-    <div class="container_modal" id="modal_gps_activo">
-        <div class="modal animate__animated animate__fadeInDown">
-            <div class="title">
-                <h2>GPS Activo</h2>
-            </div>
-
-            <div class="content">
-
-                <div class="info_error">
-                    <p>El GPS ha sido activado, ahora puedes ver el recorrido de tu ruta
-                    </p>
-                </div>
-                <div class="icon_container">
-                    <img src="./assets/antena.png" alt="">
-                </div>
-                <div class="button"><input type="button" class="principal_button" onClick="hiddenWindowGpsEnabled()"
-                        id="continue" value="CONTINUAR"></div>
-
-
-            </div>
-
-        </div>
+    <div id="app">
 
     </div>
 
-    <div class="container_modal2">
-        <div class="modal2">
-            <div class="title">
-                <h2>Sesion Finalizada</h2>
-            </div>
-
-            <div class="content">
-
-                <div class="info_error">
-                    <p>Su sesión ha expirado por inactividad, vuelve a iniciar sesión</p>
-                    </p>
-                </div>
-                <div class="icon_container">
-                    <img src="./assets/senal-de-advertencia.png" alt="">
-                </div>
-                <div class="button2"><input type="button" id="continue" value="CONTINUAR"></div>
-
-
-            </div>
-
+    <div class="chat">
+        <div class="chat_title">
+            CHAT
         </div>
+        <div class="contaniner_chat">
+            <div class="chat_users">
 
+            </div>
+            <div class="chat_messages-users">
+                <div id="messages">
+
+                </div>
+                <div class="chat_form-message">
+                    <form onsubmit="onSendMessage(event)">
+                        <input type="text" class="input" id="message_input" name="message" placeholder="Mensaje">
+                        <input type="submit" value="Enviar">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="position: absolute;top:10px">
+        <datalist id="countrydata">
+
+            <option>Ruta 4</option>
+            <option>Ruta 5</option>
+            <option>Ruta 6</option>
+            <option>Ruta 31</option>
+            <option>Ruta 36</option>
+
+        </datalist>
+        <label for="country">Rutas:</label>
+
+        <input type="text" list="countrydata" id="country" name="country" size="50" onchange="onSelectRuta(event)"
+            autocomplete="off" placeholder="Selecciona una Ruta" />
+    </div>
+
+   
+    <div class="modal fade show" id="modal" tabindex="-1" style="display:none" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="mo">
+             <div class="title"><h2 class="h2Title">GPS Inactivo</h2></div>
+                 
+                <div class="content">
+                     <div class="modal-body">
+                     El GPS esta inactivo, para poder seguir viendo su ruta activa el GPS en su navegador.
+                     </div>
+
+
+                     <div class="icon_container">
+                     <img src="./assets/antena.png" alt="">
+                     </div>
+
+                
+                     <div class = button type="button" class="btn btn-secondary bg-primary" data-dismiss="modal" onclick="cerrarModal()">Continuar</button>
+                 </div>
+            
+            </div>
+        </div>
+    </div>   
+
+    <div class="modal fade show" id="modal2" tabindex="-1" style="display:none" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="mo2">
+             <div class="title2"><h2 class="h2Title2">GPS Activo</h2></div>
+                 
+                <div class="content2">
+                     <div class="modal-body">
+                        El GPS ha sido activado, ahora puedes ver el recorrido de su ruta.                     </div>
+
+
+                     <div class="icon_container2">
+                     <img src="./assets/antena.png" alt="">
+                     </div>
+
+                
+                     <div class = button2 type="button" class="btn btn-secondary bg-primary" data-dismiss="modal2" onclick="cerrarModal2()">Continuar</button>
+                 </div>
+            
+            </div>
+        </div>
     </div>
 
 
-    <script src='./js/mapa.js' type="text/javascript"></script>
-    <script src='./js/notifications.js' type="text/javascript"></script>
-    <!-- <script src='../node_modules/push.js/bin/push.min.js'></script> -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <!-- <div class="modal fade show" id="modal3" tabindex="-1" style="display:none" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="mo3">
+             <div class="title3"><h2 class="h2Title3">Sesión Finalizada</h2></div>
+                 
+                <div class="content3">
+                     <div class="modal-body3">
+                        Su sesión ha expirado por inactividad, vuelve a iniciar sesión.                    </div>
 
+
+                     <div class="icon_container3">
+                     <img src="./assets/senal-de-advertencia.png" alt="">
+                     </div>
+
+                
+                     <div class = button3 type="button" class="btn btn-secondary bg-primary" data-dismiss="modal" onclick="cerrarModal()">Continuar</button>
+                 </div>
+            
+            </div>
+        </div>
+    </div>  -->
+
+    <script src='./mapa.js'></script>
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
         integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
         crossorigin="anonymous"></script>
-
-    <!--Notificaciones -->
-    <script src="https://cdn.by.wonderpush.com/sdk/1.1/wonderpush-loader.min.js" async></script>
-    <script>
-        window.WonderPush = window.WonderPush || [];
-        WonderPush.push(["init", {
-            webKey: "39c521ff5d54441dfff54688878edae3628560cd0859beabdbec306cf4e9a374",
-        }]);
-    </script>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker.register('service-worker.js').then((reg) => {
-                    console.log("Service worker registered", reg)
-                })
-            })
-        }
-    </script>
 </body>
 
 </html>
