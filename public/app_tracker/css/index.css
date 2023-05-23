@@ -147,6 +147,12 @@ html {
     color: rgb(255, 255, 255);
     font-weight: 500;
     transition: .3s;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Exo', sans-serif;
+    font-weight: bold; 
   }
 
 @media screen and (max-width: 1094px) {

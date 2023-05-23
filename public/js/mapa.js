@@ -21,8 +21,6 @@ window.addEventListener('DOMContentLoaded', () => {
     let map;
     let from;
     let to;
-    let marker;
-
 
     const options = {
         enableHighAccuracy: true,
@@ -30,6 +28,13 @@ window.addEventListener('DOMContentLoaded', () => {
         maximumAge: 0
     };
 
+
+    //URL BASE FIREBASE
+    const firebaseUrlBase = 'https://amigaapp-f2f93-default-rtdb.firebaseio.com'
+
+    // API endpoints
+    const RoutesDbSimulateEndpoint = `${firebaseUrlBase}/dbrutas.json`;
+    const RouteDBEndpoint = `${firebaseUrlBase}/rutas.json`;
 
 
     const mapElement = document.getElementById('map');
@@ -261,94 +266,45 @@ window.addEventListener('DOMContentLoaded', () => {
             from = turf.point([lng, lat]);
 
 
-            let markets = []
+            // Make multiple API requests concurrently using Promise.all
+            Promise.all([
+                axios.get(RoutesDbSimulateEndpoint),
+                axios.get(RouteDBEndpoint)
+            ])
+                .then(responses => {
+                    const [pointesResponse, routesResponse] = responses;
 
-            //CODIGO PARA GARDAR LAS RUTAS DE LA BASE DE DATOS
-            /*             
-                        const allDbRoutesInfo = await fetch('https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas.json')
-                        const allDbRoutes = await fetch('https://amigaapp-f2f93-default-rtdb.firebaseio.com/rutas.json')
-            
-                        const [ruta, dbrutas] = await Promise.all([allDbRoutes, allDbRoutesInfo])
-                            .then((response) => {
-                                console.log(response)
-                                responses.forEach(response => {
-                                    console.log(response.status, response);
-                                })
-                            })
-                            .catch((error) => {
-                                console.log(error.message)
-                            })
-            
-                        console.log(ruta) */
+                    // Process point markets response
+                    const pointsData = pointesResponse.data;
+                     console.log('Points data:', pointsData);
 
-            //LOAD ALL ROUTE IN SELECT ITEM
-            await fetch('https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas.json')
-                .then(response => response.json())
-                .then(json => {
+                    // We make the request to Firebase of the routes stored above.
+                   /*  puntosSimulacion = Object.values(pointsData)
+                    puntosSimulacion.reverse() */
 
+                    // Process routes response
+                    const routesData = routesResponse.data;
+                    /*  console.log('Routes data:', routesData); */
 
-                    Object.keys(json).forEach(element => {
+                    //GET DATA RESPONSE
+                    Object.keys(routesData).forEach(element => {
                         opcionesRuta.push(element)
+                    });
 
-
+                    //WE LOAD ALL THE ROUTES STORED IN FIREBASE IN THE SELECT.
+                    let selectRutasList = document.querySelector('#countrydata');
+                    
+                    
+                    opcionesRuta.forEach(opcion => {
+                        let Op = document.createElement('option')                        
+                        Op.value = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
+                        selectRutasList.appendChild(Op)
                     });
 
                 })
-                .catch(err => console.log(err))
-                .finally(() => {
-
-                    console.log(opcionesRuta)
-
-
-                })
-
-            //LOAD DATA POINT IN DB (FIREBASE-EMULATE)
-            try {
-                opcionesRuta.forEach(async (rutaNombre) => {
-                    await fetch(`https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas/${rutaNombre}.json`)
-                        .then((resp) => resp.json())
-                        .then((data) => {
-
-                            let dataPoints = Object.values(data)
-
-
-
-                            Array.of(dataPoints[0]).forEach((coordenadas) => {
-
-                                const { Latitude, Longitude, Speed } = coordenadas
-
-
-
-                                geojson.features[rutaNombre] =
-                                {
-                                    type: 'Feature',
-                                    geometry: {
-                                        coordinates: {
-                                            lat: Latitude,
-                                            lon: Longitude
-                                        }
-                                    },
-                                    properties: {
-                                        title: 'Ruta 18',
-                                        description: 'Norte/Sur',
-                                        velocidad: Speed == undefined ? '0' : Math.round(Speed)
-                                    }
-                                }
-
-                            });
-                        })
-                        .finally(() => {
-                            loadPointMap()
-                        })
-
-                })
-
-            } catch (err) {
-                // If the updateSource interval is defined, clear the interval to stop updating the source.
-                // if (updateSource) clearInterval(updateSource);
-                throw new Error("Error", err);
-
-            }
+                .catch(error => {
+                    console.error('Error:', error);
+                });           
         })
 
         map.on('click', (e) => {

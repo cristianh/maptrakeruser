@@ -1,6 +1,7 @@
 
 let watchIDElement;
 let nombreRutaDB = "Ruta taxi";
+let routeEmulate = 'Ruta%20taxi';
 let nombreRutaDBRoom = "";
 let opcionesRuta = []
 let watchID;
@@ -10,67 +11,49 @@ let puntosSimulacion;
 let hasSendDataUser = true
 let hasEmulateSendData = false
 
-document.addEventListener('DOMContentLoaded', main, false);
-
 let temporizadorSimulador = null
 
+
+//URL BASE FIREBASE
+const firebaseUrlBase = 'https://amigaapp-f2f93-default-rtdb.firebaseio.com'
+
+//TEST URL LOCAL
+// cambiar por 'http://localhost:8000'
+const baseUrlProduction = 'https://socket-maptracker.onrender.com'
+
+// API endpoints
+const RoutesDbSimulateEndpoint = `${firebaseUrlBase}/dbrutas/${routeEmulate}.json`;
+const RouteDBEndpoint = `${firebaseUrlBase}/dbrutas.json`;
+
+document.addEventListener('DOMContentLoaded', main, false);
 
 
 function main() {
 
+    //listener
+    document.getElementById("stopPosition").addEventListener("click", stopWatch, false);
+    document.getElementById("watchPosition").addEventListener("click", watchPosition, false);
+    document.getElementById("simulacion_route").addEventListener("click", emulateRoute, false);
+
+
+    //LOAD DATE FOOTER
     loadYearFooter()
 
-    
-    //NOS CONECTAMOS A LA FIREBASE PARA SIMULAR UNA RUTA
-    let datosfirebase;
 
-
-
-
-    //HACEMOS LA PETICION A FIREBASE DE LAS RUTAS GUARDADAS CON ANTERIORIDAD.
-    fetch(`https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas/Ruta%20taxi.json`, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-    })
-
-        .then(response => response.json())
-        .then(json => {
-
-            console.log(json)
-            puntosSimulacion = Object.values(json)
-            puntosSimulacion.reverse()
-            /* console.log(puntosSimulacion) */
-
-        })
-        .catch(err => console.log(err))
-        .finally(() => {
-            console.log('finish')
-
-
-        })
-
-    // Cordova is now initialized. Have fun!
-
-    //TEST URL LOCAL
-    //PARA EL DESPLIEGUE QUITAR 'localhost' 
-    /* let socket = io("http://localhost:8000", {
-        withCredentials: true,
-        pingTimeout: 30000
-    }) */
-    //TEST URL PRODUCCION - MIDIFICACION
-    let socket = io("https://socket-maptracker.onrender.com", {
+    //TEST URL PRODUCCION - MODIFICACION
+    let socket = io(baseUrlProduction, {
         withCredentials: true,
         pingTimeout: 30000
     })
 
 
-    //PASAMOS EL OBJECT SOCKET AL OBJETO WINDOW PARA UTILIZARLO GLOBALMENTE.
+    //******************** START SOCKET EVENTS ******************************
+
+    // WE PASS THE OBJECT SOCKET TO THE WINDOW OBJECT TO USE IT GLOBALLY.
     window.socket = socket
 
-    //EVENT PARA ESPERAR RESPUESTA SI 2 USUARIO SE CONECTARON A LA MISMA RUTA
+
+    // EVENT TO WAIT RESPONSE IF 2 USER CONNECTED TO THE SAME ROUTE
     window.socket.on("route_message_user", (data) => {
         console.log(".............................................", data)
 
@@ -82,51 +65,45 @@ function main() {
             hasSendDataUser = data.senddata
         }
 
-        console.log("hasSendDataUser", hasSendDataUser)
-
-
-
-
-
     })
 
-    //EVENT PARA ESPERAR RESPUESTA SI 2 USUARIO SE CONECTARON A LA MISMA RUTA
-    window.socket.on("route_message_user", (data) => {
-        hasSendDataUser = data.senddata
-        console.log(".............................................", data)
-        document.getElementById('info').innerHTML = data.message
-    })
+
     window.socket.on("route_exit_user_data", (data) => {
         console.log(data)
         /* hasSendDataUser = true */
     })
 
+    //*********************** END SOCKETS EVENT *******************
 
+    // Make multiple API requests concurrently using Promise.all
+    Promise.all([
+        axios.get(RoutesDbSimulateEndpoint),
+        axios.get(RouteDBEndpoint)
+    ])
+        .then(responses => {
+            const [pointesResponse, routesResponse] = responses;
 
+            // Process point markets response
+            const pointsData = pointesResponse.data;
+            /*  console.log('Points data:', pointsData); */
 
-    document.getElementById("stopPosition").addEventListener("click", stopWatch, false);
-    document.getElementById("watchPosition").addEventListener("click", watchPosition, false);
-    document.getElementById("simulacion_route").addEventListener("click", emulateRoute, false);
+            // We make the request to Firebase of the routes stored above.
+            puntosSimulacion = Object.values(pointsData)
+            puntosSimulacion.reverse()
 
+            // Process routes response
+            const routesData = routesResponse.data;
+            /*  console.log('Routes data:', routesData); */
 
-
-    fetch('https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas.json')
-        .then(response => response.json())
-        .then(json => {
-
-
-            Object.keys(json).forEach(element => {
+            //GET DATA RESPONSE
+            Object.keys(routesData).forEach(element => {
                 opcionesRuta.push(element)
-
             });
 
-        })
-        .catch(err => console.log(err))
-        .finally(() => {
+            //WE LOAD ALL THE ROUTES STORED IN FIREBASE IN THE SELECT.
             let selectRutas = document.getElementById('selectRutas_emulate');
-            console.log(opcionesRuta)
             opcionesRuta.forEach(opcion => {
-                console.log("opcion", opcion)
+
                 let Op = document.createElement('option')
                 Op.value = opcion
                 Op.text = opcion
@@ -134,9 +111,11 @@ function main() {
             });
 
         })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 
     document.getElementById('selectRutas_emulate').addEventListener('change', (event) => {
-        console.log(event.target.value);
         hasEmulateSendData = true
     });
 
@@ -194,7 +173,7 @@ function onSelectRuta(e) {
  * This function stops a GPS tracking simulation and clears related variables and events.
  */
 function stopWatch() {
-    navigator.geolocation.clearWatch(watchIDElement);
+
     clearInterval(temporizadorSimulador);
     hasSendDataUser = false
     hasEmulateSendData = false
@@ -213,16 +192,17 @@ function stopWatch() {
 function watchPosition() {
     document.getElementById('select_route_simulacion').style.display = 'none'
 
-    document.getElementById("simulacion_route").classList.add('disable')
-    document.getElementById("simulacion_route").removeEventListener("click", emulateRoute);
+
     if (nombreRutaDBRoom === "") {
         alert("Seleccione la ruta por favor.")
     }
     else {
-        //NOS CONECTAMOS AL LA SALA (ROOM)
+        document.getElementById("simulacion_route").classList.add('disable')
+        document.getElementById("simulacion_route").removeEventListener("click", emulateRoute);
+        // We connect to the room (room)
         window.socket.emit('server_join_room', { room: nombreRutaDBRoom, type: 'user-data-gps' })
         /* socket.emit('check_length_users_route_gps', { conect: 'user-data-gps', room: nombreRutaDBRoom }); */
-        console.log("----------------------------", hasSendDataUser)
+
         var options = {
             maximumAge: 3600000,
             timeout: 1000,
@@ -230,8 +210,16 @@ function watchPosition() {
         }
         watchIDElement = navigator.geolocation.watchPosition(onSuccess, onError, options);
 
+        /**
+         * The function sends GPS data to a server and either simulates or sends real-time location
+         * data depending on a boolean value.
+         * @param position - The parameter "position" is an object that contains the current GPS
+         * position of the user, including latitude, longitude, heading, and speed. It is passed as an
+         * argument to the function "onSuccess" which is called when the GPS position is successfully
+         * retrieved.
+         */
         function onSuccess(position) {
-           
+
             sendDataGpsUseConect().then((data) => {
 
                 if (data) {
@@ -270,30 +258,13 @@ function watchPosition() {
             });
         }
 
+        /**
+         * The function alerts an error message with the error code and message.
+         * @param error - The error object that contains information about the error that occurred. It
+         * typically includes a code and a message property.
+         */
         function onError(error) {
             alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
         }
     }
-}
-
-function networkInfo() {
-    var networkState = navigator.connection.type;
-    var states = {};
-    states[Connection.UNKNOWN] = 'Unknown connection';
-    states[Connection.ETHERNET] = 'Ethernet connection';
-    states[Connection.WIFI] = 'WiFi connection';
-    states[Connection.CELL_2G] = 'Cell 2G connection';
-    states[Connection.CELL_3G] = 'Cell 3G connection';
-    states[Connection.CELL_4G] = 'Cell 4G connection';
-    states[Connection.CELL] = 'Cell generic connection';
-    states[Connection.NONE] = 'No network connection';
-    alert('Connection type: ' + states[networkState]);
-}
-
-function onOffline() {
-    alert('You are now offline!');
-}
-
-function onOnline() {
-    alert('You are now online!');
 }
