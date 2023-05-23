@@ -5,6 +5,7 @@ const path = require('path');
 const server = http.createServer(app);
 const cors = require('cors');
 
+//Commit de prueba (borrar)
 // Importamos las librerías necesarias
 const { Configuration, OpenAIApi } = require("openai");
 require("dotenv").config();
