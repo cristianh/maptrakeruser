@@ -18,6 +18,91 @@ window.addEventListener('DOMContentLoaded', () => {
         "type": "FeatureCollection",
         "features": []
     }
+
+    //DATA STOP BUS
+    //Para ubicar los paraderos
+    let geojsonBusStop = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-75.668881, 4.541374]
+
+                },
+                "properties": {
+                    "title": "Ruta 32",
+                    "description": "Norte/Sur",
+                    "velocidad": 0
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-75.666513, 4.539046]
+                },
+                "properties": {
+                    "title": "Ruta 21",
+                    "description": "Norte/Sur",
+                    "velocidad": 0
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-75.671884, 4.538494]
+                },
+                "properties": {
+                    "title": "Ruta 5",
+                    "description": "Norte/Sur",
+                    "velocidad": "0"
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-75.684583, 4.522099]
+                },
+                "properties": {
+                    "title": "Ruta 5",
+                    "description": "Norte/Sur",
+                    "velocidad": "0"
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-75.668856, 4.537622]
+                },
+                "properties": {
+                    "title": "Ruta 5",
+                    "description": "Norte/Sur",
+                    "velocidad": "0"
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-75.683675, 4.527566]
+                },
+                "properties": {
+                    "title": "Ruta 5",
+                    "description": "Norte/Sur",
+                    "velocidad": "0"
+                }
+            }
+
+        ]
+    }
+
+    
+
     let map;
     let from;
     let to;
@@ -276,11 +361,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     // Process point markets response
                     const pointsData = pointesResponse.data;
-                     console.log('Points data:', pointsData);
+                    console.log('Points data:', pointsData);
 
                     // We make the request to Firebase of the routes stored above.
-                   /*  puntosSimulacion = Object.values(pointsData)
-                    puntosSimulacion.reverse() */
+                    /*  puntosSimulacion = Object.values(pointsData)
+                     puntosSimulacion.reverse() */
 
                     // Process routes response
                     const routesData = routesResponse.data;
@@ -293,10 +378,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     //WE LOAD ALL THE ROUTES STORED IN FIREBASE IN THE SELECT.
                     let selectRutasList = document.querySelector('#countrydata');
-                    
-                    
+
+
                     opcionesRuta.forEach(opcion => {
-                        let Op = document.createElement('option')                        
+                        let Op = document.createElement('option')
                         Op.value = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
                         selectRutasList.appendChild(Op)
                     });
@@ -304,7 +389,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                });           
+                });
         })
 
         map.on('click', (e) => {
@@ -347,6 +432,45 @@ window.addEventListener('DOMContentLoaded', () => {
                 showUserHeading: true
             })
         );
+
+        //LOAD PARADERO IN MAP.
+        map.loadImage(
+            'https://res.cloudinary.com/dl7oqoile/image/upload/v1684804920/bus-stop_l8qgtv.png',
+            (error, image) => {
+                if (error) throw error;
+
+
+
+                // Add the image to the map style.
+                map.addImage('bus-route', image);
+
+                map.addSource('routemap', {
+                    type: 'geojson',
+                    // Use a URL for the value for the `data` property.
+                    data: geojsonBusStop
+
+                });
+
+                // Add a symbol layer
+                map.addLayer({
+                    'id': 'routemap-layer',
+                    'type': 'symbol',
+                    'source': 'routemap',
+                    layout: {
+                        'icon-image': 'bus-route', // Nombre del icono personalizado externo
+                        'icon-size': 0.07 // Ajusta el tamaño del icono según sea necesario
+                    },
+                    minzoom: 15, // Set the minimum zoom level for the icons to be visible
+                    maxzoom: 20, // Set the maximum zoom level for the icons to be visible
+                    paint: {
+                        'text-halo-blur': 0 // Set the circle blur to 0 to remove the blur effect
+                    }
+                });
+
+                map.setPaintProperty('routemap-layer', 'icon-max-size', 21);
+            });
+
+
 
 
 
