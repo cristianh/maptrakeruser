@@ -11,6 +11,8 @@ window.addEventListener('DOMContentLoaded', () => {
     let notificado = false
     let backPointMarkers = []
     let positionHerUser = []
+    let opcionesRuta = []
+    let puntosSimulacion = []
 
 
     //Add markets
@@ -101,7 +103,7 @@ window.addEventListener('DOMContentLoaded', () => {
         ]
     }
 
-    
+
 
     let map;
     let from;
@@ -323,73 +325,127 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
         map.on('load', async () => {
-
-            let opcionesRuta = []
-
-
-            // customizamor at User's Point Marker
-            const margkeruser = document.createElement('div');
-
-            margkeruser.style.width = "50px"
-            margkeruser.style.height = "50px"
-            margkeruser.style.backgroundImage = "url('../../assets/user_profile.svg')"
-            margkeruser.style.backgroundSize = "cover"
-            margkeruser.style.borderRadius = "50%"
-            margkeruser.style.cursor = "pointer"
-            margkeruser.style.backgroundColor = "white"
-            margkeruser.style.borderRadius = "100%"
-            margkeruser.className = 'marker';
+            try {
 
 
 
-            // Current user position.
-            let marker = new mapboxgl.Marker(margkeruser)
-                .setLngLat([lng, lat])
-                .addTo(map);
+                // customizamor at User's Point Marker
+                const margkeruser = document.createElement('div');
 
-            //Tomamos el primer punto de referencia (cordenadas actuales del usuario)
-            from = turf.point([lng, lat]);
+                margkeruser.style.width = "50px"
+                margkeruser.style.height = "50px"
+                margkeruser.style.backgroundImage = "url('../../assets/user_profile.svg')"
+                margkeruser.style.backgroundSize = "cover"
+                margkeruser.style.borderRadius = "50%"
+                margkeruser.style.cursor = "pointer"
+                margkeruser.style.backgroundColor = "white"
+                margkeruser.style.borderRadius = "100%"
+                margkeruser.className = 'marker';
 
 
-            // Make multiple API requests concurrently using Promise.all
-            Promise.all([
-                axios.get(RoutesDbSimulateEndpoint),
-                axios.get(RouteDBEndpoint)
-            ])
-                .then(responses => {
-                    const [pointesResponse, routesResponse] = responses;
 
-                    // Process point markets response
-                    const pointsData = pointesResponse.data;
-                    console.log('Points data:', pointsData);
+                // Current user position.
+                let marker = new mapboxgl.Marker(margkeruser)
+                    .setLngLat([lng, lat])
+                    .addTo(map);
 
-                    // We make the request to Firebase of the routes stored above.
-                    /*  puntosSimulacion = Object.values(pointsData)
-                     puntosSimulacion.reverse() */
+                //Tomamos el primer punto de referencia (cordenadas actuales del usuario)
+                from = turf.point([lng, lat]);
 
-                    // Process routes response
-                    const routesData = routesResponse.data;
-                    /*  console.log('Routes data:', routesData); */
 
-                    //GET DATA RESPONSE
-                    Object.keys(routesData).forEach(element => {
-                        opcionesRuta.push(element)
+                // Make multiple API requests concurrently using Promise.all
+                Promise.all([
+                    axios.get(RoutesDbSimulateEndpoint),
+                    axios.get(RouteDBEndpoint)
+                ])
+                    .then(responses => {
+                        const [pointesResponse, routesResponse] = responses;
+
+                        // Process point markets response
+                        const pointsData = pointesResponse.data;
+                        console.log('Points data:', pointsData);
+
+                        // We make the request to Firebase of the routes stored above.
+                        puntosSimulacion = Object.keys(pointsData)
+
+
+                        console.log(".................................", puntosSimulacion)
+
+                        puntosSimulacion.forEach(async (rutaNombre) => {
+                            console.log("...........................rutaNombre", rutaNombre);
+                            await fetch(`https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas/${rutaNombre}.json`)
+                                .then((resp) => resp.json())
+                                .then((data) => {
+
+                                    let dataPoints = Object.values(data)
+
+
+
+                                    Array.of(dataPoints[0]).forEach((coordenadas) => {
+
+                                        const { Latitude, Longitude, Speed } = coordenadas
+
+
+
+                                        geojson.features[rutaNombre] =
+                                        {
+                                            type: 'Feature',
+                                            geometry: {
+                                                coordinates: {
+                                                    lat: Latitude,
+                                                    lon: Longitude
+                                                }
+                                            },
+                                            properties: {
+                                                title: 'Ruta 18',
+                                                description: 'Norte/Sur',
+                                                velocidad: Speed == undefined ? '0' : Math.round(Speed)
+                                            }
+                                        }
+
+                                    });
+                                })
+                                .finally(() => {
+                                    loadPointMap()
+                                })
+
+                        })
+
+                        // Process routes response
+                        const routesData = routesResponse.data;
+                        /*  console.log('Routes data:', routesData); */
+
+                        //GET DATA RESPONSE
+                        Object.keys(routesData).forEach(element => {
+                            opcionesRuta.push(element)
+                        });
+
+
+
+                        //WE LOAD ALL THE ROUTES STORED IN FIREBASE IN THE SELECT.
+                        let selectRutasList = document.querySelector('#countrydata');
+
+
+                        opcionesRuta.forEach(opcion => {
+                            let Op = document.createElement('option')
+                            Op.value = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
+                            selectRutasList.appendChild(Op)
+                        });
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
                     });
 
-                    //WE LOAD ALL THE ROUTES STORED IN FIREBASE IN THE SELECT.
-                    let selectRutasList = document.querySelector('#countrydata');
 
 
-                    opcionesRuta.forEach(opcion => {
-                        let Op = document.createElement('option')
-                        Op.value = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
-                        selectRutasList.appendChild(Op)
-                    });
 
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            } catch (err) {
+                // If the updateSource interval is defined, clear the interval to stop updating the source.
+                // if (updateSource) clearInterval(updateSource);
+                throw new Error("Error", err.message);
+
+            }
         })
 
         map.on('click', (e) => {

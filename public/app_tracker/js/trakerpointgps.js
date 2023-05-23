@@ -4,6 +4,7 @@ let nombreRutaDB = "Ruta taxi";
 let routeEmulate = 'Ruta%20taxi';
 let nombreRutaDBRoom = "";
 let opcionesRuta = []
+let opcionesRutaEmulate = []
 let watchID;
 let simlutePintCoordenate = 0
 let puntosSimulacion;
@@ -24,6 +25,7 @@ const baseUrlProduction = 'https://socket-maptracker.onrender.com'
 // API endpoints
 const RoutesDbSimulateEndpoint = `${firebaseUrlBase}/dbrutas/${routeEmulate}.json`;
 const RouteDBEndpoint = `${firebaseUrlBase}/dbrutas.json`;
+const RouteDB = `${firebaseUrlBase}/rutas.json`;
 
 document.addEventListener('DOMContentLoaded', main, false);
 
@@ -78,36 +80,56 @@ function main() {
     // Make multiple API requests concurrently using Promise.all
     Promise.all([
         axios.get(RoutesDbSimulateEndpoint),
-        axios.get(RouteDBEndpoint)
+        axios.get(RouteDBEndpoint),
+        axios.get(RouteDB),
     ])
         .then(responses => {
-            const [pointesResponse, routesResponse] = responses;
+            const [pointesResponse, routesEmulateResponse, routesDBResponse] = responses;
 
             // Process point markets response
             const pointsData = pointesResponse.data;
-            /*  console.log('Points data:', pointsData); */
+            console.log('Points data:', pointsData);
 
             // We make the request to Firebase of the routes stored above.
             puntosSimulacion = Object.values(pointsData)
             puntosSimulacion.reverse()
 
-            // Process routes response
-            const routesData = routesResponse.data;
-            /*  console.log('Routes data:', routesData); */
+            // Process routes emulate response
+            const routesEmulateData = routesEmulateResponse.data;
+            console.log('Routes data:', routesEmulateData);
 
             //GET DATA RESPONSE
-            Object.keys(routesData).forEach(element => {
+            Object.keys(routesEmulateData).forEach(element => {
+                opcionesRutaEmulate.push(element)
+            });
+
+            //WE LOAD ALL THE ROUTES STORED IN FIREBASE IN THE SELECT.
+            let selectRutas = document.querySelector('#selectRutas_emulate');
+            opcionesRutaEmulate.forEach(opcion => {
+                console.log("........................opcion", opcion)
+                let Op = document.createElement('option')
+                Op.text = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
+                Op.value = opcion
+                selectRutas.add(Op)
+            });
+
+            // Process routes response
+            const routesDB = routesDBResponse.data;
+            console.log('Routes data:', routesDB);
+
+            //GET DATA RESPONSE
+            Object.keys(routesDB).forEach(element => {
                 opcionesRuta.push(element)
             });
 
             //WE LOAD ALL THE ROUTES STORED IN FIREBASE IN THE SELECT.
-            let selectRutas = document.getElementById('selectRutas_emulate');
+            let selectRutasDB = document.querySelector('#routeDB');
             opcionesRuta.forEach(opcion => {
-
+                console.log("........................opcion", opcion)
                 let Op = document.createElement('option')
+                Op.text = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
                 Op.value = opcion
-                Op.text = opcion
-                selectRutas.add(Op)
+                selectRutasDB.add(Op)
             });
 
         })
@@ -146,6 +168,13 @@ function sendDataGpsUseConect() {
             resolve(hasSendDataUser)
         }
     });
+}
+
+/* The above code defines a function called `capitalizarTexto` that takes a string as an argument.
+    The function capitalizes the first letter of the string and converts the rest of the string to
+    lowercase. It then returns the modified string. */
+function capitalizarTexto(texto) {
+    return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
 }
 
 /**
