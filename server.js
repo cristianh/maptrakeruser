@@ -80,13 +80,9 @@ const eventsSocketio = Object.freeze({
 
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  
   //MENSAJE DE BIENVENIDA.(privado)
   io.to(socket.id).emit(eventsSocketio.SERVER_MESSAGE, "Bienvenido al chat de Ruta Amigapp, recuerda seguir nuestras políticas de uso.");
-
-
-
-
 
   socket.on(eventsSocketio.SERVER_JOIN_ROOM, (dataRoom) => {
 
@@ -94,7 +90,7 @@ io.on('connection', (socket) => {
     //SUSCRIBE TO ROOM USER FROM GPS PAGE.
     socket.join(dataRoom.room);
 
-    console.log(io.sockets.adapter.rooms);
+    
 
     //GUARDAMOS EL ARREGLO COMO VAN LLEGANDO LOS USUARIOS.
 
@@ -144,10 +140,6 @@ io.on('connection', (socket) => {
         })
       }
 
-      console.log('leave Room', room)
-      console.log(io.sockets.adapter.rooms)
-      console.log(DBGPSDATA)
-
       //SEND NEW LIST USER connection
       socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: room, usersIds });
     })
@@ -156,12 +148,6 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
       try {
-
-
-        console.log(io.sockets.adapter.rooms)
-
-        console.log(`Usuario ${socket.id} está abandonando la sala ${dataRoom.room}`)
-
         Object.keys(DBGPSDATA).forEach((data, key) => {
           const filterids = DBGPSDATA[data].filter((item) => item.idUser !== socket.id)
           DBGPSDATA[data] = filterids
@@ -181,7 +167,7 @@ io.on('connection', (socket) => {
 
             return users.type === 'user-data-gps'
           })
-          console.log("findNextData", findNextData[0])
+          
 
           io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
 
@@ -189,7 +175,7 @@ io.on('connection', (socket) => {
 
 
       } catch (error) {
-        console.log(error.message)
+        
       }
     });
 
@@ -242,9 +228,18 @@ io.on('connection', (socket) => {
       console.log(error.message)
     } */
 
-    // to all clients in room
-    io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: "positive", message: data.message });
+    try {
+      
+    
+      // to all clients in room (default 'positive')
+      io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: "positive", message: data.message });
 
+      //socket.emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: "positive", message: data.message });
+      
+    } catch (error) {
+      console.log(error)
+    }
+    
 
   })
 
@@ -253,7 +248,7 @@ io.on('connection', (socket) => {
   socket.on(eventsSocketio.GET_USER_GPS_DATA, (data) => {
     try {
 
-      console.log(data.room, socket.id)
+      
       //EVENTO PARA TODAS LAS PERSONAS CONECTADAS A LA SALA.
       //socket.broadcast.to(data.room).emit(eventsSocketio.SEND_USER_GPS_DATA, data)//solo a los de la sala
 
@@ -290,7 +285,7 @@ io.on('connection', (socket) => {
   })
 
   //SEND LIST DATA ROMOOS ENABLED
-  socket.on(eventsSocketio.GET_LIST_ROOMS, (data) => {
+  socket.on(eventsSocketio.GET_LIST_ROOMS, () => {
     try {
       //GET ROOM ENABLED
       const usersInRoom = io.sockets.adapter.rooms;
@@ -337,6 +332,4 @@ io.on('connection', (socket) => {
 
 // ------------------ END SOCKET.IO --------------------------------//
 
-server.listen(process.env.PORT || 8000, () => {
-  console.log('listening on http://localhost:8000');
-});
+module.exports = server
