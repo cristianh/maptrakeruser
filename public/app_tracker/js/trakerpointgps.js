@@ -21,6 +21,7 @@ const firebaseUrlBase = 'https://amigaapp-f2f93-default-rtdb.firebaseio.com'
 //TEST URL LOCAL
 // cambiar por 'http://localhost:8000'
 const baseUrlProduction = 'https://socket-maptracker.onrender.com'
+//const baseUrlProduction = 'http://localhost:8000'
 
 // API endpoints
 const RoutesDbSimulateEndpoint = `${firebaseUrlBase}/dbrutas/${routeEmulate}.json`;
@@ -91,8 +92,7 @@ function main() {
             console.log('Points data:', pointsData);
 
             // We make the request to Firebase of the routes stored above.
-            puntosSimulacion = Object.values(pointsData)
-            puntosSimulacion.reverse()
+            puntosSimulacion = Object.values(pointsData)            
 
             // Process routes emulate response
             const routesEmulateData = routesEmulateResponse.data;
