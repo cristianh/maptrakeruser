@@ -469,12 +469,7 @@ window.addEventListener('DOMContentLoaded', () => {
             showUserHeading: true
         }), 'top-left');
 
-        const geocoder = new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            language: 'es', // Specify the language as German.
-            mapboxgl: mapboxgl
-        });
-        map.addControl(geocoder);
+    ;
 
         // Add geolocate control to the map.
         map.addControl(

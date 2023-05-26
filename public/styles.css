@@ -521,6 +521,19 @@ a.mapboxgl-ctrl-logo {
 }
 
 /* Estilos para las barras del icono de hamburguesa */
+
+.menu a {
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  color:white
+}
+
+.menu a:visited {
+  text-decoration: none;
+  color:white
+}
+
 .menu .ham span {
   display: flex;
   flex-direction: column;

@@ -83,10 +83,6 @@ io.on('connection', (socket) => {
   //MENSAJE DE BIENVENIDA.(privado)
   io.to(socket.id).emit(eventsSocketio.SERVER_MESSAGE, "Bienvenido al chat de Ruta Amigapp, recuerda seguir nuestras políticas de uso.");
 
-
-
-
-
   socket.on(eventsSocketio.SERVER_JOIN_ROOM, (dataRoom) => {
 
     /* try { */
