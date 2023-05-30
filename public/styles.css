@@ -141,7 +141,7 @@ span {
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.411);
-  z-index: 999999;
+  z-index: 999999999;
 
 }
 
@@ -215,7 +215,7 @@ span {
 
 #map {
   width: 100vw;
-  height: auto;
+  height: 100vh;
   position: relative;
 
 }
@@ -255,7 +255,7 @@ span {
   height: 30rem;
   position: absolute;
   right: 0vw;
-  bottom: -450px;
+  bottom:-28rem;
   z-index: 9999;
   background-color: rgb(255, 255, 255);
   border-top-right-radius: 12px;
@@ -456,7 +456,7 @@ span {
   background-color: rgba(242, 135, 5, 1);
   color: rgb(255, 255, 255);
   width: 100vw;
-  height: 2rem;
+  height: 3rem;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -464,6 +464,8 @@ span {
   font-weight: 800;
   font-size: 0.9em;
   z-index: 99999999;
+/*   position: absolute;
+  bottom: 0px; */
 }
 
 #year_date {
@@ -475,14 +477,22 @@ a.mapboxgl-ctrl-logo {
   height: 2em;
 }
 
-.mapboxgl-ctrl {}
+
+
+/* Container */
+.container{
+  width: 100vw;
+  height: 100vh;
+  outline: 10px red;
+}
+
 
 
 
 /* Container principa */
 .container-app {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
   max-height: 100vh;
@@ -633,6 +643,7 @@ a.mapboxgl-ctrl-logo {
   .chat {
     width: 100vw;
     left: 0vw;
+    top: 41.3em;
   }
 }
 
@@ -652,6 +663,7 @@ a.mapboxgl-ctrl-logo {
   .chat {
     width: 100vw;
     left: 0vw;
+    top: 29rem;
   }
 }
 
