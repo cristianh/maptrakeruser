@@ -3,6 +3,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     loadYearFooter()
 
+
     //SOCKET CODE
 
     let userChat = []

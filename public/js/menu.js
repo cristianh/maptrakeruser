@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('.chat_icon').addEventListener('click', () => {
+    document.querySelector('.chat_icon').addEventListener('mouseup', () => {
         let element = document.querySelector('.chat')
         element.style.display = "flex"
         animateCSS('.chat', 'bounceInUp')

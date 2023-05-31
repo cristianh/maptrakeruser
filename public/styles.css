@@ -256,7 +256,8 @@ span {
   background-color: #267365;
   border-radius: 100%;
   box-shadow: -5px 1px 14px silver;
-  cursor: pointer
+  cursor: pointer;
+  pointer-events: all;
 }
 
 
@@ -754,7 +755,7 @@ a.mapboxgl-ctrl-logo {
   }
 
   .chat_icon {
-    bottom: 100px;
+    bottom: 50px;
   }
 }
 
