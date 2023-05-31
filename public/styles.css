@@ -241,7 +241,23 @@ span {
 }
 
 
-
+/* Chat-icon*/
+.chat_icon{
+  width: 58px;
+  height: 59px;
+  position: absolute;
+  bottom: 3.5rem;
+  right: 1rem;
+  z-index: 9999999;
+  background-image: url(./assets/mesage-icon.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 76%;
+  background-color: #267365;
+  border-radius: 100%;
+  box-shadow: -5px 1px 14px silver;
+  cursor:pointer
+}
 
 
 
@@ -250,18 +266,17 @@ span {
   display: flex;
   flex-direction: column;
   place-items: center;
-  /* flex: 1 1 1; */
   width: 25rem;
   height: 30rem;
   position: absolute;
   right: 0vw;
-  bottom:-28rem;
-  z-index: 9999;
+  bottom: 5%;
+  z-index: 99999999;
   background-color: rgb(255, 255, 255);
   border-top-right-radius: 12px;
   border-top-left-radius: 12px;
   box-shadow: -10px 0px 10px -5px rgba(0, 0, 0, 0.5);
-
+  display: none;
 }
 
 /* Chat nav */
@@ -663,49 +678,6 @@ a.mapboxgl-ctrl-logo {
   .chat {
     width: 100vw;
     left: 0vw;
-    top: 29rem;
+    top: 7.2rem;
   }
-}
-
-/* .animatedChatIn,.animatedChatOut{
-  animation-fill-mode: forwards;
-} */
-
-.animatedChatIn {
-  animation: chatAnimationIn 0.5s ease-in-out;
-  /* Duración de 4 segundos y se repite infinitamente */
-
-}
-
-.animatedChatOut {
-  animation: chatAnimationOut 0.5s ease-in-out;
-  /* Duración de 4 segundos y se repite infinitamente */
-}
-
-
-@keyframes chatAnimationIn {
-  0% {
-    transform: translateY(0rem);
-  }
-
-  /* Posición inicial */
-  100% {
-    transform: translateY(-28rem);
-  }
-
-  /* Posición inicial */
-
-}
-
-@keyframes chatAnimationOut {
-  0% {
-    transform: translateY(-28rem);
-  }
-
-  /* Posición inicial */
-  100% {
-    transform: translateY(0rem);
-  }
-
-  /* Posición inicial */
 }

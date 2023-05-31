@@ -3,6 +3,42 @@ window.addEventListener('DOMContentLoaded', () => {
 
     loadYearFooter()
 
+    document.querySelector('.chat_icon').addEventListener('click', () => {
+        let element = document.querySelector('.chat')
+        element.style.display = "flex"
+        animateCSS('.chat', 'bounceInUp')
+    }, false)
+
+    const animateCSS = (element, animation, prefix = 'animate__') =>
+        // We create a Promise and return it
+        new Promise((resolve, reject) => {
+            const animationName = `${prefix}${animation}`;
+            const node = document.querySelector(element);
+
+            node.classList.add(`${prefix}animated`, animationName);
+
+            // When the animation ends, we clean the classes and resolve the Promise
+            function handleAnimationEnd(event) {
+                event.stopPropagation();
+                node.classList.remove(`${prefix}animated`, animationName);
+                resolve('Animation ended');
+            }
+
+            node.addEventListener('animationend', handleAnimationEnd, { once: true });
+        });
+
+
+
+    document.querySelector('.chat_title').addEventListener('click', () => {
+        // or
+        animateCSS('.chat', 'bounceOutDown').then((message) => {
+            // Do something after the animation
+            document.querySelector('.chat').style.display = 'none';
+        });
+    });
+
+    
+
     //SOCKET CODE
 
     let userChat = []
@@ -469,7 +505,7 @@ window.addEventListener('DOMContentLoaded', () => {
             showUserHeading: true
         }), 'top-left');
 
-    ;
+        ;
 
         // Add geolocate control to the map.
         map.addControl(
@@ -730,18 +766,5 @@ function loadYearFooter() {
     document.getElementById("year_date").innerHTML = `Rutamigapp. ${year}  @copyrigth todos los derechos reservados.`;
 }
 
-/**
- * The function toggles the animation class of a chat element.
- */
-function chatView() {
-    let chatElement = document.querySelector('.chat')
 
-    if (chatElement.classList.contains('animatedChatIn')) {
-        chatElement.classList.toggle('animatedChatOut')
-    } else {
-        chatElement.classList.toggle('animatedChatIn')
-    }
-
-    chatElement.style.animationFillMode = 'forwards'
-}
 
