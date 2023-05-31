@@ -54,20 +54,30 @@
                     </div>
                 </div>
                 <div class="menu">
-                    <span><a href="https://rutaamigapp.onrender.com" target="_blank">Mi perfil</a></span>
-                    <span><a href="https://socket-maptracker.onrender.com/usuario_gps" target="_blank">Compartir mi
-                            ubicación</a></span>
-                    <span href="javascript:void(0);" class="icon-bar" onclick="myFunction()">
+                    <div class="menu-links">
+                        <span><a href="https://rutaamigapp.onrender.com" target="_blank">Mi perfil</a></span>
+                        <span><a href="https://socket-maptracker.onrender.com/usuario_gps" target="_blank">Compartir mi
+                                ubicación</a></span>
+                    </div>
+                    <span href="javascript:void(0);" class="icon-bar" onclick="animateMenu()">
                         <i class="fa fa-1.4x fa-bars"></i>
                     </span>
 
                 </div>
+                <div class="menu-mobile">
+                    <div class="menu-links__mobile">
+                        <span><a href="https://rutaamigapp.onrender.com" target="_blank">Mi perfil</a></span>
+                        <span><a href="https://socket-maptracker.onrender.com/usuario_gps" target="_blank">Compartir mi
+                                ubicación</a></span>
+                    </div>
+                </div>
             </header>
+            
             <!-- Mapa -->
             <div id="map">
                 <!-- Chat icon -->
                 <div class="chat_icon">
-                    
+
                 </div>
                 <!-- Chat -->
                 <div class="chat animate__animated animate__bounceInUp">
@@ -204,6 +214,7 @@
 
 
     <script src='./js/mapa.js' type="text/javascript"></script>
+    <script src='./js/menu.js' type="text/javascript"></script>
     <script src='./js/notifications.js' type="text/javascript"></script>
     <!-- <script src='../node_modules/push.js/bin/push.min.js'></script> -->
     <script
