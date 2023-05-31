@@ -270,13 +270,14 @@ span {
   height: 30rem;
   position: absolute;
   right: 0vw;
-  bottom: 5%;
+  bottom: 32px;
   z-index: 99999999;
   background-color: rgb(255, 255, 255);
   border-top-right-radius: 12px;
   border-top-left-radius: 12px;
   box-shadow: -10px 0px 10px -5px rgba(0, 0, 0, 0.5);
   display: none;
+  pointer-events: all;
 }
 
 /* Chat nav */
@@ -468,19 +469,31 @@ span {
 }
 
 .footer {
-  background-color: rgba(242, 135, 5, 1);
   color: rgb(255, 255, 255);
   width: 100vw;
-  height: 2rem;
+  height: 40rem;
   text-align: center;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   font-weight: 800;
   font-size: 0.9em;
   z-index: 99999999;
   position: absolute;
   bottom: 0px;
+  pointer-events: none;
+}
+
+.footer-text{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  font-size: 0.9em;
+  color: rgb(255, 255, 255);
+  width: 100vw;
+  height: 2rem;
+  background-color: rgba(242, 135, 5, 1);
 }
 
 #year_date {
@@ -738,7 +751,7 @@ a.mapboxgl-ctrl-logo {
   .chat {
     width: 100vw;
     left: 0vw;
-    bottom: 90px;
+    bottom: 32px;
   }
 
   .chat_icon {
