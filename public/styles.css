@@ -242,7 +242,7 @@ span {
 
 
 /* Chat-icon*/
-.chat_icon{
+.chat_icon {
   width: 58px;
   height: 59px;
   position: absolute;
@@ -256,7 +256,7 @@ span {
   background-color: #267365;
   border-radius: 100%;
   box-shadow: -5px 1px 14px silver;
-  cursor:pointer
+  cursor: pointer
 }
 
 
@@ -495,7 +495,7 @@ a.mapboxgl-ctrl-logo {
 
 
 /* Container */
-.container{
+.container {
   width: 100vw;
   height: 100vh;
   outline: 10px red;
@@ -551,12 +551,12 @@ a.mapboxgl-ctrl-logo {
   text-decoration: none;
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
-  color:white
+  color: white
 }
 
 .menu a:visited {
   text-decoration: none;
-  color:white
+  color: white
 }
 
 .menu .ham span {
@@ -638,7 +638,10 @@ a.mapboxgl-ctrl-logo {
   }
 }
 
-@media screen and (max-width: 600px) {
+
+/* MEDIA QUERYS */
+/* DESkTOP*/
+@media screen and (max-width: 1024px) {
   .topnav.responsive {
     position: relative;
   }
@@ -655,18 +658,15 @@ a.mapboxgl-ctrl-logo {
     text-align: left;
   }
 
-  .chat {
-    width: 100vw;
-    left: 0vw;
-    top: 41.3em;
-  }
+  
 }
 
-/* MEDIA QUERYS */
-@media screen and (max-width: 400px) {
-  .footer_responsive {
-    font-size: smaller;
-    padding: 0px !important;
+
+/* SMARTPHONE */
+@media screen and (max-width: 767px) {
+  .footer {
+    font-size: 0.8em;
+    padding: 3px 0px !important;
   }
 
   .search_route input[type="text"] {
@@ -678,6 +678,6 @@ a.mapboxgl-ctrl-logo {
   .chat {
     width: 100vw;
     left: 0vw;
-    top: 7.2rem;
+    bottom: 2.2rem;
   }
 }
