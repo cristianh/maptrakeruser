@@ -215,7 +215,7 @@ span {
 
 #map {
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   position: relative;
 
 }
@@ -738,8 +738,7 @@ a.mapboxgl-ctrl-logo {
 /* SMARTPHONE */
 @media screen and (max-width: 767px) {
   .footer {
-    font-size: 0.8em;
-    padding: 3px 0px !important;
+    font-size: 0.8em;    
   }
 
   .search_route input[type="text"] {
