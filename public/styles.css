@@ -766,6 +766,7 @@ a.mapboxgl-ctrl-logo {
 /* ajustado notificacion mensaje*/
 .notifications-container {
   overflow: visible !important;
+  z-index:9999999999999999999
 }
 
 
