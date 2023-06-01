@@ -766,7 +766,7 @@ a.mapboxgl-ctrl-logo {
 /* ajustado notificacion mensaje*/
 .notifications-container {
   overflow: visible !important;
-  z-index:9999999999999999999
+  z-index: 99999999999999 !important
 }
 
 
@@ -833,6 +833,15 @@ a.mapboxgl-ctrl-logo {
 
   .chat_icon {
     bottom: 50px;
+  }
+
+  .icon {
+    width: 3.5rem;
+    height: 2.5rem;
+    background-image: url("./assets/icon_amigapp-crop.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
   }
 }
 
