@@ -278,8 +278,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 case error.PERMISSION_DENIED:
                     console.log("User denied the request for Geolocation.")
                     // HABILITAMOS EL MENSAJE GPS INACTIVO
-                    //document.querySelector('#modal_gps_inactivo').style.display = "block"
-                    //localStorage.removeItem('modal_info')
+                    document.querySelector('#modal_gps_inactivo').style.display = "block"
+                    localStorage.removeItem('modal_info')
                     break;
                 case error.POSITION_UNAVAILABLE:
                     console.log("Location information is unavailable.")
