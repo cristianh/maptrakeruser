@@ -387,7 +387,7 @@ span {
   background-color: rgb(255, 255, 255);
   /* white */
   border-left: 2px solid rgba(5, 69, 58, 0.923);
-  padding: 0.8em;
+  padding: 0.3em;
 }
 
 .container_messages {
@@ -395,6 +395,7 @@ span {
   width: auto;
   overflow-y: scroll;
   scrollbar-width: none;
+  padding: 0px 5px 0px 2px;
   /* Propiedad no estándar para ocultar la barra de desplazamiento en navegadores Firefox */
 }
 
@@ -415,6 +416,9 @@ span {
   border-radius: 4px;
   padding: 0.3em;
   color: rgba(47, 79, 73);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .chat_form_message {
@@ -482,7 +486,7 @@ span {
   pointer-events: none;
 }
 
-.footer-text{
+.footer-text {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -580,11 +584,14 @@ a.mapboxgl-ctrl-logo {
   background-color: white;
 }
 
-.search_route input[type="text"] {
+.search_route {
   border-radius: 5px;
   width: auto;
   max-width: 95%;
+  font-family: 'Exo', sans-serif;
 }
+
+
 
 .menu-mobile {
   display: none;
@@ -630,38 +637,38 @@ a.mapboxgl-ctrl-logo {
 
 /* Messages distribution */
 
-#messages .message:nth-child(odd) {
+#messages .message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 4px;
   width: 80%;
   height: fit-content;
   margin-top: 0.5em;
   background-color: #f3f7f9;
   border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+  vertical-align: middle;
+  white-space: initial;
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#messages .message:nth-child(odd) {
   border-left: 7px solid rgb(38, 115, 101);
   border-bottom: 1px solid rgb(175, 173, 173);
   float: right;
   text-align: right;
-  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
-  vertical-align: middle;
-  white-space: initial;
-  color:black
 }
 
 #messages .message:nth-child(even) {
-  padding: 4px;
-  width: 80%;
-  height: fit-content;
-  margin: 0.4em;
-  background-color: #f3f7f9;
   border-bottom: 1px solid rgb(175, 173, 173);
   border-radius: 4px;
   border-right: 7px solid rgba(242, 135, 5);
   float: left;
   text-align: left;
-  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
-  vertical-align: middle;
-  white-space: initial;
-  color:black
 }
 
 .message_dangerus {
@@ -677,7 +684,7 @@ a.mapboxgl-ctrl-logo {
   text-align: left;
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
   vertical-align: middle;
-  white-space: initial
+  white-space: initial;
 }
 
 
@@ -685,11 +692,13 @@ a.mapboxgl-ctrl-logo {
 @keyframes fill {
   0% {
     box-shadow: 0 0 0 2px inset;
- }
+  }
+
   100% {
     box-shadow: 0 0 0 10px inset;
- }
+  }
 }
+
 .back-preloader {
   height: 100vh;
   width: 100%;
@@ -701,10 +710,12 @@ a.mapboxgl-ctrl-logo {
   position: absolute;
   z-index: 100;
 }
+
 .back-preloader .container-preloader {
   display: flex;
   gap: 20px;
 }
+
 .back-preloader .container-preloader .loader {
   width: 32px;
   height: 32px;
@@ -713,6 +724,7 @@ a.mapboxgl-ctrl-logo {
   position: relative;
   animation: fill 1s ease-in infinite alternate;
 }
+
 .back-preloader .container-preloader .loader::before {
   content: '';
   position: absolute;
@@ -723,6 +735,7 @@ a.mapboxgl-ctrl-logo {
   top: 0;
   animation: fill 0.9s ease-in infinite alternate;
 }
+
 .back-preloader .container-preloader .loader::after {
   content: '';
   position: absolute;
@@ -750,6 +763,12 @@ a.mapboxgl-ctrl-logo {
 }
 
 
+/* ajustado notificacion mensaje*/
+.notifications-container {
+  overflow: visible !important;
+}
+
+
 /* MEDIA QUERYS */
 /* DESkTOP*/
 @media screen and (max-width: 1024px) {
@@ -766,7 +785,7 @@ a.mapboxgl-ctrl-logo {
   .topnav .icon-bar {
     display: block
   }
-  
+
   .menu-links {
     display: none
   }
@@ -796,7 +815,7 @@ a.mapboxgl-ctrl-logo {
 /* SMARTPHONE */
 @media screen and (max-width: 767px) {
   .footer {
-    font-size: 0.8em;    
+    font-size: 0.8em;
   }
 
   .search_route input[type="text"] {
@@ -817,8 +836,8 @@ a.mapboxgl-ctrl-logo {
 }
 
 
-@media only screen and (max-width: 320px) and (min-width: 500px)  {  
+@media only screen and (max-width: 320px) and (min-width: 500px) {
   .chat_icon {
     bottom: 80px;
   }
-} 
+}

@@ -1,6 +1,11 @@
 window.addEventListener('DOMContentLoaded', () => {
 
 
+
+    moment().format();
+
+
+
     loadYearFooter()
 
 
@@ -154,12 +159,26 @@ window.addEventListener('DOMContentLoaded', () => {
     clears the input field. */
     onSendMessage = (e) => {
         e.preventDefault()
-        let messageUser = document.querySelector('#message_input')
-        //IF MESSAGE NOT IS EMPY, SEND DATA
-        if (messageUser != "") {
-            socket.emit('chat_send_message', { message: messageUser.value, route: routeSelected })
-            messageUser.value = ""
+        if (routeSelected == "") {
+            new Notify({
+                title: '!Atencion!',
+                text: 'Por favor selecciona una ruta.',
+                autoclose: true,
+                autotimeout: 4000,
+                status: 'warning',
+                position: 'left bottom',
+                gap: 40,
+                distance: 20
+            })
+        } else {
+            let messageUser = document.querySelector('#message_input')
+            //IF MESSAGE NOT IS EMPY, SEND DATA
+            if (messageUser.value != "") {
+                socket.emit('chat_send_message', { message: messageUser.value, route: routeSelected })
+                messageUser.value = ""
+            }
         }
+
 
     }
 
@@ -189,16 +208,34 @@ window.addEventListener('DOMContentLoaded', () => {
     element). */
     createDivChatElement = (message, classN) => {
         //LOAD MESSAGE DIV.
+
+
         let mensajeelement = document.querySelector('#messages')
         let mesajesContainer = document.querySelector('.container_messages')
         let divuser = document.createElement("div")
 
+        divuser.style.wordBreak="break-all";
+        divuser.style.width="180px";
+        divuser.style.padding="1px";
+ 
+
+
+        let divDate = document.createElement("div")
+
         const newtext = document.createTextNode(message);
+        const newtextDate = document.createTextNode(moment(Date.now()).format('HH:mm'));
+
+        divDate.style.fontSize = '0.7em'
+        divDate.style.borderLeft = '1px solid silver'
+        divDate.style.color = 'brown'
+
         divuser.appendChild(newtext);
+        divDate.appendChild(newtextDate);
         let element = document.createElement("div")
         element.classList.add(classN)
         element.classList.add("animate__bounceIn")
         element.appendChild(divuser)
+        element.appendChild(divDate)
         mensajeelement.appendChild(element)
 
         //Scroll rolling down
@@ -328,9 +365,9 @@ window.addEventListener('DOMContentLoaded', () => {
         map.on('load', async () => {
             try {
 
-                
+
                 //hidden preload
-                document.querySelector('.back-preloader').style.display='none'
+                document.querySelector('.back-preloader').style.display = 'none'
 
                 // customizamor at User's Point Marker
                 const margkeruser = document.createElement('div');
@@ -426,12 +463,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
                         //WE LOAD ALL THE ROUTES STORED IN FIREBASE IN THE SELECT.
-                        let selectRutasList = document.querySelector('#countrydata');
+                        let selectRutasList = document.querySelector('#route');
 
 
                         opcionesRuta.forEach(opcion => {
                             let Op = document.createElement('option')
+
                             Op.value = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
+                            let optionText = document.createTextNode(capitalizarTexto(opcion.replace('_', ' ').toLowerCase()));
+                            Op.appendChild(optionText);
                             selectRutasList.appendChild(Op)
                         });
 
