@@ -328,7 +328,9 @@ window.addEventListener('DOMContentLoaded', () => {
         map.on('load', async () => {
             try {
 
-
+                
+                //hidden preload
+                document.querySelector('.back-preloader').style.display='none'
 
                 // customizamor at User's Point Marker
                 const margkeruser = document.createElement('div');
