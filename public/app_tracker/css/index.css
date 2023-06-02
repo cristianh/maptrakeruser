@@ -1,5 +1,6 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
+ 
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -16,7 +17,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap');
+
+
+h1 {
+    font-family: 'Exo', sans-serif;
+}
+
+h2 {
+    font-family: 'Dancing Script', cursive;
+}
+
+p,
+label,
+span {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 1em;
+}
+
 * {
+    margin: 0px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     /* make transparent link selection, adjust last value opacity 0 to 1.0 */
 }
@@ -31,11 +55,15 @@ body {
     overflow: hidden;
 }
 
-html {
-    background-color: whitesmoke !important;
+/* Envio informacion styles */
+.title {
+    width: 400px;
+    text-align: center;
+    padding: 10px;
+    color: white;
 }
-/* STYLeS */
 
+/*Principal form*/
 .principal-container {
     min-height: 100vh;
     width: 100%;
@@ -43,10 +71,112 @@ html {
     margin: 0;
     padding: 0;
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
 }
 
+/**Logo nav*/
+.icon {
+    width: 7.5rem;
+    height: 2.5rem;
+    background-image: url("../img/icon_amigapp.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+/* Nav hamburguesa*/
+.topnav {
+    color: rgb(255, 255, 255);
+    width: 100%;
+    height: 3rem;
+    z-index: 999;
+    overflow: hidden;
+    background-color: #f28705e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topnav .icon-bar {
+    display: none;
+}
+
+.topnav span {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Estilos para las barras del icono de hamburguesa */
+
+.menu a {
+    text-decoration: none;
+    color: white
+}
+
+.menu a:visited {
+    text-decoration: none;
+    color: white
+}
+
+.menu .ham span {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 25px;
+    height: 3px;
+    background-color: white;
+}
+
+.menu-mobile {
+    display: none;
+    position: absolute;
+    top: 45px;
+}
+
+.menu-mobile {
+    width: 100%;
+    height: 120px;
+    z-index: 999;
+    overflow: hidden;
+    background-color: #f28705e6;
+}
+
+.menu-links__mobile {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 100px;
+    transition: height .1s linear;
+}
+
+
+.menu-links__mobile span {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 43px;
+    border-top: 1px solid #f28705e6;
+}
+
+.menu-links__mobile span a {
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    color: white;
+
+}
+
+/**Form container*/
 .form-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -106,17 +236,35 @@ html {
 }
 
 .footer {
-    background-color: rgb(242, 159, 5);
     color: rgb(255, 255, 255);
     width: 100vw;
-    height: 2rem;
-    position: absolute;
-    bottom: 0vw;
+    height: 10rem;
     text-align: center;
     display: flex;
     justify-content: center;
+    align-items: flex-end;
+    font-weight: 800;
+    font-size: 0.9em;
+    z-index: 99999999;
+    position: absolute;
+    bottom: 0px;
+    pointer-events: none;
+}
+
+.footer-text {
+    display: flex;
+    justify-content: center;
     align-items: center;
-    padding: 0.2em;
+    font-weight: 800;
+    font-size: 0.9em;
+    color: rgb(255, 255, 255);
+    width: 100vw;
+    height: 2rem;
+    background-color: rgba(242, 135, 5, 1);
+}
+
+#year_date {
+    padding: 0.2em
 }
 
 .center-container {
@@ -127,7 +275,7 @@ html {
 }
 
 .principal_button {
-    width:100%;
+    width: 100%;
     background-color: rgb(255, 255, 255);
     border: 0.2em solid rgb(38, 115, 101);
     border-radius: 5px;
@@ -140,9 +288,9 @@ html {
     align-items: center;
     font-family: 'Exo', sans-serif;
     font-weight: bold;
-  }
-  
-  .principal_button:hover {
+}
+
+.principal_button:hover {
     background-color: rgb(38, 115, 101);
     color: rgb(255, 255, 255);
     font-weight: 500;
@@ -152,8 +300,8 @@ html {
     justify-content: center;
     align-items: center;
     font-family: 'Exo', sans-serif;
-    font-weight: bold; 
-  }
+    font-weight: bold;
+}
 
 @media screen and (max-width: 1094px) {
     .form-container {
@@ -182,6 +330,17 @@ html {
         background-repeat: no-repeat;
         background-image: url('../img/Logo.jpg');
         background-position: center;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .topnav .menu span:not(:last-child) {
+        display: none;
+    }
+
+    .topnav .menu span.icon {
+        float: right;
+        display: block;
     }
 }
 
@@ -258,16 +417,6 @@ input[type="text"]::placeholder {
 }
 
 
-
-h1 {
-    font-size: 24px;
-    font-weight: normal;
-    margin: 0px;
-    overflow: visible;
-    padding: 0px;
-    text-align: center;
-}
-
 .imagen-container {
     height: 200px;
     max-height: 200px;
@@ -325,23 +474,17 @@ img {
     -webkit-animation: fade 3000ms infinite;
 }
 
-select{
-	appearance: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
-#select_route_simulacion{
-    display:none
+#select_route_simulacion {
+    display: none
 }
 
-.disable{
+.disable {
     pointer-events: none;
-    filter:grayscale(1)
-}
-
-@media screen and (prefers-color-scheme: dark) {
-    body {
-        background-image: linear-gradient(to bottom, #585858 0%, #1B1B1B 51%);
-    }
+    filter: grayscale(1)
 }
