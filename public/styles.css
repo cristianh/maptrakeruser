@@ -87,6 +87,7 @@ span {
   height: 100%;
   width: auto;
 }
+
 .menu a {
   text-decoration: none;
   font-family: 'Montserrat', sans-serif;
@@ -106,15 +107,22 @@ span {
   text-align: center;
   align-items: center;
   height: 100%;
-  gap: 23px;
+  width: 100%;
+  padding: 0px 14px 0px 14px;
 }
 
 
-.menu-links > div {
+.menu-links .menu-links__opcion {
   height: 100%;
+  width: 130px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor:pointer;
 }
-.menu-links > div :hover{
-  background-color:  #e38716;
+
+.menu-links .menu-links__opcion:hover {
+  background-color: #e38716;
   transition: 0.3s;
 }
 
@@ -125,7 +133,7 @@ span {
   position: absolute;
   top: 45px;
   width: 100%;
-  height: 120px;
+  height: fit-content;
   z-index: 999;
   overflow: hidden;
   background-color: rgba(38, 115, 101, 0.831);
@@ -138,19 +146,23 @@ span {
   align-items: center;
   height: 100px;
   transition: height .1s linear;
+  /* border-top: 1.5px solid rgba(24, 77, 67, 0.985); */
 }
 
-.menu-links__mobile span {
+.menu-links__mobile .menu-links__mobile__opcion {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 43px;
-  border-top: 1.5px solid rgba(24, 77, 67, 0.985);;
+  height: 43px;  
 }
 
-.menu-links__mobile span a {
+.menu-links__mobile .menu-links__mobile__opcion a:hover {
+  background-color: rgba(131, 224, 24, 0.831);
+}
+
+.menu-links__mobile .menu-links__mobile__opcion a {
   text-decoration: none;
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
