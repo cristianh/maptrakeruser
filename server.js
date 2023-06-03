@@ -4,7 +4,9 @@ const http = require('http');
 const path = require('path');
 const server = http.createServer(app);
 const cors = require('cors');
-
+// DB MONGO CONEXION
+const { dbConnection }  = require('./database/config.db')
+const Message = require('./database/Models/message')
 //Commit de prueba (borrar)
 // Importamos las librerías necesarias
 const { Configuration, OpenAIApi } = require("openai");
@@ -13,6 +15,18 @@ require("dotenv").config();
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+
+
+//CONECTAR DB MONGO
+const db = async () => {
+  await dbConnection()
+} 
+
+db()
+//FIN CONEXION DB
+
+
 
 
 //socket 
@@ -230,7 +244,15 @@ io.on('connection', (socket) => {
 
     try {
       
-    
+      const message = new Message({
+        route:data.route,
+        message:data.message,
+        idUserSocket:socket.id
+      })
+
+      console.log("menssage")
+      await message.save();
+
       // to all clients in room (default 'positive')
       io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: "positive", message: data.message });
 
