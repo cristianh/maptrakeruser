@@ -39,24 +39,18 @@
                 <div class="search_route">
                     <!-- Seleccion ruta -->
                     <div>
-                        <label for="route">Rutas:</label>
-                        <select class="search_route" width="150" name="route" id="route" onchange="onSelectRuta(event)" autocomplete="off">
-                            <option value="0">Selecciona una Ruta</option>
+                        <select class="search_route" width="150" name="route" id="route" onchange="onSelectRuta(event)"
+                            autocomplete="off">
+                            <option class='search_list' value="0">Selecciona tu Ruta</option>
                         </select>
-
-                        <!-- <datalist id="countrydata">
-                        
-                        </datalist>
-                        <label for="country">Rutas:</label>
-
-                        <input type="text" list="countrydata" id="country" name="country" size="50"
-                            onchange="onSelectRuta(event)" autocomplete="off" placeholder="Selecciona una Ruta" /> -->
                     </div>
                 </div>
                 <div class="menu">
                     <div class="menu-links">
-                        <div class="menu-links__opcion"><a href="https://rutaamigapp.onrender.com" target="_blank">Mi perfil</a></div>
-                        <div class="menu-links__opcion"><a href="https://socket-maptracker.onrender.com/usuario_gps" target="_blank">Mi posición</a></div>
+                        <div class="menu-links__opcion"><a href="https://rutaamigapp.onrender.com" target="_blank">Mi
+                                perfil</a></div>
+                        <div class="menu-links__opcion"><a href="https://socket-maptracker.onrender.com/usuario_gps"
+                                target="_blank">Mi posición</a></div>
                     </div>
                     <span href="javascript:void(0);" class="icon-bar" onclick="animateMenu()">
                         <i class="fa fa-1.4x fa-bars"></i>
@@ -65,8 +59,11 @@
                 </div>
                 <div class="menu-mobile">
                     <div class="menu-links__mobile">
-                        <div class="menu-links__mobile__opcion"><a href="https://rutaamigapp.onrender.com" target="_blank">Mi perfil</a></div>
-                        <div class="menu-links__mobile__opcion"><a href="https://socket-maptracker.onrender.com/usuario_gps" target="_blank">Mi posición</a></div>
+                        <div class="menu-links__mobile__opcion"><a href="https://rutaamigapp.onrender.com"
+                                target="_blank">Mi perfil</a></div>
+                        <div class="menu-links__mobile__opcion"><a
+                                href="https://socket-maptracker.onrender.com/usuario_gps" target="_blank">Mi
+                                posición</a></div>
                     </div>
                 </div>
             </header>
@@ -144,79 +141,67 @@
         integrity="sha512-eiqtDDb4GUVCSqOSOTz/s/eiU4B31GrdSb17aPAA4Lv/Cjc8o+hnDvuNkgXhSI5yHuDvYkuojMaQmrB5JB31XQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- modals -->
+
     <!-- GPS INACTIVO -->
-    <div class="container_modal" id="modal_gps_inactivo">
-        <div class="modal animate__animated animate__fadeInDown">
-            <div class="title">
-                <h2>GPS Inactivo</h2>
-            </div>
-
-            <div class="content">
-
-                <div class="info_error">
-                    <p id="errortxt">El GPS esta inactivo, para ver su ruta active el GPS en su navegador
-                    </p>
-                </div>
-                <div class="icon_container">
-                    <img src="./assets/antena.png" alt="">
-                </div>
-                <div class="button"><input type="button" id="continue" class="principal_button" value="RECARGAR"
-                        onClick="javascript:location.reload();"></div>
-
-
-            </div>
-
+    <div class="modal animate__animated animate__fadeInDown" id="modal_gps_inactivo">
+        <div class="title_container">
+            <h2>GPS Inactivo</h2>
         </div>
 
+        <div class="content">
+            <div class="info_error">
+                <p>El GPS esta inactivo, para ver su ruta active el GPS en su navegador
+                </p>
+            </div>
+            <div class="icon_container">
+                <img src="./assets/antena.png" alt="">
+            </div>
+            <div>
+                <button class="principal_button" type="button" id="continue"
+                    onClick="javascript:location.reload();">Recargar</button>
+            </div>
+        </div>
     </div>
+
     <!-- GPS ACTIVO -->
-    <div class="container_modal" id="modal_gps_activo">
-        <div class="modal animate__animated animate__fadeInDown">
-            <div class="title">
-                <h2>GPS Activo</h2>
-            </div>
-
-            <div class="content">
-
-                <div class="info_error">
-                    <p>El GPS ha sido activado, ahora puedes ver el recorrido de tu ruta
-                    </p>
-                </div>
-                <div class="icon_container">
-                    <img src="./assets/antena.png" alt="">
-                </div>
-                <div class="button"><input type="button" class="principal_button" onClick="hiddenWindowGpsEnabled()"
-                        id="continue" value="CONTINUAR"></div>
-
-
-            </div>
-
+    <div class="modal animate__animated animate__fadeInDown" id="modal_gps_activo">
+        <div class="title_container">
+            <h2>GPS Activo</h2>
         </div>
 
+        <div class="content">
+            <div class="info_error">
+                <p>El GPS ha sido activado, ahora puedes ver el recorrido de tu ruta
+                </p>
+            </div>
+            <div class="icon_container">
+                <img src="./images/icons/checked.png" alt="">
+            </div>
+            <div>
+                <button class="principal_button" type="button" onClick="hiddenWindowGpsEnabled()" id="continue"
+                    onClick="javascript:location.reload();">Continuar</button>
+            </div>
+        </div>
     </div>
-
-    <div class="container_modal2">
-        <div class="modal2">
-            <div class="title">
-                <h2>Sesion Finalizada</h2>
-            </div>
-
-            <div class="content">
-
-                <div class="info_error">
-                    <p>Su sesión ha expirado por inactividad, vuelve a iniciar sesión</p>
-                    </p>
-                </div>
-                <div class="icon_container">
-                    <img src="./assets/senal-de-advertencia.png" alt="">
-                </div>
-                <div class="button2"><input type="button" id="continue" value="CONTINUAR"></div>
-
-
-            </div>
-
+    <!-- Pendiente revisar desde aca -->
+    <div class="modal background-orange">
+        <div class="title_container">
+            <h2>Sesion Finalizada</h2>
         </div>
 
+        <div class="content">
+            <div class="info_error">
+                <p>Su sesión ha expirado por inactividad, vuelve a iniciar sesión</p>
+                </p>
+            </div>
+            <div class="icon_container">
+                <img src="./images/icons/beware.png" alt="">
+            </div>
+            <div>
+                <button class="principal_button background-orange" type="button" id="continue"
+                    onClick="javascript:location.reload();">Continuar</button>
+            </div>
+        </div>
     </div>
 
 

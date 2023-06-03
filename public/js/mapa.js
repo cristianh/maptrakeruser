@@ -468,7 +468,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                         opcionesRuta.forEach(opcion => {
                             let Op = document.createElement('option')
-
+                            Op.classList.add('search_list');
                             Op.value = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
                             let optionText = document.createTextNode(capitalizarTexto(opcion.replace('_', ' ').toLowerCase()));
                             Op.appendChild(optionText);
