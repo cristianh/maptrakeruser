@@ -25,6 +25,141 @@ span {
   overflow-y: hidden;
 }
 
+/* Principal container */
+.container {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Container map */
+.container-app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+}
+
+/* Nav*/
+.topnav {
+  color: rgb(255, 255, 255);
+  width: 100%;
+  height: 3rem;
+  z-index: 999;
+  overflow: hidden;
+  background-color: #f28705e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topnav .icon-bar {
+  display: none;
+}
+
+.topnav span {
+  padding: 14px 16px;
+  font-size: 17px;
+}
+
+/*Icon ruta amigapp*/
+.icon {
+  width: 7.5rem;
+  height: 2.5rem;
+  background-image: url("./assets/icon_amigapp.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+/*Select route*/
+.search_route input[type="text"] {
+  border-radius: 5px;
+  width: auto;
+  max-width: 95%;
+}
+
+/* Menu desktop */
+.menu {
+  height: 100%;
+  width: auto;
+}
+.menu a {
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  color: white;
+}
+
+.menu a:visited {
+  text-decoration: none;
+  color: white;
+}
+
+.menu-links {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  height: 100%;
+  gap: 23px;
+}
+
+
+.menu-links > div {
+  height: 100%;
+}
+.menu-links > div :hover{
+  background-color:  #e38716;
+  transition: 0.3s;
+}
+
+
+/*Menu mobile*/
+.menu-mobile {
+  display: none;
+  position: absolute;
+  top: 45px;
+  width: 100%;
+  height: 120px;
+  z-index: 999;
+  overflow: hidden;
+  background-color: rgba(38, 115, 101, 0.831);
+}
+
+.menu-links__mobile {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 100px;
+  transition: height .1s linear;
+}
+
+.menu-links__mobile span {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 43px;
+  border-top: 1.5px solid rgba(24, 77, 67, 0.985);;
+}
+
+.menu-links__mobile span a {
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  color: white;
+}
+
+
+
+
 /*REALIZAR PRUEBAS FOCUS */
 /* :focus {
   background-color: yellow;
@@ -224,14 +359,7 @@ span {
 /* Navbar */
 
 
-.icon {
-  width: 7.5rem;
-  height: 2.5rem;
-  background-image: url("./assets/icon_amigapp.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-}
+
 
 
 /* Chat-icon*/
@@ -478,7 +606,7 @@ span {
   pointer-events: none;
 }
 
-.footer-text{
+.footer-text {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -501,127 +629,14 @@ a.mapboxgl-ctrl-logo {
 
 
 
-/* Container */
-.container {
-  width: 100vw;
-  height: 100vh;
-  outline: 10px red;
-}
 
 
 
 
-/* Container principa */
-.container-app {
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
-  margin: 0px;
-  padding: 0px;
-
-}
 
 
-/* Nav hamburguesa*/
-.topnav {
-  color: rgb(255, 255, 255);
-  width: 100%;
-  height: 3rem;
-  z-index: 999;
-  overflow: hidden;
-  background-color: #f28705e6;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.topnav .icon-bar {
-  display: none;
-}
-
-.topnav span {
-  float: left;
-  display: block;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-/* Estilos para las barras del icono de hamburguesa */
-
-.menu a {
-  text-decoration: none;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: bold;
-  color: white
-}
-
-.menu a:visited {
-  text-decoration: none;
-  color: white
-}
-
-.menu .ham span {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 25px;
-  height: 3px;
-  background-color: white;
-}
-
-.search_route input[type="text"] {
-  border-radius: 5px;
-  width: auto;
-  max-width: 95%;
-}
-
-.menu-mobile {
-  display: none;
-  position: absolute;
-  top: 45px;
-}
-
-.menu-mobile {
-  width: 100%;
-  height: 120px;
-  z-index: 999;
-  overflow: hidden;
-  background-color: #f28705e6;
-}
-
-.menu-links__mobile {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  height: 100px;
-  transition: height .1s linear;
-}
 
 
-.menu-links__mobile span {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 43px;
-  border-top: 1px solid #f28705e6;
-}
-
-.menu-links__mobile span a {
-  text-decoration: none;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: bold;
-  color: white;
-
-}
 
 /* Messages distribution */
 
@@ -639,7 +654,7 @@ a.mapboxgl-ctrl-logo {
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
   vertical-align: middle;
   white-space: initial;
-  color:black
+  color: black
 }
 
 #messages .message:nth-child(even) {
@@ -656,7 +671,7 @@ a.mapboxgl-ctrl-logo {
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
   vertical-align: middle;
   white-space: initial;
-  color:black
+  color: black
 }
 
 .message_dangerus {
@@ -704,7 +719,7 @@ a.mapboxgl-ctrl-logo {
   .topnav .icon-bar {
     display: block
   }
-  
+
   .menu-links {
     display: none
   }
@@ -734,7 +749,7 @@ a.mapboxgl-ctrl-logo {
 /* SMARTPHONE */
 @media screen and (max-width: 767px) {
   .footer {
-    font-size: 0.8em;    
+    font-size: 0.8em;
   }
 
   .search_route input[type="text"] {
@@ -755,8 +770,8 @@ a.mapboxgl-ctrl-logo {
 }
 
 
-@media only screen and (max-width: 320px) and (min-width: 500px)  {  
+@media only screen and (max-width: 320px) and (min-width: 500px) {
   .chat_icon {
     bottom: 80px;
   }
-} 
+}
