@@ -146,6 +146,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         //SAVE ROUTE SELECTED
         routeSelected = e.target.value.replace(" ", "_")
+        loadMessageChat(routeSelected)
         socket.emit('server_leave_room', routeSelected);
         socket.emit('server_join_room', { room: routeSelected, type: 'user-map-view' })
     }
@@ -202,45 +203,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     })
 
-    /* The above code is defining a function called `createDivChatElement` that creates a new chat
-    message element and appends it to the chat message container. The function takes two parameters:
-    `message` (the text content of the message) and `classN` (the CSS class to apply to the message
-    element). */
-    createDivChatElement = (message, classN) => {
-        //LOAD MESSAGE DIV.
-
-
-        let mensajeelement = document.querySelector('#messages')
-        let mesajesContainer = document.querySelector('.container_messages')
-        let divuser = document.createElement("div")
-
-        divuser.style.wordBreak="break-all";
-        divuser.style.width="180px";
-        divuser.style.padding="1px";
- 
-
-
-        let divDate = document.createElement("div")
-
-        const newtext = document.createTextNode(message);
-        const newtextDate = document.createTextNode(moment(Date.now()).format('HH:mm'));
-
-        divDate.style.fontSize = '0.7em'
-        divDate.style.borderLeft = '1px solid silver'
-        divDate.style.color = 'brown'
-
-        divuser.appendChild(newtext);
-        divDate.appendChild(newtextDate);
-        let element = document.createElement("div")
-        element.classList.add(classN)
-        element.classList.add("animate__bounceIn")
-        element.appendChild(divuser)
-        element.appendChild(divDate)
-        mensajeelement.appendChild(element)
-
-        //Scroll rolling down
-        mesajesContainer.scrollTop = mesajesContainer.scrollHeight;
-    }
+    
 
 
     /* The above code defines a function `loadUserChat` that loads the available chat users and

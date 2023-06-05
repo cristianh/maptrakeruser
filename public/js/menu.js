@@ -1,10 +1,15 @@
 window.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.chat_icon').addEventListener('mouseup', () => {
+    
+        loadMessageChat()
+    
         let element = document.querySelector('.chat')
         element.style.display = "flex"
         animateCSS('.chat', 'bounceInUp')
     }, false)
 
+
+    
     const animateCSS = (element, animation, prefix = 'animate__') =>
         // We create a Promise and return it
         new Promise((resolve, reject) => {

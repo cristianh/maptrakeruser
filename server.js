@@ -5,8 +5,8 @@ const path = require('path');
 const server = http.createServer(app);
 const cors = require('cors');
 // DB MONGO CONEXION
-const { dbConnection }  = require('./database/config.db')
-const Message = require('./database/Models/message')
+const { dbConnection } = require('./database/config.db')
+const { Message, Route } = require('./database/Models/message')
 //Commit de prueba (borrar)
 // Importamos las librerías necesarias
 const { Configuration, OpenAIApi } = require("openai");
@@ -21,7 +21,7 @@ const configuration = new Configuration({
 //CONECTAR DB MONGO
 const db = async () => {
   await dbConnection()
-} 
+}
 
 db()
 //FIN CONEXION DB
@@ -64,6 +64,25 @@ app.get('/usuario_gps', (req, res) => {
   res.sendFile(path.resolve(__dirname, './public/app_tracker', 'index.html'));
 });
 
+app.get('/allChat', async (req, res) => {
+  const { ruta } = req.query
+  
+  let findRoute = `${ruta}`
+  const findRouteMessages = await Message.find({ "route.name": findRoute});
+  //const findRouteMessages = await Message.find({ "route.name": ruta});
+  
+
+  let messagesAll = []
+
+  Object.values(findRouteMessages).map((msg)=>{
+    
+    messagesAll.push(msg.message)
+
+  })
+
+  res.status(200).send({ messages:messagesAll})
+});
+
 // ---------------- SOCKET.IO ----------------- //
 //save user connection to server
 const users = [];
@@ -94,7 +113,7 @@ const eventsSocketio = Object.freeze({
 
 
 io.on('connection', (socket) => {
-  
+
   //MENSAJE DE BIENVENIDA.(privado)
   io.to(socket.id).emit(eventsSocketio.SERVER_MESSAGE, "Bienvenido al chat de Ruta Amigapp, recuerda seguir nuestras políticas de uso.");
 
@@ -104,7 +123,7 @@ io.on('connection', (socket) => {
     //SUSCRIBE TO ROOM USER FROM GPS PAGE.
     socket.join(dataRoom.room);
 
-    
+
 
     //GUARDAMOS EL ARREGLO COMO VAN LLEGANDO LOS USUARIOS.
 
@@ -181,7 +200,7 @@ io.on('connection', (socket) => {
 
             return users.type === 'user-data-gps'
           })
-          
+
 
           io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
 
@@ -189,7 +208,7 @@ io.on('connection', (socket) => {
 
 
       } catch (error) {
-        
+
       }
     });
 
@@ -243,25 +262,55 @@ io.on('connection', (socket) => {
     } */
 
     try {
-      
-      const message = new Message({
-        route:data.route,
-        message:data.message,
-        idUserSocket:socket.id
-      })
 
-      console.log("menssage")
-      await message.save();
 
+
+
+      // Buscar el usuario por su ID
+      const findRoute = await Route.findOne({ 'name': data.route });
+
+     
+
+      const findRouteMessages = await Message.find({ "route.name": data.route});
+
+
+      if (findRoute !== null) {
+        const message = new Message({
+          message: data.message,
+          idUserSocket: socket.id,
+          route: [findRoute]
+        })
+
+        await message.save(findRoute)
+
+
+
+      } else {
+        
+
+        const route = new Route({
+          name: data.route,
+        });
+
+        await route.save();
+
+        const message = new Message({
+          message: data.message,
+          idUserSocket: socket.id,
+          route: [route]
+        })
+
+        await message.save(findRoute)
+      }
       // to all clients in room (default 'positive')
       io.in(data.route).emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: "positive", message: data.message });
 
       //socket.emit(eventsSocketio.SEND_CHAT_MENSSAGE, { status: "positive", message: data.message });
-      
+
     } catch (error) {
       console.log(error)
     }
-    
+
 
   })
 
@@ -270,7 +319,7 @@ io.on('connection', (socket) => {
   socket.on(eventsSocketio.GET_USER_GPS_DATA, (data) => {
     try {
 
-      
+
       //EVENTO PARA TODAS LAS PERSONAS CONECTADAS A LA SALA.
       //socket.broadcast.to(data.room).emit(eventsSocketio.SEND_USER_GPS_DATA, data)//solo a los de la sala
 
