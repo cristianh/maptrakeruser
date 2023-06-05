@@ -92,7 +92,7 @@ function main() {
             console.log('Points data:', pointsData);
 
             // We make the request to Firebase of the routes stored above.
-            puntosSimulacion = Object.values(pointsData)            
+            puntosSimulacion = Object.values(pointsData)
 
             // Process routes emulate response
             const routesEmulateData = routesEmulateResponse.data;
@@ -182,6 +182,7 @@ function capitalizarTexto(texto) {
  */
 function emulateRoute() {
     document.getElementById('select_route_simulacion').style.display = 'inline-grid'
+    document.getElementById('seleccion_ruta').style.display = 'none'
 }
 
 
@@ -209,6 +210,9 @@ function stopWatch() {
     document.getElementById('info').innerHTML = ""
     document.getElementById("simulacion_route").classList.remove('disable')
     document.getElementById("simulacion_route").addEventListener("click", emulateRoute);
+    document.getElementById('info').style.display = 'none'
+    document.querySelector('.principal-title').style.display = 'block'
+    document.getElementById('seleccion_ruta').style.display = 'block'
     window.socket.emit('stop_send_data_gps', { room: nombreRutaDBRoom });
 }
 
@@ -219,13 +223,15 @@ function stopWatch() {
  * with an option to simulate the route.
  */
 function watchPosition() {
-    document.getElementById('select_route_simulacion').style.display = 'none'
-
-
+    
+    document.getElementById('info').style.display = 'flex'
+    document.getElementById('seleccion_ruta').style.display = 'none'
+    document.querySelector('.principal-title').style.display = 'none'
     if (nombreRutaDBRoom === "") {
         alert("Seleccione la ruta por favor.")
     }
     else {
+        document.getElementById('select_route_simulacion').style.display = 'none'
         document.getElementById("simulacion_route").classList.add('disable')
         document.getElementById("simulacion_route").removeEventListener("click", emulateRoute);
         // We connect to the room (room)
@@ -295,5 +301,15 @@ function watchPosition() {
         function onError(error) {
             alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
         }
+    }
+}
+
+/* Animacion menu mobile*/
+animateMenu = () => {
+    let x = document.querySelector(".menu-mobile");
+    if (x.style.display === "block") {
+        x.style.display = "none";
+    } else {
+        x.style.display = "block";
     }
 }

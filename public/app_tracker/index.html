@@ -39,8 +39,26 @@
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
     <meta name="color-scheme" content="light dark">
+    <!--Font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../app_tracker/css/index.css">
     <link rel="stylesheet" href="../app_tracker/css/bootstrap.min.css">
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+
+
+
     <title>Ruta Amigapp</title>
 </head>
 
@@ -55,15 +73,21 @@
                 <span><a href="https://rutaamigapp.onrender.com" target="_blank">Mi perfil</a></span>
                 <span><a href="https://socket-maptracker.onrender.com/" target="_blank">Mapa</a></span>
             </div>
-            <span href="javascript:void(0);" class="icon-bar" onclick="animateMenu()">
-                <i class="fa fa-1.4x fa-bars"></i>
+            <span href="javascript:void(0);" class="icon-bar" onclick="animateMenu()">                
+                <div class="menu-hamburger">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
             </span>
 
         </div>
         <div class="menu-mobile">
             <div class="menu-links__mobile">
-                <span><a href="https://rutaamigapp.onrender.com" target="_blank">Mi perfil</a></span>
-                <span><a href="https://socket-maptracker.onrender.com/" target="_blank">Mapa</a></span>
+                <div class="menu-links__mobile__opcion"><a href="https://rutaamigapp.onrender.com" target="_blank">Mi
+                        perfil</a></div>
+                <div class="menu-links__mobile__opcion"><a href="https://socket-maptracker.onrender.com/"
+                        target="_blank">Mapa</a></div>
             </div>
         </div>
     </header>
@@ -79,12 +103,27 @@
             <section class="mid-container">
                 <header>
                     <div alt="logo" class="logo_image_mobile"></div>
-                    <hr>
-                    <div class="container">
+                    <h1 class="principal-title">Selecciona su ruta</h1>
+                    <div class="container" id="seleccion_ruta">
+
+                        <div class="col-12 mx-auto p-2">
+                            <label for="country">Rutas:</label>
+                            <select class="form-select" id="select_route" onchange="onSelectRuta(event)">
+                                <option selected value="seleccione">SELECCIONE</option>
+                                <option value="Ruta_4">Ruta 4</option>
+                                <option value="Ruta_5">Ruta 5</option>
+                                <option value="Ruta_6">Ruta 6</option>
+                                <option value="Ruta_10">Ruta 10</option>
+                                <option value="Ruta_31">Ruta 31</option>
+                                <option value="Ruta_36">Ruta 36</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="container" id="select_route_simulacion">
                         <div class="row">
-                            <div class="col-12" id="select_route_simulacion">
+                            <div class="col-12">
                                 <label for="rutasSelect">Emular Ruta:</label>
-                                <select name="rutasSelect" id="selectRutas_emulate">
+                                <select class="form-select" name="rutasSelect" id="selectRutas_emulate">
                                     <option value="Seleccione">Seleccione</option>
                                 </select>`
                             </div>
@@ -107,18 +146,20 @@
                             </div>
                         </div>
                         <div id="info">
-                        
+
                         </div>
                     </div>
                 </header>
         </article>
     </article>
-<section class="footer footer_responsive" id="year_date">
-   
-</section>
+    <!-- Footer -->
+    <section class="footer footer_responsive">
+        <div class="footer-text">
+            <span id="year_date"> </span>
+        </div>
+    </section>
 
     <!-- <script src="cordova.js"></script> -->
-    <script src='../app_tracker/js/menu.js' type="text/javascript"></script>
     <script src="../app_tracker/js/trakerpointgps.js"></script>
     <script src="../app_tracker/js/bootstrap.min.js"></script>
     <!-- axios -->

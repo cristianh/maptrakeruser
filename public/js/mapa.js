@@ -269,6 +269,8 @@ window.addEventListener('DOMContentLoaded', () => {
             // HABILITAMOS EL MENSAJE GPS ACTIVO
             if (!localStorage.getItem('modal_info')) {
                 document.querySelector('#modal_gps_activo').style.display = "block"
+                //MOSTRAMOS EL CONTENEDOR DEL MODAL.
+                document.querySelector('.container-modal').style.display = "flex"
                 localStorage.setItem('modal_info', true)
             }
 
@@ -279,6 +281,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     console.log("User denied the request for Geolocation.")
                     // HABILITAMOS EL MENSAJE GPS INACTIVO
                     document.querySelector('#modal_gps_inactivo').style.display = "block"
+                    document.querySelector('.container-modal').style.display = "flex"
                     localStorage.removeItem('modal_info')
                     break;
                 case error.POSITION_UNAVAILABLE:
@@ -723,6 +726,7 @@ function calculateTravelTime(origin, destination) {
 function hiddenWindowGpsEnabled() {
     // HABILITAMOS EL MENSAJE GPS ACTIVO
     document.querySelector('#modal_gps_activo').style.display = "none"
+    document.querySelector('.container-modal').style.display = "none"
     localStorage.setItem('modal_info', false)
 }
 

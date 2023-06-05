@@ -25,9 +25,10 @@ span {
   overflow-y: hidden;
 }
 
-.background-orange{
+.background-orange {
   background-color: #e88915;
 }
+
 /* Principal container */
 .container {
   width: 100vw;
@@ -72,7 +73,7 @@ span {
 .icon {
   width: 7.5rem;
   height: 2.5rem;
-  background-image: url("./assets/icon_amigapp.png");
+  background-image: url("../assets/icon_amigapp.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -84,7 +85,7 @@ span {
   width: 12em;
   height: 1.8em;
   cursor: pointer;
-  background:  #767d7cae;
+  background: #767d7cae;
   text-align: center;
   color: #FFF;
   text-shadow: 0 1px 0 #949090;
@@ -99,7 +100,7 @@ span {
 }
 
 .search_route:hover {
-  border-radius: 0.2em 0.2em 0 0; 
+  border-radius: 0.2em 0.2em 0 0;
 }
 
 select option:focus {
@@ -125,6 +126,14 @@ select option:focus {
   font-weight: bold;
   color: white;
 }
+
+.menu-hamburger>div {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  margin: 6px 0;
+}
+
 
 .menu a:visited {
   text-decoration: none;
@@ -157,11 +166,12 @@ select option:focus {
 }
 
 
+
 /*Menu mobile*/
 .menu-mobile {
   display: none;
   position: absolute;
-  top: 45px;
+  top: 44px;
   width: 100%;
   height: fit-content;
   z-index: 999;
@@ -204,20 +214,37 @@ select option:focus {
   display: none;
 }
 
+.container-modal {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(63 62 62 / 72%);
+  z-index: 999999999;
+}
+
+
 .modal {
   width: 25em;
   height: fit-content;
   display: flex;
   flex-direction: column;
-  position:absolute;
-  top: 40%;
-  left: 30%;
   transform: translate(-50%, -50%);
   border-radius: 12px;
   z-index: 999999999;
   color: white;
   background-color: #267265;
   padding: 1.5em;
+}
+
+/* Ocultamos el modal por inactividad (aun no esta implementado) */
+.inactivity {
+  display: none
 }
 
 .content {
@@ -231,11 +258,11 @@ select option:focus {
   background-color: #eceff1;
   border-radius: 7px;
   padding: 1em;
-  grid-template-columns: 1fr 1fr 1fr ;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 .title_container {
-  width: 400px;
+  width: 100%;
   text-align: center;
   color: white;
   padding-bottom: 1em;
@@ -300,7 +327,7 @@ select option:focus {
   bottom: 3.5rem;
   right: 1rem;
   z-index: 9999999;
-  background-image: url(./assets/mesage-icon.svg);
+  background-image: url('../assets/mesage-icon.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 76%;
@@ -337,7 +364,7 @@ select option:focus {
 }
 
 .img_logo_chat {
-  background-image: url("./assets/icon_amigapp.png");
+  background-image: url("../assets/icon_amigapp.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -346,7 +373,7 @@ select option:focus {
 }
 
 .icon_minimize {
-  background-image: url("./assets/minimize_icon.png");
+  background-image: url("../assets/minimize_icon.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -493,7 +520,7 @@ select option:focus {
   font-weight: bold;
   width: fit-content;
   height: auto;
-  padding:0.3em
+  padding: 0.3em
 }
 
 .principal_button:hover {
@@ -721,12 +748,19 @@ a.mapboxgl-ctrl-logo {
   .menu-links {
     display: none
   }
+
+  .topnav span {
+    padding: 8px 16px;
+  }
+
 }
 
 /* SMARTPHONE */
 @media screen and (max-width: 767px) {
-  .footer {
-    font-size: 0.8em;
+
+
+  .topnav span {
+    padding: 8px 16px;
   }
 
   .search_route input[type="text"] {
@@ -748,10 +782,18 @@ a.mapboxgl-ctrl-logo {
   .icon {
     width: 3.5rem;
     height: 2.5rem;
-    background-image: url("./assets/icon_amigapp-crop.png");
+    background-image: url("../assets/icon_amigapp-crop.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+  }
+
+  .modal {
+    width: 15em
+  }
+
+  .footer {
+    font-size: 0.8em;
   }
 }
 
