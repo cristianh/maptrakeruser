@@ -16,6 +16,8 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+/* ENCRIPT MESSAGE */
+const CryptoJS  = require("crypto-js");
 
 
 //CONECTAR DB MONGO
@@ -66,21 +68,21 @@ app.get('/usuario_gps', (req, res) => {
 
 app.get('/allChat', async (req, res) => {
   const { ruta } = req.query
-  
+
   let findRoute = `${ruta}`
-  const findRouteMessages = await Message.find({ "route.name": findRoute});
+  const findRouteMessages = await Message.find({ "route.name": findRoute });
   //const findRouteMessages = await Message.find({ "route.name": ruta});
-  
+
 
   let messagesAll = []
 
-  Object.values(findRouteMessages).map((msg)=>{
-    
+  Object.values(findRouteMessages).map((msg) => {
+
     messagesAll.push(msg.message)
 
   })
 
-  res.status(200).send({ messages:messagesAll})
+  res.status(200).send({ messages: messagesAll })
 });
 
 // ---------------- SOCKET.IO ----------------- //
@@ -269,14 +271,14 @@ io.on('connection', (socket) => {
       // Buscar el usuario por su ID
       const findRoute = await Route.findOne({ 'name': data.route });
 
-     
-
-      const findRouteMessages = await Message.find({ "route.name": data.route});
 
 
-      if (findRoute !== null) {
+      const findRouteMessages = await Message.find({ "route.name": data.route });
+
+
+      if (findRoute !== null) {        
         const message = new Message({
-          message: data.message,
+          message: CryptoJS.AES.encrypt(data.message, process.env.KEY_ENCRIPT_MESSAGE),
           idUserSocket: socket.id,
           route: [findRoute]
         })
@@ -286,7 +288,7 @@ io.on('connection', (socket) => {
 
 
       } else {
-        
+        console.log(CryptoJS.HmacSHA1(data.message, process.env.KEY_ENCRIPT_MESSAGE));
 
         const route = new Route({
           name: data.route,
@@ -295,7 +297,7 @@ io.on('connection', (socket) => {
         await route.save();
 
         const message = new Message({
-          message: data.message,
+          message:CryptoJS.HmacSHA1(data.message, process.env.KEY_ENCRIPT_MESSAGE),
           idUserSocket: socket.id,
           route: [route]
         })

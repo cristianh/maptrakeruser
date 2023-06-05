@@ -33,16 +33,16 @@ const createDivChatElement = (message, classN) => {
     element.classList.add("animate__bounceIn")
     element.appendChild(divuser)
     element.appendChild(divDate)
-    mesajesContainerInner.appendChild(element)
-    console.log(mesajesContainerInner)
+    mesajesContainerInner.appendChild(element)    
     //Scroll rolling down
-    mesajesContainer.scrollTop = mesajesContainer.scrollHeight;
+    mesajesContainerInner.scrollTop = mesajesContainer.scrollHeight;
 }
 
 
 const loadMessageChat = (route) => {
 
     try {
+       
         let routeSelected;
         let elementSelected = document.querySelector('#route')
         document.querySelector('.message_inner').innerHTML = ""
@@ -54,14 +54,17 @@ const loadMessageChat = (route) => {
 
 
 
-        let messageDb = fetch(`./allChat?ruta=${routeSelected}`).then((resp) => {
+        fetch(`./allChat?ruta=${routeSelected}`).then((resp) => {
             return resp.json()
         })
             .then((response) => {
-
-                response.messages.map((message) => {
-                    createDivChatElement(message, "message")
+                let mesajesContainerInner = document.querySelector('.message_inner')
+                let mesajesContainer = document.querySelector('.container_messages')
+                response.messages.map((message) => {                    
+                    createDivChatElement(CryptoJS.AES.decrypt(message, "4PiTh4fmkqf9jTy%%D3q").toString(CryptoJS.enc.Utf8), "message")
                 })
+
+                mesajesContainer.scrollTop = mesajesContainerInner.scrollHeight;
 
             })
     } catch (error) {

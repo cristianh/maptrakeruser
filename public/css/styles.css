@@ -429,6 +429,22 @@ select option:focus {
   text-align: center;
 }
 
+.message_inner {
+  padding: 4px 4px 29px 4px;
+  width: 100%;
+  height: 310px;
+  overflow-y: overlay;
+  scrollbar-width: none;
+}
+
+/* Estilos personalizados de la barra de desplazamiento */
+.message_inner::-webkit-scrollbar {
+  width: 0;
+  /* Ancho cero para hacer invisible la barra de desplazamiento en navegadores WebKit (como Chrome y Safari) */
+  background: transparent;
+  /* Fondo transparente */
+}
+
 .userActive {
   background-color: rgba(5, 69, 58, 0.923);
   color: rgb(255, 255, 255);
@@ -452,8 +468,6 @@ select option:focus {
 .container_messages {
   height: 100%;
   width: auto;
-  overflow-y: scroll;
-  scrollbar-width: none;
   padding: 0px 5px 0px 2px;
   /* Propiedad no estándar para ocultar la barra de desplazamiento en navegadores Firefox */
 }
@@ -467,15 +481,18 @@ select option:focus {
 }
 
 .welcome_message {
-  width: auto;
+  width: 100%;
   height: 4.3em;
-  background-color: rgba(206, 209, 209, 0.685);
+  background-color: rgba(206, 209, 209, 0.985);
   border-radius: 4px;
-  padding: 0.3em;
   color: rgba(47, 79, 73);
   display: flex;
   justify-content: center;
   align-items: center;
+ /*  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 99999999; */
 }
 
 .chat_form_message {
