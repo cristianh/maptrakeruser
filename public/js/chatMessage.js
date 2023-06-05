@@ -41,25 +41,31 @@ const createDivChatElement = (message, classN) => {
 
 
 const loadMessageChat = (route) => {
-    let routeSelected;
-    let elementSelected = document.querySelector('#route')
-    document.querySelector('.message_inner').innerHTML= ""
-    if(route==null){        
-        routeSelected = elementSelected.options[elementSelected.selectedIndex].text.replace(" ", "_")
-    }else{
-        routeSelected= route
-    }
-   
+
+    try {
+        let routeSelected;
+        let elementSelected = document.querySelector('#route')
+        document.querySelector('.message_inner').innerHTML = ""
+        if (route == null) {
+            routeSelected = elementSelected.options[elementSelected.selectedIndex].text.replace(" ", "_")
+        } else {
+            routeSelected = route
+        }
 
 
-    let messageDb = fetch(`./allChat?ruta=${routeSelected}`).then((resp) => {
-        return resp.json()
-    })
-        .then((response) => {
 
-            response.messages.map((message) => {
-                createDivChatElement(message, "message")
-            })
-
+        let messageDb = fetch(`./allChat?ruta=${routeSelected}`).then((resp) => {
+            return resp.json()
         })
+            .then((response) => {
+
+                response.messages.map((message) => {
+                    createDivChatElement(message, "message")
+                })
+
+            })
+    } catch (error) {
+        console.log(error)
+    }
+
 }
