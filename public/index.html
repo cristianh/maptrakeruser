@@ -76,6 +76,20 @@
 
             <!-- Mapa -->
             <div id="map">
+                <!-- side bar -->
+                <div class="sidebar">
+                    <!-- MOSTRAMOS LO BOTONOS SI NO ESTA LOGUEADO -->
+                    <!-- div extra para el espacio -->                    
+                    <div class="item_sidebar"> <a href="https://rutaamigapp.onrender.com" target="_blank">Mi perfil</a>
+                    </div>
+                    <div class="item_sidebar"> <a href="https://socket-maptracker.onrender.com/usuario_gps"
+                            target="_blank">Mi
+                            posición</a></div>
+                    <div onclick="ocultarMenu(event)" class="item_sidebar item_close">
+                        <a href="">Cerrar</a>
+                    </div>
+
+                </div>
                 <div class="back-preloader">
                     <div class="container-preloader">
                         <span class="loader"></span>
@@ -238,7 +252,9 @@
     <!--Notificaciones -->
     <script src="https://cdn.by.wonderpush.com/sdk/1.1/wonderpush-loader.min.js" async></script>
     <!-- Cripto.js-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
+        integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         moment.locale('es');
         window.WonderPush = window.WonderPush || [];
