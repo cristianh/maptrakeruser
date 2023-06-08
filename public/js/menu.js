@@ -42,7 +42,12 @@ window.addEventListener('DOMContentLoaded', () => {
     animateMenu = () => {        
         //let x = document.querySelector(".menu-mobile");
         let x = document.querySelector(".sidebar");
-        x.classList.add('open')
+       
+        if(x.classList.contains('open')){
+            x.classList.remove('open')
+        }else{
+            x.classList.add('open')
+        }
         /* if (x.style.display === "block") {
             x.style.display = "none";
         } else {
@@ -50,15 +55,5 @@ window.addEventListener('DOMContentLoaded', () => {
         } */
     }
 
-    ocultarMenu = (event) => {        
-        event.preventDefault()
-        //let x = document.querySelector(".menu-mobile");
-        let x = document.querySelector(".sidebar");
-        x.classList.remove('open')
-        /* if (x.style.display === "block") {
-            x.style.display = "none";
-        } else {
-            x.style.display = "block";
-        } */
-    }
+    
 });
