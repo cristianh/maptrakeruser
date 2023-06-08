@@ -1,15 +1,15 @@
 h1 {
-    font-family: 'Exo', sans-serif;
+    font-family: 'Exo', 'sans-serif';
 }
 
 h2 {
-    font-family: 'Dancing Script', cursive;
+    font-family: 'Montserrat', 'sans-serif';
 }
 
 p,
 label,
 span {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', 'sans-serif';
     font-weight: bold;
     font-size: 1em;
 }
@@ -86,6 +86,8 @@ body {
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+    font-family: 'Montserrat', 'sans-serif';
+    font-weight: 400;
 }
 
 /* Estilos para las barras del icono de hamburguesa */
@@ -100,7 +102,7 @@ body {
     color: white
 }
 
-.menu-hamburger > div{
+.menu-hamburger>div {
     width: 25px;
     height: 3px;
     background-color: white;
@@ -147,7 +149,7 @@ body {
 }
 
 .menu-links__mobile__opcion:hover {
-    background-color: rgba(21, 74, 64, 0.831);
+    background-color: rgb(21 74 64 / 72%);
 }
 
 .menu-links__mobile .menu-links__mobile__opcion a {
@@ -487,7 +489,7 @@ select {
 
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 767px) {
     .topnav .menu span:not(:last-child) {
         display: none;
     }

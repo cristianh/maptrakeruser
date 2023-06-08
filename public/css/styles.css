@@ -1,20 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Exo:wght@300&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap');
-
-
 h1 {
-  font-family: 'Exo', sans-serif;
+  font-family: 'Exo', 'sans-serif';
 }
 
 h2 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', 'sans-serif';
 }
 
 p,
 label,
 span {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', 'sans-serif';
   font-weight: bold;
   font-size: 1em;
 }

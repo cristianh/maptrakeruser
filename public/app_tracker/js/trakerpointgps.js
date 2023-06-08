@@ -129,7 +129,7 @@ function main() {
                 let Op = document.createElement('option')
                 Op.text = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
                 Op.value = opcion
-                selectRutasDB.add(Op)
+                /* selectRutasDB.appendChild(Op) */
             });
 
         })
