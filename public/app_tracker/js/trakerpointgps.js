@@ -20,7 +20,8 @@ const firebaseUrlBase = 'https://amigaapp-f2f93-default-rtdb.firebaseio.com'
 
 //TEST URL LOCAL
 // cambiar por 'http://localhost:8000'
-const baseUrlProduction = 'https://socket-maptracker.onrender.com'
+const baseUrlProduction = 'https://rutamigapp.com'
+/* const baseUrlProduction = 'https://socket-maptracker.onrender.com' */
 //const baseUrlProduction = 'http://localhost:8000'
 
 // API endpoints
