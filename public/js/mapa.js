@@ -2,10 +2,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-    moment().format();
-
-
-
     loadYearFooter()
 
 
@@ -161,6 +157,7 @@ window.addEventListener('DOMContentLoaded', () => {
     onSendMessage = (e) => {
         e.preventDefault()
         if (routeSelected == "") {
+            //Mostramos la notificación.
             new Notify({
                 title: '!Atencion!',
                 text: 'Por favor selecciona una ruta.',
@@ -169,7 +166,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 status: 'warning',
                 position: 'left bottom',
                 gap: 40,
-                distance: 20
+                distance: 20,
+                type: 1
             })
         } else {
             let messageUser = document.querySelector('#message_input')
@@ -203,7 +201,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     })
 
-    
+
 
 
     /* The above code defines a function `loadUserChat` that loads the available chat users and
@@ -351,12 +349,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
                 // Current user position.
-                let marker = new mapboxgl.Marker(margkeruser)
+                let marker = new mapboxgl.Marker(margkeruser, {
+                    draggable: true,
+                })
                     .setLngLat([lng, lat])
                     .addTo(map);
 
                 //Tomamos el primer punto de referencia (cordenadas actuales del usuario)
                 from = turf.point([lng, lat]);
+
+                const onDragEnd = () => {
+                    const lngLat = marker.getLngLat();
+                    const { lat, lng } = lngLat
+                    console.log(lat, lng)
+                    //UPDATE el  punto de referencia (cordenadas actuales del usuario)
+                    from = turf.point([lng, lat]);
+                }
+
+                marker.on('dragend', onDragEnd);
 
 
                 // Make multiple API requests concurrently using Promise.all
@@ -537,45 +547,58 @@ window.addEventListener('DOMContentLoaded', () => {
          * We listen to the information sent from the server
          */
         socket.on('chat_send_server_message', (msg) => {
-            /* console.log("recibiendo datos................", msg) */
-            const { Latitude, Longitude, Speed } = msg.data
 
-            to = turf.point([Longitude, Latitude]);
-            let options = { units: 'kilometers' };
 
-            let distance = turf.distance(from, to, options);
 
-            //SI LA DISTANCIA CUMPLE LA CONDICION
-            //TODO:OJO deshabilitamos la notificacion cambiar.
-            if (Math.round(distance * 1000) > 300 && Math.round(distance * 1000) < 350) {
-                notifiyUserProximityRoute(room.replace('_', ' ').toLowerCase())
-            }
+            try {
+                /* console.log("recibiendo datos................", msg) */
+                const { Latitude, Longitude, Speed } = msg.data
 
-            let rutaName = msg.room.replace('_', ' ').toLowerCase()
+                to = turf.point([Longitude, Latitude]);
+                let options = { units: 'kilometers' };
+                let distance = turf.distance(from, to, options);
+                //SI LA DISTANCIA CUMPLE LA CONDICION
+                //TODO:OJO deshabilitamos la notificacion cambiar.
+                console.log(routeSelected.replace('_', ' ').toLowerCase(),msg.room.replace('_', ' ').toLowerCase())
+                if (Math.round(distance * 1000) > 100 && Math.round(distance * 1000) < 150) {
+                    if(routeSelected.replace('_', ' ').toLowerCase()===msg.room.replace('_', ' ').toLowerCase()){
+                        notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
+                    }   
+                }else{
+                    notificado = false  
+                }
 
-            //SAVE DIFERENT POINT IN JSON MAP DATA.
-            if (msg.room.replace('_', ' ').toLowerCase() !== "") {
-                geojson.features[rutaName] =
-                {
-                    type: 'Feature',
-                    geometry: {
-                        coordinates: {
-                            lat: Latitude,
-                            lon: Longitude
+                let rutaName = msg.room.replace('_', ' ').toLowerCase()
+
+                //SAVE DIFERENT POINT IN JSON MAP DATA.
+                if (msg.room.replace('_', ' ').toLowerCase() !== "") {
+                    geojson.features[rutaName] =
+                    {
+                        type: 'Feature',
+                        geometry: {
+                            coordinates: {
+                                lat: Latitude,
+                                lon: Longitude
+                            }
+                        },
+                        properties: {
+                            title: capitalizarTexto(rutaName),
+                            description: 'Norte/Sur',
+                            velocidad: Speed == undefined ? '0' : Math.round(Speed * 3.6),
+                            distancia: Math.round(distance * 1000)
                         }
-                    },
-                    properties: {
-                        title: capitalizarTexto(rutaName),
-                        description: 'Norte/Sur',
-                        velocidad: Speed == undefined ? '0' : Math.round(Speed * 3.6),
-                        distancia: Math.round(distance * 1000)
                     }
                 }
+                if (Longitude !== undefined && Latitude !== undefined) {
+                    calculateTravelTime([Longitude, Latitude], positionHerUser)
+                }
+                loadPointMap()
+            } catch (error) {
+                console.log(error)
             }
-            if (Longitude !== undefined && Latitude !== undefined) {
-                calculateTravelTime([Longitude, Latitude], positionHerUser)
-            }
-            loadPointMap()
+
+
+
         });
 
 
@@ -587,15 +610,35 @@ window.addEventListener('DOMContentLoaded', () => {
         WonderPush API endpoint to deliver the notification to all users. */
         notifiyUserProximityRoute = (routename) => {
             //Notificamos que la ruta esta cerca.
-
-
             //NOTIFICATION TEST
             let notifications = new NotificationsPushApp('RUTA AMIGAPP', `La ruta ${routename} se encuentra cerca a tu ubicación.`)
 
             //SHOW NOTIFICATION
             notifications.showNotification()
 
-            notificado = true
+
+            if (notificado == false) {
+                let mensaje = `La ruta ${routename}, se encuentra cerca a su posición.`
+                let dataMensaje = {
+                    title: '!Atencion!',
+                    text: mensaje,
+                    autoclose: true,
+                    autotimeout: 8000,
+                    status: 'warning',
+                    position: 'rigth bottom',
+                    gap: 40,
+                    distance: 20,
+                    type: 1
+                }
+
+
+                new Notify(dataMensaje)
+                notificado = true              
+            }
+
+            
+
+
             //SHOW NOTIFICATION ONLY ROOM ROUTE
             //socket.emit('message_notify_route', { message: 'Probando Mensaje', room: msg.room.replace('_', ' ').toLowerCase() })
 
@@ -603,16 +646,16 @@ window.addEventListener('DOMContentLoaded', () => {
             urlencoded.append("targetSegmentIds", "@ALL");
             urlencoded.append("notification", `{\"alert\":{\"text\":\"La ruta ${routename} se encuentra cerca a tu posicion\"}}`);
 
-            var requestOptions = {
-                method: 'POST',
-                body: urlencoded,
-                redirect: 'follow'
-            };
-
-            fetch("https://management-api.wonderpush.com/v1/deliveries?accessToken=NDkyMjZjYmE2YTJhNzA5NDA4ZjhiZTIwMWQ3YWI2MTgwNTkwYTQ5NzE3NWU1N2UyNDNjNGZhNTQwZDE4ZDVmNw", requestOptions)
-                .then(response => response.text())
-                .then(result => console.log(result))
-                .catch(error => console.log('error', error));
+            /*  var requestOptions = {
+                 method: 'POST',
+                 body: urlencoded,
+                 redirect: 'follow'
+             };
+ 
+             fetch("https://management-api.wonderpush.com/v1/deliveries?accessToken=NDkyMjZjYmE2YTJhNzA5NDA4ZjhiZTIwMWQ3YWI2MTgwNTkwYTQ5NzE3NWU1N2UyNDNjNGZhNTQwZDE4ZDVmNw", requestOptions)
+                 .then(response => response.text())
+                 .then(result => console.log(result))
+                 .catch(error => console.log('error', error)); */
 
         }
     }
