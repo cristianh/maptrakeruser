@@ -12,9 +12,30 @@ class NotificationsPushApp {
         this.body = body;
         this.icon = icon;
         this.time = time;
+        this.checkPermission()
+        this.formatData()
     }
 
-    
+    formatData() {
+        const date = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const dateString = date.toLocaleString(undefined, options);
+
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+
+        //Añadimos el 0
+        if(minutes<10){
+            minutes=minutes+'0'
+        }
+        //Añadimos el 0
+        if(seconds<10){
+            seconds=seconds+'0'
+        }
+        this.title = `${this.title} - ${dateString} : ${hours}:${minutes}:${seconds}`
+    }
+
     checkPermission() {
         Push.Permission.request(this.onGranted, this.onDenied);
     }
@@ -57,9 +78,9 @@ class NotificationsPushApp {
         }); */
 
         //3. Method Close alla notifications
-        //Push.clear();
+        Push.clear();
     }
 
-   
+
 
 }
