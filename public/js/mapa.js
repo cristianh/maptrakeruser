@@ -646,7 +646,7 @@ window.addEventListener('DOMContentLoaded', () => {
             urlencoded.append("targetSegmentIds", "@ALL");
             urlencoded.append("notification", `{\"alert\":{\"text\":\"La ruta ${routename} se encuentra cerca a tu posicion\"}}`);
 
-            /*  var requestOptions = {
+             var requestOptions = {
                  method: 'POST',
                  body: urlencoded,
                  redirect: 'follow'
@@ -655,7 +655,7 @@ window.addEventListener('DOMContentLoaded', () => {
              fetch("https://management-api.wonderpush.com/v1/deliveries?accessToken=NDkyMjZjYmE2YTJhNzA5NDA4ZjhiZTIwMWQ3YWI2MTgwNTkwYTQ5NzE3NWU1N2UyNDNjNGZhNTQwZDE4ZDVmNw", requestOptions)
                  .then(response => response.text())
                  .then(result => console.log(result))
-                 .catch(error => console.log('error', error)); */
+                 .catch(error => console.log('error', error));
 
         }
     }
