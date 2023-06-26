@@ -37,7 +37,7 @@ function main() {
     //listener
     document.getElementById("stopPosition").addEventListener("click", stopWatch, false);
     document.getElementById("watchPosition").addEventListener("click", watchPosition, false);
-    document.getElementById("simulacion_route").addEventListener("click", emulateRoute, false);
+    /* document.getElementById("simulacion_route").addEventListener("click", emulateRoute, false); */
 
 
     //LOAD DATE FOOTER
@@ -151,7 +151,7 @@ function main() {
 function loadYearFooter() {
     var year = new Date().getFullYear();
 
-    document.getElementById("year_date").innerHTML = `Rutamigapp. ${year}  @copyrigth todos los derechos reservados.`;
+    document.getElementById("year_date").innerHTML = `Rutamigapp. ${year} ®copyrigth todos los derechos reservados.`;
 }
 
 
@@ -209,8 +209,8 @@ function stopWatch() {
     hasSendDataUser = false
     hasEmulateSendData = false
     document.getElementById('info').innerHTML = ""
-    document.getElementById("simulacion_route").classList.remove('disable')
-    document.getElementById("simulacion_route").addEventListener("click", emulateRoute);
+    /* document.getElementById("simulacion_route").classList.remove('disable')
+    document.getElementById("simulacion_route").addEventListener("click", emulateRoute); */
     document.getElementById('info').style.display = 'none'
     document.querySelector('.principal-title').style.display = 'block'
     document.getElementById('seleccion_ruta').style.display = 'block'
@@ -233,8 +233,8 @@ function watchPosition() {
     }
     else {
         document.getElementById('select_route_simulacion').style.display = 'none'
-        document.getElementById("simulacion_route").classList.add('disable')
-        document.getElementById("simulacion_route").removeEventListener("click", emulateRoute);
+       /*  document.getElementById("simulacion_route").classList.add('disable')
+        document.getElementById("simulacion_route").removeEventListener("click", emulateRoute); */
         // We connect to the room (room)
         window.socket.emit('server_join_room', { room: nombreRutaDBRoom, type: 'user-data-gps' })
         /* socket.emit('check_length_users_route_gps', { conect: 'user-data-gps', room: nombreRutaDBRoom }); */

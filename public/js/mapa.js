@@ -224,17 +224,29 @@ window.addEventListener('DOMContentLoaded', () => {
             let element = document.createElement("div")
             element.classList.add("message")
             element.appendChild(divuser)
+            element.id = "user" + user.toString().substring(0, 4)
             mensaje.appendChild(element)
+           
         });
+        localStorage.setItem('idchat',JSON.stringify("user" + socket.id.toString().substring(0, 4)))
+        repaintChatUsers()
+
+    }
+
+    repaintChatUsers = () => {
         const userActiveChat = document.querySelectorAll('.chat_users > div')
 
-        if (userActiveChat.length == 1) {
-            userActiveChat[(userActiveChat.length) - 1].classList.add("userActive")
-        } else {
-            userActiveChat[(userActiveChat.length) - 2].classList.add("userActive")
+
+
+        if (userActiveChat.length >= 1) {
+            console.log(userActiveChat)
+            console.log(userActiveChat[userActiveChat.length - 1].id)
+
+           
         }
 
-
+        document.querySelector(`#${JSON.parse(localStorage.getItem('idchat'))}`).classList.add("userActive")
+        
     }
 
     // event to send the welcome message Dal Server.
@@ -559,13 +571,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 let distance = turf.distance(from, to, options);
                 //SI LA DISTANCIA CUMPLE LA CONDICION
                 //TODO:OJO deshabilitamos la notificacion cambiar.
-                console.log(routeSelected.replace('_', ' ').toLowerCase(),msg.room.replace('_', ' ').toLowerCase())
+                console.log(routeSelected.replace('_', ' ').toLowerCase(), msg.room.replace('_', ' ').toLowerCase())
                 if (Math.round(distance * 1000) > 100 && Math.round(distance * 1000) < 150) {
-                    if(routeSelected.replace('_', ' ').toLowerCase()===msg.room.replace('_', ' ').toLowerCase()){
+                    if (routeSelected.replace('_', ' ').toLowerCase() === msg.room.replace('_', ' ').toLowerCase()) {
                         notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
-                    }   
-                }else{
-                    notificado = false  
+                    }
+                } else {
+                    notificado = false
                 }
 
                 let rutaName = msg.room.replace('_', ' ').toLowerCase()
@@ -633,10 +645,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
                 new Notify(dataMensaje)
-                notificado = true              
+                notificado = true
             }
 
-            
+
 
 
             //SHOW NOTIFICATION ONLY ROOM ROUTE
@@ -646,16 +658,16 @@ window.addEventListener('DOMContentLoaded', () => {
             urlencoded.append("targetSegmentIds", "@ALL");
             urlencoded.append("notification", `{\"alert\":{\"text\":\"La ruta ${routename} se encuentra cerca a tu posicion\"}}`);
 
-             var requestOptions = {
-                 method: 'POST',
-                 body: urlencoded,
-                 redirect: 'follow'
-             };
- 
-             fetch("https://management-api.wonderpush.com/v1/deliveries?accessToken=NDkyMjZjYmE2YTJhNzA5NDA4ZjhiZTIwMWQ3YWI2MTgwNTkwYTQ5NzE3NWU1N2UyNDNjNGZhNTQwZDE4ZDVmNw", requestOptions)
-                 .then(response => response.text())
-                 .then(result => console.log(result))
-                 .catch(error => console.log('error', error));
+            var requestOptions = {
+                method: 'POST',
+                body: urlencoded,
+                redirect: 'follow'
+            };
+
+            fetch("https://management-api.wonderpush.com/v1/deliveries?accessToken=NDkyMjZjYmE2YTJhNzA5NDA4ZjhiZTIwMWQ3YWI2MTgwNTkwYTQ5NzE3NWU1N2UyNDNjNGZhNTQwZDE4ZDVmNw", requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
 
         }
     }
@@ -779,7 +791,7 @@ function hiddenWindowGpsEnabled() {
 function loadYearFooter() {
     var year = new Date().getFullYear();
 
-    document.getElementById("year_date").innerHTML = `Rutamigapp. ${year}  @copyrigth todos los derechos reservados.`;
+    document.getElementById("year_date").innerHTML = `Rutamigapp. ${year}  ®copyrigth todos los derechos reservados.`;
 }
 
 

@@ -479,6 +479,12 @@ select option:focus {
   text-align: center;
 }
 
+/* .chat_users > div:last-child{
+  background-color: rgba(5, 69, 58, 0.923);
+  color: rgb(255, 255, 255);
+  border-radius: 4px;
+} */
+
 .message_inner {
   padding: 4px 4px 29px 4px;
   width: 100%;
