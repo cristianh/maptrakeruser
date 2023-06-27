@@ -188,6 +188,8 @@ io.on('connection', (socket) => {
             const filterids = DBGPSDATA[data].filter((item) => item.idUser !== socket.id)
             DBGPSDATA[data] = filterids
             roomleave = data
+            /* delete DBGPSDATA[roomleave] */
+            console.log(DBGPSDATA)
             return false
           })
 
@@ -199,13 +201,15 @@ io.on('connection', (socket) => {
           }
 
           if (roomleave !== null) {
-            let findNextData = DBGPSDATA[dataRoom.room].filter((users) => {
+            let findNextData = DBGPSDATA[roomleave].filter((users) => {
 
               return users.type === 'user-data-gps'
             })
 
-
-            io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
+            if(findNextData.length>=1){
+              io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
+            }
+            
 
           }
 
@@ -388,7 +392,33 @@ io.on('connection', (socket) => {
   //STOP SEND DATA USER
   socket.on(eventsSocketio.STOP_DATA_GPS_USER, (roomData) => {
     try {
+      Object.keys(DBGPSDATA).forEach((data, key) => {
+        const filterids = DBGPSDATA[data].filter((item) => item.idUser !== socket.id)
+        DBGPSDATA[data] = filterids
+        roomleave = data
+        /* delete DBGPSDATA[roomleave] */
+        console.log(DBGPSDATA)
+        return false
+      })
 
+
+      if (usersIds.length > 0) {
+        usersIds = usersIds.filter((id) => {
+          return id != socket.id
+        })
+      }
+
+      if (roomleave !== null) {
+        let findNextData = DBGPSDATA[roomleave].filter((users) => {
+
+          return users.type === 'user-data-gps'
+        })
+
+        if(findNextData.length>=1){
+        io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
+        }
+
+      }
     } catch (error) {
       console.log(error.message)
     }
