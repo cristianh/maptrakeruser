@@ -20,9 +20,9 @@ const firebaseUrlBase = 'https://amigaapp-f2f93-default-rtdb.firebaseio.com'
 
 //TEST URL LOCAL
 // cambiar por 'http://localhost:8000'
-const baseUrlProduction = 'https://rutamigapp.com'
-/* const baseUrlProduction = 'https://socket-maptracker.onrender.com' */
-/*const baseUrlProduction = 'http://localhost:8000'*/
+/* const baseUrlProduction = 'https://rutamigapp.com' */
+
+const baseUrlProduction = 'http://localhost:8000'
 
 // API endpoints
 const RoutesDbSimulateEndpoint = `${firebaseUrlBase}/dbrutas/${routeEmulate}.json`;
@@ -61,14 +61,12 @@ function main() {
     window.socket.on("route_message_user", (data) => {
         console.log(".............................................", data)
 
-        if (data.status) {
+        if (!data.senddata) {
             document.getElementById('info').innerHTML = data.message
-        }
-
-        if (data.senddata) {
-            hasSendDataUser = data.senddata
-        }
-
+            hasSendDataUser = false
+        }else{
+            hasSendDataUser = true
+        }       
     })
 
 
@@ -282,7 +280,10 @@ function watchPosition() {
                         }
 
                         //document.getElementById('info').innerHTML = JSON.stringify(_datos)
-                        document.getElementById('info').innerHTML = `<div>Enviado información ruta...</div>`
+                        if(hasSendDataUser){
+                            document.getElementById('info').innerHTML = `<div>Enviado información ruta...</div>`
+                        }
+                        
 
                         window.socket.emit('geo_posicion', { hasSendDataUser, room: nombreRutaDBRoom, data: _datos });
                         console.log("enviando datos usuario....")

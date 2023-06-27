@@ -395,6 +395,7 @@ img {
     height: 40px;
     justify-content: center;
     align-items: center;
+    height: fit-content;
 }
 
 @keyframes fade {

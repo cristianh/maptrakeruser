@@ -17,7 +17,7 @@ const configuration = new Configuration({
 });
 
 /* ENCRIPT MESSAGE */
-const CryptoJS  = require("crypto-js");
+const CryptoJS = require("crypto-js");
 
 
 //CONECTAR DB MONGO
@@ -38,7 +38,7 @@ const io = new Server(server, {
   pingTimeout: 40000,
   cors: {
     origin: (origin, callback) => {
-      const whitelist = ["https://amigaapp-f2f93-default-rtdb.firebaseio.com", "https://socket-maptracker.onrender.com ", "http://localhost:8001", "http://localhost:8000","https://rutamigapp.com"];
+      const whitelist = ["https://amigaapp-f2f93-default-rtdb.firebaseio.com", "https://socket-maptracker.onrender.com ", "http://localhost:8001", "http://localhost:8000", "https://rutamigapp.com"];
       if (whitelist.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
@@ -127,6 +127,7 @@ io.on('connection', (socket) => {
 
 
 
+
     //GUARDAMOS EL ARREGLO COMO VAN LLEGANDO LOS USUARIOS.
 
     if (DBGPSDATA[dataRoom.room] === undefined) {
@@ -144,51 +145,29 @@ io.on('connection', (socket) => {
       return users.type === dataRoom.type
     })
 
-    if (find.length > 1) {
-      io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: false, message: `La ${dataRoom.room.replace("_", " ")} ya esta monitoreada, sera conectado al servidor. en un momento sera enviada su posicion.` })
-    }
+    if (find.length>1) {
+      io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: false, message: `La ${dataRoom.room.replace("_", " ")} ya esta monitoreada, sera conectado al servidor y en un momento sera enviada su posicion.` })
+    } else {
 
 
 
-    //SEN UPDATE  USER CONNECT TO ROOM.
-    const usersInRoom = io.sockets.adapter.rooms.get(dataRoom.room);
+      //SEN UPDATE  USER CONNECT TO ROOM.
+      const usersInRoom = io.sockets.adapter.rooms.get(dataRoom.room);
 
 
-    if (usersInRoom) {
-      usersIds = Array.from(usersInRoom.keys());
+      if (usersInRoom) {
+        usersIds = Array.from(usersInRoom.keys());
 
-    }
-
-    // send to all clients in room return list id users conects for room
-    io.in(dataRoom.room).emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: dataRoom.room, usersIds });
-
-
-    socket.on(eventsSocketio.SERVER_LEAVE_ROOM, (room) => {
-
-      //UNSUSCRIBE TO ROOM USER FROM GPS PAGE.
-      socket.leave(room);
-
-
-      if (usersIds.length > 0) {
-        usersIds = usersIds.filter((id) => {
-          return id != socket.id
-        })
       }
 
-      //SEND NEW LIST USER connection
-      socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: room, usersIds });
-    })
+      // send to all clients in room return list id users conects for room
+      io.in(dataRoom.room).emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: dataRoom.room, usersIds });
 
-    //DETECT USER DESCONECT
 
-    socket.on('disconnect', () => {
-      try {
-        Object.keys(DBGPSDATA).forEach((data, key) => {
-          const filterids = DBGPSDATA[data].filter((item) => item.idUser !== socket.id)
-          DBGPSDATA[data] = filterids
-          roomleave = data
-          return false
-        })
+      socket.on(eventsSocketio.SERVER_LEAVE_ROOM, (room) => {
+
+        //UNSUSCRIBE TO ROOM USER FROM GPS PAGE.
+        socket.leave(room);
 
 
         if (usersIds.length > 0) {
@@ -197,28 +176,45 @@ io.on('connection', (socket) => {
           })
         }
 
-        if (roomleave !== null) {
-          let findNextData = DBGPSDATA[dataRoom.room].filter((users) => {
+        //SEND NEW LIST USER connection
+        socket.broadcast.emit(eventsSocketio.SERVER_SEND_LIST_USERS, { room: room, usersIds });
+      })
 
-            return users.type === 'user-data-gps'
+      //DETECT USER DESCONECT
+
+      socket.on('disconnect', () => {
+        try {
+          Object.keys(DBGPSDATA).forEach((data, key) => {
+            const filterids = DBGPSDATA[data].filter((item) => item.idUser !== socket.id)
+            DBGPSDATA[data] = filterids
+            roomleave = data
+            return false
           })
 
 
-          io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
+          if (usersIds.length > 0) {
+            usersIds = usersIds.filter((id) => {
+              return id != socket.id
+            })
+          }
+
+          if (roomleave !== null) {
+            let findNextData = DBGPSDATA[dataRoom.room].filter((users) => {
+
+              return users.type === 'user-data-gps'
+            })
+
+
+            io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
+
+          }
+
+
+        } catch (error) {
 
         }
-
-
-      } catch (error) {
-
-      }
-    });
-
-    /* } catch (error) {
-      console.log(error)
-    } */
-
-
+      });
+    }
 
 
   })
@@ -276,7 +272,7 @@ io.on('connection', (socket) => {
       const findRouteMessages = await Message.find({ "route.name": data.route });
 
 
-      if (findRoute !== null) {        
+      if (findRoute !== null) {
         const message = new Message({
           message: CryptoJS.AES.encrypt(data.message, process.env.KEY_ENCRIPT_MESSAGE),
           idUserSocket: socket.id,
@@ -297,7 +293,7 @@ io.on('connection', (socket) => {
         await route.save();
 
         const message = new Message({
-          message:CryptoJS.HmacSHA1(data.message, process.env.KEY_ENCRIPT_MESSAGE),
+          message: CryptoJS.HmacSHA1(data.message, process.env.KEY_ENCRIPT_MESSAGE),
           idUserSocket: socket.id,
           route: [route]
         })
