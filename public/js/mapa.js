@@ -226,9 +226,9 @@ window.addEventListener('DOMContentLoaded', () => {
             element.appendChild(divuser)
             element.id = "user" + user.toString().substring(0, 4)
             mensaje.appendChild(element)
-           
+
         });
-        localStorage.setItem('idchat',JSON.stringify("user" + socket.id.toString().substring(0, 4)))
+        localStorage.setItem('idchat', JSON.stringify("user" + socket.id.toString().substring(0, 4)))
         repaintChatUsers()
 
     }
@@ -239,14 +239,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
         if (userActiveChat.length >= 1) {
-            console.log(userActiveChat)
-            console.log(userActiveChat[userActiveChat.length - 1].id)
+            
 
-           
+
         }
 
         document.querySelector(`#${JSON.parse(localStorage.getItem('idchat'))}`).classList.add("userActive")
-        
+
     }
 
     // event to send the welcome message Dal Server.
@@ -288,14 +287,14 @@ window.addEventListener('DOMContentLoaded', () => {
         }, (error) => {
             switch (error.code) {
                 case error.PERMISSION_DENIED:
-                    console.log("User denied the request for Geolocation.")
+                    
                     // HABILITAMOS EL MENSAJE GPS INACTIVO
                     document.querySelector('#modal_gps_inactivo').style.display = "block"
                     document.querySelector('.container-modal').style.display = "flex"
                     localStorage.removeItem('modal_info')
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    console.log("Location information is unavailable.")
+                    
                     break;
                 case error.TIMEOUT:
                     console.log("The request to get user location timed out.")
@@ -372,8 +371,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 const onDragEnd = () => {
                     const lngLat = marker.getLngLat();
-                    const { lat, lng } = lngLat
-                    console.log(lat, lng)
+                    const { lat, lng } = lngLat                    
                     //UPDATE el  punto de referencia (cordenadas actuales del usuario)
                     from = turf.point([lng, lat]);
                 }
@@ -391,16 +389,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
                         // Process point markets response
                         const pointsData = pointesResponse.data;
-                        console.log('Points data:', pointsData);
+                        
 
                         // We make the request to Firebase of the routes stored above.
                         puntosSimulacion = Object.keys(pointsData)
 
-
-                        console.log(".................................", puntosSimulacion)
-
-                        puntosSimulacion.forEach(async (rutaNombre) => {
-                            console.log("...........................rutaNombre", rutaNombre);
+                        puntosSimulacion.forEach(async (rutaNombre) => {                            
                             await fetch(`https://amigaapp-f2f93-default-rtdb.firebaseio.com/dbrutas/${rutaNombre}.json`)
                                 .then((resp) => resp.json())
                                 .then((data) => {
@@ -441,7 +435,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                         // Process routes response
                         const routesData = routesResponse.data;
-                        /*  console.log('Routes data:', routesData); */
+                       
 
                         //GET DATA RESPONSE
                         Object.keys(routesData).forEach(element => {
@@ -559,23 +553,20 @@ window.addEventListener('DOMContentLoaded', () => {
          * We listen to the information sent from the server
          */
         socket.on('chat_send_server_message', (msg) => {
-
-
-
             try {
-                /* console.log("recibiendo datos................", msg) */
+                
                 const { Latitude, Longitude, Speed } = msg.data
 
                 to = turf.point([Longitude, Latitude]);
                 let options = { units: 'kilometers' };
                 let distance = turf.distance(from, to, options);
                 //SI LA DISTANCIA CUMPLE LA CONDICION
-                //TODO:OJO deshabilitamos la notificacion cambiar.
-                console.log(routeSelected.replace('_', ' ').toLowerCase(), msg.room.replace('_', ' ').toLowerCase())
-                if (Math.round(distance * 1000) > 100 && Math.round(distance * 1000) < 150) {
+                //TODO:OJO deshabilitamos la notificacion cambiar.                
+                if (Math.round(distance * 1000) > 100 && Math.round(distance * 1000) < 150) {                    
                     if (routeSelected.replace('_', ' ').toLowerCase() === msg.room.replace('_', ' ').toLowerCase()) {
                         notifiyUserProximityRoute(msg.room.replace('_', ' ').toLowerCase())
                     }
+
                 } else {
                     notificado = false
                 }
@@ -621,15 +612,17 @@ window.addEventListener('DOMContentLoaded', () => {
         `showNotification` method to display the notification. It also sends a POST request to a
         WonderPush API endpoint to deliver the notification to all users. */
         notifiyUserProximityRoute = (routename) => {
-            //Notificamos que la ruta esta cerca.
-            //NOTIFICATION TEST
-            let notifications = new NotificationsPushApp('RUTA AMIGAPP', `La ruta ${routename} se encuentra cerca a tu ubicación.`)
 
-            //SHOW NOTIFICATION
-            notifications.showNotification()
 
 
             if (notificado == false) {
+                //Notificamos que la ruta esta cerca.
+                //NOTIFICATION TEST
+                let notifications = new NotificationsPushApp('RUTA AMIGAPP', `La ruta ${routename} se encuentra cerca a tu ubicación.`)
+
+                //SHOW NOTIFICATION
+                notifications.showNotification()
+
                 let mensaje = `La ruta ${routename}, se encuentra cerca a su posición.`
                 let dataMensaje = {
                     title: '!Atencion!',

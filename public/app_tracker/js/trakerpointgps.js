@@ -229,7 +229,17 @@ function stopWatch() {
 function watchPosition() {
   
     if (nombreRutaDBRoom === "") {
-        alert("Seleccione la ruta por favor.")
+        new Notify({
+            title: '!Atencion!',
+            text: 'Por favor selecciona una ruta.',
+            autoclose: true,
+            autotimeout: 4000,
+            status: 'warning',
+            position: 'right bottom',
+            gap: 40,
+            distance: 20,
+            type: 1
+        })
     }
     else {
         document.getElementById("watchPosition").classList.add('btn_disabled')
@@ -240,7 +250,7 @@ function watchPosition() {
         document.querySelector('.principal-title').style.display = 'none'
 
         document.getElementById('select_route_simulacion').style.display = 'none'
-       /*  document.getElementById("simulacion_route").classList.add('disable')
+        /* document.getElementById("simulacion_route").classList.add('disable')
         document.getElementById("simulacion_route").removeEventListener("click", emulateRoute); */
         // We connect to the room (room)
         window.socket.emit('server_join_room', { room: nombreRutaDBRoom, type: 'user-data-gps' })
