@@ -37,6 +37,8 @@ function main() {
     //listener
     document.getElementById("stopPosition").addEventListener("click", stopWatch, false);
     document.getElementById("watchPosition").addEventListener("click", watchPosition, false);
+    
+    
     /* document.getElementById("simulacion_route").addEventListener("click", emulateRoute, false); */
 
 
@@ -59,7 +61,7 @@ function main() {
 
     // EVENT TO WAIT RESPONSE IF 2 USER CONNECTED TO THE SAME ROUTE
     window.socket.on("route_message_user", (data) => {
-        console.log(".............................................", data)
+        
 
         if (!data.senddata) {
             document.getElementById('info').innerHTML = data.message
@@ -71,7 +73,7 @@ function main() {
 
 
     window.socket.on("route_exit_user_data", (data) => {
-        console.log(data)
+        
         /* hasSendDataUser = true */
     })
 
@@ -88,14 +90,14 @@ function main() {
 
             // Process point markets response
             const pointsData = pointesResponse.data;
-            console.log('Points data:', pointsData);
+            
 
             // We make the request to Firebase of the routes stored above.
             puntosSimulacion = Object.values(pointsData)
 
             // Process routes emulate response
             const routesEmulateData = routesEmulateResponse.data;
-            console.log('Routes data:', routesEmulateData);
+           
 
             //GET DATA RESPONSE
             Object.keys(routesEmulateData).forEach(element => {
@@ -105,7 +107,7 @@ function main() {
             //WE LOAD ALL THE ROUTES STORED IN FIREBASE IN THE SELECT.
             let selectRutas = document.querySelector('#selectRutas_emulate');
             opcionesRutaEmulate.forEach(opcion => {
-                console.log("........................opcion", opcion)
+                
                 let Op = document.createElement('option')
                 Op.text = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
                 Op.value = opcion
@@ -114,7 +116,7 @@ function main() {
 
             // Process routes response
             const routesDB = routesDBResponse.data;
-            console.log('Routes data:', routesDB);
+            
 
             //GET DATA RESPONSE
             Object.keys(routesDB).forEach(element => {
@@ -124,7 +126,7 @@ function main() {
             //WE LOAD ALL THE ROUTES STORED IN FIREBASE IN THE SELECT.
             let selectRutasDB = document.querySelector('#routeDB');
             opcionesRuta.forEach(opcion => {
-                console.log("........................opcion", opcion)
+                
                 let Op = document.createElement('option')
                 Op.text = capitalizarTexto(opcion.replace('_', ' ').toLowerCase())
                 Op.value = opcion
@@ -192,8 +194,7 @@ function emulateRoute() {
  * "onSelectRuta". It contains information about the event that triggered the function, such as the
  * target element that was selected and its value.
  */
-function onSelectRuta(e) {
-    console.log(e.target.value);
+function onSelectRuta(e) {    
     nombreRutaDBRoom = e.target.value.replace(" ", "_")
 }
 
@@ -202,17 +203,21 @@ function onSelectRuta(e) {
  * This function stops a GPS tracking simulation and clears related variables and events.
  */
 function stopWatch() {
-
+    document.getElementById("watchPosition").classList.remove('btn_disabled')
+    document.getElementById("stopPosition").classList.add('btn_disabled')
     clearInterval(temporizadorSimulador);
     hasSendDataUser = false
     hasEmulateSendData = false
+    nombreRutaDBRoom= ""
     document.getElementById('info').innerHTML = ""
-    /* document.getElementById("simulacion_route").classList.remove('disable')
-    document.getElementById("simulacion_route").addEventListener("click", emulateRoute); */
+    document.getElementById('select_route').value="seleccione"
+
     document.getElementById('info').style.display = 'none'
     document.querySelector('.principal-title').style.display = 'block'
     document.getElementById('seleccion_ruta').style.display = 'block'
     window.socket.emit('stop_send_data_gps', { room: nombreRutaDBRoom });
+    navigator.geolocation.clearWatch(watchIDElement);
+    
 }
 
 
@@ -222,14 +227,18 @@ function stopWatch() {
  * with an option to simulate the route.
  */
 function watchPosition() {
-    
-    document.getElementById('info').style.display = 'flex'
-    document.getElementById('seleccion_ruta').style.display = 'none'
-    document.querySelector('.principal-title').style.display = 'none'
+  
     if (nombreRutaDBRoom === "") {
         alert("Seleccione la ruta por favor.")
     }
     else {
+        document.getElementById("watchPosition").classList.add('btn_disabled')
+        document.getElementById("stopPosition").classList.remove('btn_disabled')
+        document.getElementById('info').style.display = 'flex'
+        document.getElementById('seleccion_ruta').style.display = 'none'
+        document.getElementById('select_route').value="seleccione"
+        document.querySelector('.principal-title').style.display = 'none'
+
         document.getElementById('select_route_simulacion').style.display = 'none'
        /*  document.getElementById("simulacion_route").classList.add('disable')
         document.getElementById("simulacion_route").removeEventListener("click", emulateRoute); */
@@ -263,7 +272,7 @@ function watchPosition() {
 
                             window.socket.emit('geo_posicion', { room: nombreRutaDBRoom, data: puntosSimulacion[simlutePintCoordenate] });
 
-                            console.log("enviando datos emulados....", puntosSimulacion[simlutePintCoordenate])
+                            
 
                             simlutePintCoordenate += 1
                         }, 3000);
@@ -286,7 +295,7 @@ function watchPosition() {
                         
 
                         window.socket.emit('geo_posicion', { hasSendDataUser, room: nombreRutaDBRoom, data: _datos });
-                        console.log("enviando datos usuario....")
+                        
                     }
                 }
 
@@ -301,7 +310,7 @@ function watchPosition() {
          * typically includes a code and a message property.
          */
         function onError(error) {
-            alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
+            console.log('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
         }
     }
 }

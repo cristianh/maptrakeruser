@@ -141,16 +141,16 @@ io.on('connection', (socket) => {
     }
 
 
+    if (DBGPSDATA[dataRoom.room].length >= 1) {
+
+    }
     let find = DBGPSDATA[dataRoom.room].filter((users) => {
       return users.type === dataRoom.type
     })
 
-    if (find.length>1) {
+    if (find.length > 1) {
       io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: false, message: `La ${dataRoom.room.replace("_", " ")} ya esta monitoreada, sera conectado al servidor y en un momento sera enviada su posicion.` })
     } else {
-
-
-
       //SEN UPDATE  USER CONNECT TO ROOM.
       const usersInRoom = io.sockets.adapter.rooms.get(dataRoom.room);
 
@@ -184,14 +184,18 @@ io.on('connection', (socket) => {
 
       socket.on('disconnect', () => {
         try {
+          
           Object.keys(DBGPSDATA).forEach((data, key) => {
             const filterids = DBGPSDATA[data].filter((item) => item.idUser !== socket.id)
             DBGPSDATA[data] = filterids
             roomleave = data
             /* delete DBGPSDATA[roomleave] */
-            console.log(DBGPSDATA)
+            
             return false
           })
+
+          //UNSUSCRIBE TO ROOM USER FROM GPS PAGE.
+          socket.leave(roomleave);
 
 
           if (usersIds.length > 0) {
@@ -206,10 +210,10 @@ io.on('connection', (socket) => {
               return users.type === 'user-data-gps'
             })
 
-            if(findNextData.length>=1){
+            if (findNextData.length >= 1) {
               io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
             }
-            
+
 
           }
 
@@ -392,15 +396,19 @@ io.on('connection', (socket) => {
   //STOP SEND DATA USER
   socket.on(eventsSocketio.STOP_DATA_GPS_USER, (roomData) => {
     try {
+
+      //UNSUSCRIBE TO ROOM USER FROM GPS PAGE.
+      socket.leave(roomData.room);
+
+
       Object.keys(DBGPSDATA).forEach((data, key) => {
         const filterids = DBGPSDATA[data].filter((item) => item.idUser !== socket.id)
         DBGPSDATA[data] = filterids
         roomleave = data
         /* delete DBGPSDATA[roomleave] */
-        console.log(DBGPSDATA)
+        
         return false
       })
-
 
       if (usersIds.length > 0) {
         usersIds = usersIds.filter((id) => {
@@ -414,8 +422,8 @@ io.on('connection', (socket) => {
           return users.type === 'user-data-gps'
         })
 
-        if(findNextData.length>=1){
-        io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
+        if (findNextData.length >= 1) {
+          io.to(findNextData[0].idUser).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: true, status: true, message: `Ya puedes enviar tu posicion.` })
         }
 
       }
