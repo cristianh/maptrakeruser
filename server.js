@@ -149,7 +149,7 @@ io.on('connection', (socket) => {
     })
 
     if (find.length > 1) {
-      io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: false, message: `La ${dataRoom.room.replace("_", " ")} ya esta monitoreada, sera conectado al servidor y en un momento sera enviada su posicion.` })
+      io.to(socket.id).emit(eventsSocketio.MESSAGE_PRIVATE_USER, { senddata: false, status: false, message: `La ${dataRoom.room.replace("_", " ")} ya está monitoreada, será conectado al servidor y en un momento será enviada su posición.` })
     } else {
       //SEN UPDATE  USER CONNECT TO ROOM.
       const usersInRoom = io.sockets.adapter.rooms.get(dataRoom.room);
