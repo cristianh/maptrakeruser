@@ -39,7 +39,7 @@ function main() {
     document.getElementById("watchPosition").addEventListener("click", watchPosition, false);
     
     
-    /* document.getElementById("simulacion_route").addEventListener("click", emulateRoute, false); */
+    document.getElementById("simulacion_route").addEventListener("click", emulateRoute, false);
 
 
     //LOAD DATE FOOTER
@@ -250,8 +250,8 @@ function watchPosition() {
         document.querySelector('.principal-title').style.display = 'none'
 
         document.getElementById('select_route_simulacion').style.display = 'none'
-        /* document.getElementById("simulacion_route").classList.add('disable')
-        document.getElementById("simulacion_route").removeEventListener("click", emulateRoute); */
+        document.getElementById("simulacion_route").classList.add('disable')
+        document.getElementById("simulacion_route").removeEventListener("click", emulateRoute);
         // We connect to the room (room)
         window.socket.emit('server_join_room', { room: nombreRutaDBRoom, type: 'user-data-gps' })
         /* socket.emit('check_length_users_route_gps', { conect: 'user-data-gps', room: nombreRutaDBRoom }); */

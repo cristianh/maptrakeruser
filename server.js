@@ -66,6 +66,12 @@ app.get('/usuario_gps', (req, res) => {
   res.sendFile(path.resolve(__dirname, './public/app_tracker', 'index.html'));
 });
 
+app.get('/usuario_gps/simulador', (req, res) => {
+  // Servimos los archivos que se encuentran en el directorio public
+  //res.sendFile(__dirname + 'app_traker/index.html');
+  res.sendFile(path.resolve(__dirname, './public/app_tracker', 'rutademo.html'));
+});
+
 app.get('/allChat', async (req, res) => {
   const { ruta } = req.query
 
