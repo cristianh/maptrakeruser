@@ -719,7 +719,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 closeOnClick: true
             })
                 .setLngLat([geojson.features[key].geometry.coordinates.lon, geojson.features[key].geometry.coordinates.lat])
-                .setHTML(`<div><h3>Ruta Demo</h3><Dirección:<span>${geojson.features[key].properties.description}</span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? '300' : geojson.features[key].properties.distancia}m</span></div>`)
+                .setHTML(`<div><h3>${geojson.features[key].properties.title}</h3><Dirección:<span>${geojson.features[key].properties.description}</span><br><span>Distancia: ${geojson.features[key].properties.distancia == undefined ? '300' : geojson.features[key].properties.distancia}m</span></div>`)
                 .addTo(map);
 
             // Evitar que el foco se capture automáticamente en el popup
